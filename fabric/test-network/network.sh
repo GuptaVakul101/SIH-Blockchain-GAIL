@@ -197,11 +197,11 @@ function createOrgs() {
     echo
 
     echo "##########################################################"
-    echo "############ Create Org1 Identities ######################"
+    echo "############ Create Gail Identities ######################"
     echo "##########################################################"
 
     set -x
-    cryptogen generate --config=./organizations/cryptogen/crypto-config-org1.yaml --output="organizations"
+    cryptogen generate --config=./organizations/cryptogen/crypto-config-gail.yaml --output="organizations"
     res=$?
     set +x
     if [ $res -ne 0 ]; then
@@ -210,11 +210,11 @@ function createOrgs() {
     fi
 
     echo "##########################################################"
-    echo "############ Create Org2 Identities ######################"
+    echo "############ Create Contractors Identities ######################"
     echo "##########################################################"
 
     set -x
-    cryptogen generate --config=./organizations/cryptogen/crypto-config-org2.yaml --output="organizations"
+    cryptogen generate --config=./organizations/cryptogen/crypto-config-contractors.yaml --output="organizations"
     res=$?
     set +x
     if [ $res -ne 0 ]; then
@@ -252,16 +252,16 @@ function createOrgs() {
     sleep 10
 
     echo "##########################################################"
-    echo "############ Create Org1 Identities ######################"
+    echo "############ Create Gail Identities ######################"
     echo "##########################################################"
 
-    createOrg1
+    createGail
 
     echo "##########################################################"
-    echo "############ Create Org2 Identities ######################"
+    echo "############ Create Contractors Identities ######################"
     echo "##########################################################"
 
-    createOrg2
+    createContractors
 
     echo "##########################################################"
     echo "############ Create Orderer Org Identities ###############"
@@ -272,7 +272,7 @@ function createOrgs() {
   fi
 
   echo
-  echo "Generate CCP files for Org1 and Org2"
+  echo "Generate CCP files for Gail and Contractors"
   ./organizations/ccp-generate.sh
 }
 
@@ -356,7 +356,7 @@ function networkUp() {
   fi
 }
 
-## call the script to join create the channel and join the peers of org1 and org2
+## call the script to join create the channel and join the peers of gail and contractors
 function createChannel() {
 
 ## Bring up the network if it is not arleady up.
@@ -394,7 +394,7 @@ function deployCC() {
 
 # Tear down running network
 function networkDown() {
-  # stop org3 containers also in addition to org1 and org2, in case we were running sample to add org3
+  # stop org3 containers also in addition to gail and contractors, in case we were running sample to add org3
   docker-compose -f $COMPOSE_FILE_BASE -f $COMPOSE_FILE_COUCH -f $COMPOSE_FILE_CA down --volumes --remove-orphans
   docker-compose -f $COMPOSE_FILE_COUCH_ORG3 -f $COMPOSE_FILE_ORG3 down --volumes --remove-orphans
   # Don't remove the generated artifacts -- note, the ledgers are always removed
@@ -407,8 +407,8 @@ function networkDown() {
     # remove orderer block and other channel configuration transactions and certs
     rm -rf system-genesis-block/*.block organizations/peerOrganizations organizations/ordererOrganizations
     ## remove fabric ca artifacts
-    rm -rf organizations/fabric-ca/org1/msp organizations/fabric-ca/org1/tls-cert.pem organizations/fabric-ca/org1/ca-cert.pem organizations/fabric-ca/org1/IssuerPublicKey organizations/fabric-ca/org1/IssuerRevocationPublicKey organizations/fabric-ca/org1/fabric-ca-server.db
-    rm -rf organizations/fabric-ca/org2/msp organizations/fabric-ca/org2/tls-cert.pem organizations/fabric-ca/org2/ca-cert.pem organizations/fabric-ca/org2/IssuerPublicKey organizations/fabric-ca/org2/IssuerRevocationPublicKey organizations/fabric-ca/org2/fabric-ca-server.db
+    rm -rf organizations/fabric-ca/gail/msp organizations/fabric-ca/gail/tls-cert.pem organizations/fabric-ca/gail/ca-cert.pem organizations/fabric-ca/gail/IssuerPublicKey organizations/fabric-ca/gail/IssuerRevocationPublicKey organizations/fabric-ca/gail/fabric-ca-server.db
+    rm -rf organizations/fabric-ca/contractors/msp organizations/fabric-ca/contractors/tls-cert.pem organizations/fabric-ca/contractors/ca-cert.pem organizations/fabric-ca/contractors/IssuerPublicKey organizations/fabric-ca/contractors/IssuerRevocationPublicKey organizations/fabric-ca/contractors/fabric-ca-server.db
     rm -rf organizations/fabric-ca/ordererOrg/msp organizations/fabric-ca/ordererOrg/tls-cert.pem organizations/fabric-ca/ordererOrg/ca-cert.pem organizations/fabric-ca/ordererOrg/IssuerPublicKey organizations/fabric-ca/ordererOrg/IssuerRevocationPublicKey organizations/fabric-ca/ordererOrg/fabric-ca-server.db
     rm -rf addOrg3/fabric-ca/org3/msp addOrg3/fabric-ca/org3/tls-cert.pem addOrg3/fabric-ca/org3/ca-cert.pem addOrg3/fabric-ca/org3/IssuerPublicKey addOrg3/fabric-ca/org3/IssuerRevocationPublicKey addOrg3/fabric-ca/org3/fabric-ca-server.db
 

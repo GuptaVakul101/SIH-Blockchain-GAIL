@@ -7,7 +7,6 @@
 
 ### Running the test network
 
-
 ```shell
 # Deploy the blockchain network
 fabric/test-network/network.sh up
@@ -21,13 +20,14 @@ fabric/test-network/network.sh deployCC
 # Remove the blockchain network
 fabric/test-network/network.sh down
 ```
+
 ---
 
 ### Running NodeJS backend server
 
 ```shell
 # Install all the required dependencies
-npm Install
+npm install
 
 # Start the node server
 npm start

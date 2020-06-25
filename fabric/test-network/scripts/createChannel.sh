@@ -33,7 +33,7 @@ createChannelTx() {
 
 createAncorPeerTx() {
 
-	for orgmsp in Org1MSP Org2MSP; do
+	for orgmsp in GailMSP ContractorsMSP; do
 
 	echo "#######    Generating anchor peer update transaction for ${orgmsp}  ##########"
 	set -x
@@ -49,7 +49,7 @@ createAncorPeerTx() {
 }
 
 createChannel() {
-	setGlobals 1
+	setGlobals "gail"
 	# Poll in case the raft leader is not set yet
 	local rc=1
 	local COUNTER=1
@@ -87,7 +87,7 @@ joinChannel() {
 	done
 	cat log.txt
 	echo
-	verifyResult $res "After $MAX_RETRY attempts, peer0.org${ORG} has failed to join channel '$CHANNEL_NAME' "
+	verifyResult $res "After $MAX_RETRY attempts, peer0.${ORG} has failed to join channel '$CHANNEL_NAME' "
 }
 
 updateAnchorPeers() {
@@ -137,16 +137,16 @@ echo "Creating channel "$CHANNEL_NAME
 createChannel
 
 ## Join all the peers to the channel
-echo "Join Org1 peers to the channel..."
-joinChannel 1
-echo "Join Org2 peers to the channel..."
-joinChannel 2
+echo "Join Gail peers to the channel..."
+joinChannel "gail"
+echo "Join Contractors peers to the channel..."
+joinChannel "contractors"
 
 ## Set the anchor peers for each org in the channel
-echo "Updating anchor peers for org1..."
-updateAnchorPeers 1
-echo "Updating anchor peers for org2..."
-updateAnchorPeers 2
+echo "Updating anchor peers for gail..."
+updateAnchorPeers "gail"
+echo "Updating anchor peers for contractors..."
+updateAnchorPeers "contractors"
 
 echo
 echo "========= Channel successfully joined =========== "
