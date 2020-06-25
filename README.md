@@ -12,10 +12,10 @@
 fabric/test-network/network.sh up
 
 # Create sample channel between the peer nodes
-fabric/test-network/network.sh createChannel
+fabric/test-network/network.sh createChannel -c channelName
 
 # Deploy chaincode to the channel created
-fabric/test-network/network.sh deployCC
+fabric/test-network/network.sh deployCC -l javascript -c channelName
 
 # Remove the blockchain network
 fabric/test-network/network.sh down
