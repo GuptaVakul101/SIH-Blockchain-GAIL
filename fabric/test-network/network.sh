@@ -335,6 +335,15 @@ function createConsortium() {
 function networkUp() {
 
   checkPrereqs
+
+  source utility.sh
+  validate $1 $2
+  setcryptogail $1
+  setcryptocontractors $2
+  setconfigtx $1 $2
+  setcomposecouch $1 $2
+  setcomposetestnet $1 $2
+
   # generate artifacts if they don't exist
   if [ ! -d "organizations/peerOrganizations" ]; then
     createOrgs
@@ -363,7 +372,7 @@ function createChannel() {
 
   if [ ! -d "organizations/peerOrganizations" ]; then
     echo "Bringing up network"
-    networkUp
+    networkUp $GAIL_NODES $CONTRACTOR_NODES
   fi
 
   # now run the script that creates a channel. This script uses configtxgen once
@@ -417,6 +426,8 @@ function networkDown() {
     rm -rf channel-artifacts log.txt fabcar.tar.gz fabcar
 
   fi
+
+  echo
 }
 
 # Obtain the OS and Architecture string that will be used to select the correct
@@ -452,6 +463,11 @@ IMAGETAG="latest"
 CA_IMAGETAG="latest"
 # default database
 DATABASE="leveldb"
+
+# number of GAIL peer nodes
+GAIL_NODES=2
+# number of Contractor peer nodes
+CONTRACTOR_NODES=10
 
 # Parse commandline args
 
@@ -563,7 +579,7 @@ else
 fi
 
 if [ "${MODE}" == "up" ]; then
-  networkUp
+  networkUp $GAIL_NODES $CONTRACTOR_NODES
 elif [ "${MODE}" == "createChannel" ]; then
   createChannel
 elif [ "${MODE}" == "deployCC" ]; then
@@ -572,7 +588,7 @@ elif [ "${MODE}" == "down" ]; then
   networkDown
 elif [ "${MODE}" == "restart" ]; then
   networkDown
-  networkUp
+  networkUp $GAIL_NODES $CONTRACTOR_NODES
 else
   printHelp
   exit 1
