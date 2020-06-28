@@ -40,7 +40,7 @@ npm start
 
 ---
 
-### Running GAIL client website
+### Running NodeJS GAIL Client server
 
 ```shell
 # Install all the required dependencies
