@@ -34,3 +34,15 @@ npm start
 
 # Open localhost:3000 in web browser
 ```
+
+### Running NodeJS GAIL Client server
+
+```shell
+# Install all the required dependencies
+npm install
+
+# Start the node server
+node app.js
+
+# Open localhost:3000 in web browser
+```
