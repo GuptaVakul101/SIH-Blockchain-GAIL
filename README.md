@@ -44,5 +44,5 @@ npm install
 # Start the node server
 node app.js
 
-# Open localhost:3000 in web browser
+# Open localhost:3600 in web browser
 ```
