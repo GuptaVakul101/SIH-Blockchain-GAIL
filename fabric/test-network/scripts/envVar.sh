@@ -8,9 +8,9 @@
 
 export CORE_PEER_TLS_ENABLED=true
 export ORDERER_CA=${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
-export PEER0_GAIL_CA=${PWD}/organizations/peerOrganizations/gail.example.com/peers/peer0.gail.example.com/tls/ca.crt
-export PEER0_CONTRACTORS_CA=${PWD}/organizations/peerOrganizations/contractors.example.com/peers/peer0.contractors.example.com/tls/ca.crt
-export PEER0_ORG3_CA=${PWD}/organizations/peerOrganizations/org3.example.com/peers/peer0.org3.example.com/tls/ca.crt
+# export PEER0_GAIL_CA=${PWD}/organizations/peerOrganizations/gail.example.com/peers/peer0.gail.example.com/tls/ca.crt
+# export PEER0_CONTRACTORS_CA=${PWD}/organizations/peerOrganizations/contractors.example.com/peers/peer0.contractors.example.com/tls/ca.crt
+# export PEER0_ORG3_CA=${PWD}/organizations/peerOrganizations/org3.example.com/peers/peer0.org3.example.com/tls/ca.crt
 
 # Set OrdererOrg.Admin globals
 setOrdererGlobals() {
@@ -29,18 +29,34 @@ setGlobals() {
   fi
   echo "Using organization ${USING_ORG}"
   if [[ $USING_ORG == "gail" ]]; then
+    PORT_NUMBER=7051
+    for i in $(seq 1 $2); do
+        if [ $i -eq 1 ]; then
+            PORT_NUMBER=$((PORT_NUMBER+4))
+        else
+            PORT_NUMBER=$((PORT_NUMBER+2))
+        fi
+    done
     export CORE_PEER_LOCALMSPID="GailMSP"
-    export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_GAIL_CA
+    export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/gail.example.com/peers/peer${2}.gail.example.com/tls/ca.crt
     export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/gail.example.com/users/Admin@gail.example.com/msp
-    export CORE_PEER_ADDRESS=localhost:7051
+    export CORE_PEER_ADDRESS=localhost:${PORT_NUMBER}
   elif [[ $USING_ORG == "contractors" ]]; then
+    PORT_NUMBER=9051
+    for i in $(seq 1 $2); do
+        if [ $i -eq 1 ]; then
+            PORT_NUMBER=$((PORT_NUMBER+4))
+        else
+            PORT_NUMBER=$((PORT_NUMBER+2))
+        fi
+    done
     export CORE_PEER_LOCALMSPID="ContractorsMSP"
-    export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_CONTRACTORS_CA
+    export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/contractors.example.com/peers/peer${2}.contractors.example.com/tls/ca.crt
     export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/contractors.example.com/users/Admin@contractors.example.com/msp
-    export CORE_PEER_ADDRESS=localhost:9051
+    export CORE_PEER_ADDRESS=localhost:${PORT_NUMBER}
   elif [ $USING_ORG -eq 3 ]; then
     export CORE_PEER_LOCALMSPID="Org3MSP"
-    export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG3_CA
+    export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/org3.example.com/peers/peer${2}.org3.example.com/tls/ca.crt
     export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/org3.example.com/users/Admin@org3.example.com/msp
     export CORE_PEER_ADDRESS=localhost:11051
   else

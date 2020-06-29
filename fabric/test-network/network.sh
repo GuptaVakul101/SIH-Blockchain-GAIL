@@ -379,12 +379,21 @@ function createChannel() {
   # more to create the channel creation transaction and the anchor peer updates.
   # configtx.yaml is mounted in the cli container, which allows us to use it to
   # create the channel artifacts
- scripts/createChannel.sh $CHANNEL_NAME $CLI_DELAY $MAX_RETRY $VERBOSE
+  for i in $(seq 0 $((GAIL_NODES-1))); do
+     for j in $(seq 0 $((CONTRACTOR_NODES-1))); do
+         CHANNEL_NAME="channelg${i}c${j}"
+         scripts/createChannel.sh $CHANNEL_NAME $CLI_DELAY $MAX_RETRY $VERBOSE $ORG1 $i $ORG2 $j
+         if [ $? -ne 0 ]; then
+             echo "Error !!! Create channel failed"
+             exit 1
+         fi
+     done
+  done
+ scripts/createChannel.sh "channelgg" $CLI_DELAY $MAX_RETRY $VERBOSE $ORG1 0 $ORG1 $((GAIL_NODES-1))
   if [ $? -ne 0 ]; then
     echo "Error !!! Create channel failed"
     exit 1
   fi
-
 }
 
 ## Call the script to isntall and instantiate a chaincode on the channel
@@ -469,6 +478,8 @@ GAIL_NODES=2
 # number of Contractor peer nodes
 CONTRACTOR_NODES=10
 
+ORG1="gail"
+ORG2="contractors"
 # Parse commandline args
 
 ## Parse mode

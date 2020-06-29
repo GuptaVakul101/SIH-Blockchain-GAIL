@@ -741,7 +741,7 @@ EOF
 }
 
 # Set organizations/cryptogen/crypto-config-gail.yaml depending on number of nodes to create
-function setcomposetestnet () {
+function setcryptogail () {
 
     cat <<EOF > organizations/cryptogen/crypto-config-gail.yaml
 # Copyright IBM Corp. All Rights Reserved.
