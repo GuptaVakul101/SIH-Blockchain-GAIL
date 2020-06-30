@@ -14,8 +14,8 @@
 # Deploy the blockchain network
 fabric/test-network/network.sh up
 
-# Create sample channel between the peer nodes
-fabric/test-network/network.sh createChannel -c channelName
+# Create all required channels between the peer nodes (between every pair of gail and contractor and other among all gail nodes)
+fabric/test-network/network.sh createChannel
 
 # Deploy chaincode to the channel created
 fabric/test-network/network.sh deployCC -l javascript -c channelName
