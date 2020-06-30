@@ -398,14 +398,17 @@ function createChannel() {
 
 ## Call the script to isntall and instantiate a chaincode on the channel
 function deployCC() {
-
-  scripts/deployCC.sh $CHANNEL_NAME $CC_SRC_LANGUAGE $VERSION $CLI_DELAY $MAX_RETRY $VERBOSE
-
-  if [ $? -ne 0 ]; then
-    echo "ERROR !!! Deploying chaincode failed"
-    exit 1
-  fi
-
+    # for i in $(seq 0 $((GAIL_NODES-1))); do
+    #    for j in $(seq 0 $((CONTRACTOR_NODES-1))); do
+    #        CHANNEL_NAME="channelg${i}c${j}"
+    #        scripts/deployCC.sh $CHANNEL_NAME $VERSION $CLI_DELAY $MAX_RETRY $VERBOSE $ORG1 $i $ORG2 $j
+    #        if [ $? -ne 0 ]; then
+    #          echo "ERROR !!! Deploying chaincode failed"
+    #          exit 1
+    #        fi
+    #    done
+    # done
+    scripts/deployCC.sh "channelg0c0" $VERSION $CLI_DELAY $MAX_RETRY $VERBOSE $ORG1 0 $ORG2 0
   exit 0
 }
 
@@ -476,7 +479,7 @@ DATABASE="leveldb"
 # number of GAIL peer nodes
 GAIL_NODES=2
 # number of Contractor peer nodes
-CONTRACTOR_NODES=10
+CONTRACTOR_NODES=2
 
 ORG1="gail"
 ORG2="contractors"
@@ -582,7 +585,7 @@ elif [ "$MODE" == "restart" ]; then
   echo "Restarting network"
   echo
 elif [ "$MODE" == "deployCC" ]; then
-  echo "deploying chaincode on channel '${CHANNEL_NAME}'"
+  echo "deploying chaincode on all channels"
   echo
 else
   printHelp

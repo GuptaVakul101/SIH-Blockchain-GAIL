@@ -8,9 +8,6 @@
 
 export CORE_PEER_TLS_ENABLED=true
 export ORDERER_CA=${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
-# export PEER0_GAIL_CA=${PWD}/organizations/peerOrganizations/gail.example.com/peers/peer0.gail.example.com/tls/ca.crt
-# export PEER0_CONTRACTORS_CA=${PWD}/organizations/peerOrganizations/contractors.example.com/peers/peer0.contractors.example.com/tls/ca.crt
-# export PEER0_ORG3_CA=${PWD}/organizations/peerOrganizations/org3.example.com/peers/peer0.org3.example.com/tls/ca.crt
 
 # Set OrdererOrg.Admin globals
 setOrdererGlobals() {
@@ -76,20 +73,22 @@ parsePeerConnectionParameters() {
   PEER_CONN_PARMS=""
   PEERS=""
   while [ "$#" -gt 0 ]; do
-    setGlobals $1
-    PEER="peer0.$1"
+    setGlobals $1 $2
+    PEER="peer${2}.$1"
     ## Set peer adresses
     PEERS="$PEERS $PEER"
     PEER_CONN_PARMS="$PEER_CONN_PARMS --peerAddresses $CORE_PEER_ADDRESS"
     ## Set path to TLS certificate
     if [[ $1 == "gail" ]]; then
-        TLSINFO=$(eval echo "--tlsRootCertFiles \$PEER0_GAIL_CA")
+        PEER_GAIL_CA=${PWD}/organizations/peerOrganizations/gail.example.com/peers/peer${2}.gail.example.com/tls/ca.crt
+        TLSINFO=$(eval echo "--tlsRootCertFiles \$PEER_GAIL_CA")
     elif [[ $1 == "contractors" ]]; then
-        TLSINFO=$(eval echo "--tlsRootCertFiles \$PEER0_CONTRACTORS_CA")
+        PEER_CONTRACTORS_CA=${PWD}/organizations/peerOrganizations/contractors.example.com/peers/peer${2}.contractors.example.com/tls/ca.crt
+        TLSINFO=$(eval echo "--tlsRootCertFiles \$PEER_CONTRACTORS_CA")
     fi
     PEER_CONN_PARMS="$PEER_CONN_PARMS $TLSINFO"
     # shift by one to get to the next organization
-    shift
+    shift 2
   done
   # remove leading space for output
   PEERS="$(echo -e "$PEERS" | sed -e 's/^[[:space:]]*//')"
