@@ -116,22 +116,6 @@ Organizations:
               Port: 9051
             - Host: peer1.contractors.example.com
               Port: 9055
-            - Host: peer2.contractors.example.com
-              Port: 9057
-            - Host: peer3.contractors.example.com
-              Port: 9059
-            - Host: peer4.contractors.example.com
-              Port: 9061
-            - Host: peer5.contractors.example.com
-              Port: 9063
-            - Host: peer6.contractors.example.com
-              Port: 9065
-            - Host: peer7.contractors.example.com
-              Port: 9067
-            - Host: peer8.contractors.example.com
-              Port: 9069
-            - Host: peer9.contractors.example.com
-              Port: 9071
 
 ################################################################################
 #

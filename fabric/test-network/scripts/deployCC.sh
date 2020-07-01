@@ -1,133 +1,98 @@
 
 CHANNEL_NAME="$1"
-CC_SRC_LANGUAGE="$2"
-VERSION="$3"
-DELAY="$4"
-MAX_RETRY="$5"
-VERBOSE="$6"
-: ${CHANNEL_NAME:="mychannel"}
-: ${CC_SRC_LANGUAGE:="golang"}
+VERSION="$2"
+DELAY="$3"
+MAX_RETRY="$4"
+VERBOSE="$5"
+ORG1="$6"
+ORG1_PEER_INDEX="$7"
+ORG2="$8"
+ORG2_PEER_INDEX="$9"
+: ${CC_SRC_LANGUAGE:="javascript"}
 : ${VERSION:="1"}
 : ${DELAY:="3"}
 : ${MAX_RETRY:="5"}
 : ${VERBOSE:="false"}
-CC_SRC_LANGUAGE=`echo "$CC_SRC_LANGUAGE" | tr [:upper:] [:lower:]`
 
 FABRIC_CFG_PATH=$PWD/../config/
-
-if [ "$CC_SRC_LANGUAGE" = "go" -o "$CC_SRC_LANGUAGE" = "golang" ] ; then
-	CC_RUNTIME_LANGUAGE=golang
-	CC_SRC_PATH="../chaincode/fabcar/go/"
-
-	echo Vendoring Go dependencies ...
-	pushd ../chaincode/fabcar/go
-	GO111MODULE=on go mod vendor
-	popd
-	echo Finished vendoring Go dependencies
-
-elif [ "$CC_SRC_LANGUAGE" = "javascript" ]; then
-	CC_RUNTIME_LANGUAGE=node # chaincode runtime language is node.js
+CC_RUNTIME_LANGUAGE=node # chaincode runtime language is node.js
+CC_SRC_PATH=""
+if [[ "$CHANNEL_NAME" == "channelgg" ]]; then
 	CC_SRC_PATH="../chaincode/fabcar/javascript/"
-
-elif [ "$CC_SRC_LANGUAGE" = "java" ]; then
-	CC_RUNTIME_LANGUAGE=java
-	CC_SRC_PATH="../chaincode/fabcar/java/build/install/fabcar"
-
-	echo Compiling Java code ...
-	pushd ../chaincode/fabcar/java
-	./gradlew installDist
-	popd
-	echo Finished compiling Java code
-
-elif [ "$CC_SRC_LANGUAGE" = "typescript" ]; then
-	CC_RUNTIME_LANGUAGE=node # chaincode runtime language is node.js
-	CC_SRC_PATH="../chaincode/fabcar/typescript/"
-
-	echo Compiling TypeScript code into JavaScript ...
-	pushd ../chaincode/fabcar/typescript
-	npm install
-	npm run build
-	popd
-	echo Finished compiling TypeScript code into JavaScript
-
 else
-	echo The chaincode language ${CC_SRC_LANGUAGE} is not supported by this script
-	echo Supported chaincode languages are: go, java, javascript, and typescript
-	exit 1
+	CC_SRC_PATH="../chaincode/fabcar/javascript/"
 fi
 
 # import utils
 . scripts/envVar.sh
 
-
 packageChaincode() {
-  ORG=$1
-  setGlobals $ORG
+  setGlobals $1 $2
   set -x
   peer lifecycle chaincode package fabcar.tar.gz --path ${CC_SRC_PATH} --lang ${CC_RUNTIME_LANGUAGE} --label fabcar_${VERSION} >&log.txt
   res=$?
   set +x
   cat log.txt
-  verifyResult $res "Chaincode packaging on peer0.${ORG} has failed"
-  echo "===================== Chaincode is packaged on peer0.${ORG} ===================== "
+  verifyResult $res "Chaincode packaging on peer${2}.${1} has failed"
+  echo "===================== Chaincode is packaged on peer${2}.${1} ===================== "
   echo
 }
 
 # installChaincode PEER ORG
 installChaincode() {
-  ORG=$1
-  setGlobals $ORG
+  setGlobals $1 $2
   set -x
   peer lifecycle chaincode install fabcar.tar.gz >&log.txt
   res=$?
   set +x
   cat log.txt
-  verifyResult $res "Chaincode installation on peer0.${ORG} has failed"
-  echo "===================== Chaincode is installed on peer0.${ORG} ===================== "
+  verifyResult $res "Chaincode installation on peer${2}.${1} has failed"
+  echo "===================== Chaincode is installed on peer${2}.${1} ===================== "
   echo
 }
 
 # queryInstalled PEER ORG
 queryInstalled() {
   ORG=$1
-  setGlobals $ORG
+  setGlobals $ORG $2
   set -x
   peer lifecycle chaincode queryinstalled >&log.txt
   res=$?
   set +x
   cat log.txt
 	PACKAGE_ID=$(sed -n "/fabcar_${VERSION}/{s/^Package ID: //; s/, Label:.*$//; p;}" log.txt)
-  verifyResult $res "Query installed on peer0.${ORG} has failed"
-  echo "===================== Query installed successful on peer0.${ORG} on channel ===================== "
+  verifyResult $res "Query installed on peer${2}.${ORG} has failed"
+  echo "===================== Query installed successful on peer${2}.${ORG} on channel ===================== "
   echo
 }
 
 # approveForMyOrg VERSION PEER ORG
 approveForMyOrg() {
   ORG=$1
-  setGlobals $ORG
+  setGlobals $ORG $2
   set -x
   peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile $ORDERER_CA --channelID $CHANNEL_NAME --name fabcar --version ${VERSION} --init-required --package-id ${PACKAGE_ID} --sequence ${VERSION} >&log.txt
   set +x
   cat log.txt
-  verifyResult $res "Chaincode definition approved on peer0.${ORG} on channel '$CHANNEL_NAME' failed"
-  echo "===================== Chaincode definition approved on peer0.${ORG} on channel '$CHANNEL_NAME' ===================== "
+  verifyResult $res "Chaincode definition approved on peer${2}.${ORG} on channel '$CHANNEL_NAME' failed"
+  echo "===================== Chaincode definition approved on peer${2}.${ORG} on channel '$CHANNEL_NAME' ===================== "
   echo
 }
 
 # checkCommitReadiness VERSION PEER ORG
 checkCommitReadiness() {
   ORG=$1
-  shift 1
-  setGlobals $ORG
-  echo "===================== Checking the commit readiness of the chaincode definition on peer0.${ORG} on channel '$CHANNEL_NAME'... ===================== "
+  INDEX=$2
+  shift 2
+  setGlobals $ORG $INDEX
+  echo "===================== Checking the commit readiness of the chaincode definition on peer${INDEX}.${ORG} on channel '$CHANNEL_NAME'... ===================== "
 	local rc=1
 	local COUNTER=1
 	# continue to poll
   # we either get a successful response, or reach MAX RETRY
 	while [ $rc -ne 0 -a $COUNTER -lt $MAX_RETRY ] ; do
     sleep $DELAY
-    echo "Attempting to check the commit readiness of the chaincode definition on peer0.${ORG}, Retry after $DELAY seconds."
+    echo "Attempting to check the commit readiness of the chaincode definition on peer${INDEX}.${ORG}, Retry after $DELAY seconds."
     set -x
     peer lifecycle chaincode checkcommitreadiness --channelID $CHANNEL_NAME --name fabcar --version ${VERSION} --sequence ${VERSION} --output json --init-required >&log.txt
     res=$?
@@ -141,9 +106,9 @@ checkCommitReadiness() {
 	done
   cat log.txt
   if test $rc -eq 0; then
-    echo "===================== Checking the commit readiness of the chaincode definition successful on peer0.${ORG} on channel '$CHANNEL_NAME' ===================== "
+    echo "===================== Checking the commit readiness of the chaincode definition successful on peer${INDEX}.${ORG} on channel '$CHANNEL_NAME' ===================== "
   else
-    echo "!!!!!!!!!!!!!!! After $MAX_RETRY attempts, Check commit readiness result on peer0.${ORG} is INVALID !!!!!!!!!!!!!!!!"
+    echo "!!!!!!!!!!!!!!! After $MAX_RETRY attempts, Check commit readiness result on peer${INDEX}.${ORG} is INVALID !!!!!!!!!!!!!!!!"
     echo
     exit 1
   fi
@@ -163,7 +128,7 @@ commitChaincodeDefinition() {
   res=$?
   set +x
   cat log.txt
-  verifyResult $res "Chaincode definition commit failed on peer0.${ORG} on channel '$CHANNEL_NAME' failed"
+  verifyResult $res "Chaincode definition commit failed on peer${2}.${1} on channel '$CHANNEL_NAME' failed"
   echo "===================== Chaincode definition committed on channel '$CHANNEL_NAME' ===================== "
   echo
 }
@@ -171,16 +136,16 @@ commitChaincodeDefinition() {
 # queryCommitted ORG
 queryCommitted() {
   ORG=$1
-  setGlobals $ORG
+  setGlobals $ORG $2
   EXPECTED_RESULT="Version: ${VERSION}, Sequence: ${VERSION}, Endorsement Plugin: escc, Validation Plugin: vscc"
-  echo "===================== Querying chaincode definition on peer0.${ORG} on channel '$CHANNEL_NAME'... ===================== "
+  echo "===================== Querying chaincode definition on peer${2}.${ORG} on channel '$CHANNEL_NAME'... ===================== "
 	local rc=1
 	local COUNTER=1
 	# continue to poll
   # we either get a successful response, or reach MAX RETRY
 	while [ $rc -ne 0 -a $COUNTER -lt $MAX_RETRY ] ; do
     sleep $DELAY
-    echo "Attempting to Query committed status on peer0.${ORG}, Retry after $DELAY seconds."
+    echo "Attempting to Query committed status on peer${2}.${ORG}, Retry after $DELAY seconds."
     set -x
     peer lifecycle chaincode querycommitted --channelID $CHANNEL_NAME --name fabcar >&log.txt
     res=$?
@@ -192,10 +157,10 @@ queryCommitted() {
   echo
   cat log.txt
   if test $rc -eq 0; then
-    echo "===================== Query chaincode definition successful on peer0.${ORG} on channel '$CHANNEL_NAME' ===================== "
+    echo "===================== Query chaincode definition successful on peer${2}.${ORG} on channel '$CHANNEL_NAME' ===================== "
 		echo
   else
-    echo "!!!!!!!!!!!!!!! After $MAX_RETRY attempts, Query chaincode definition result on peer0.${ORG} is INVALID !!!!!!!!!!!!!!!!"
+    echo "!!!!!!!!!!!!!!! After $MAX_RETRY attempts, Query chaincode definition result on peer${2}.${ORG} is INVALID !!!!!!!!!!!!!!!!"
     echo
     exit 1
   fi
@@ -221,15 +186,15 @@ chaincodeInvokeInit() {
 
 chaincodeQuery() {
   ORG=$1
-  setGlobals $ORG
-  echo "===================== Querying on peer0.${ORG} on channel '$CHANNEL_NAME'... ===================== "
+  setGlobals $ORG $2
+  echo "===================== Querying on peer${2}.${ORG} on channel '$CHANNEL_NAME'... ===================== "
 	local rc=1
 	local COUNTER=1
 	# continue to poll
   # we either get a successful response, or reach MAX RETRY
 	while [ $rc -ne 0 -a $COUNTER -lt $MAX_RETRY ] ; do
     sleep $DELAY
-    echo "Attempting to Query peer0.${ORG}, Retry after $DELAY seconds."
+    echo "Attempting to Query peer${2}.${ORG}, Retry after $DELAY seconds."
     set -x
     peer chaincode query -C $CHANNEL_NAME -n fabcar -c '{"Args":["queryAllCars"]}' >&log.txt
     res=$?
@@ -240,57 +205,57 @@ chaincodeQuery() {
   echo
   cat log.txt
   if test $rc -eq 0; then
-    echo "===================== Query successful on peer0.${ORG} on channel '$CHANNEL_NAME' ===================== "
+    echo "===================== Query successful on peer${2}.${ORG} on channel '$CHANNEL_NAME' ===================== "
 		echo
   else
-    echo "!!!!!!!!!!!!!!! After $MAX_RETRY attempts, Query result on peer0.${ORG} is INVALID !!!!!!!!!!!!!!!!"
+    echo "!!!!!!!!!!!!!!! After $MAX_RETRY attempts, Query result on peer${2}.${ORG} is INVALID !!!!!!!!!!!!!!!!"
     echo
     exit 1
   fi
 }
 
 ## at first we package the chaincode
-packageChaincode "gail"
+packageChaincode $ORG1 $ORG1_PEER_INDEX
 
 ## Install chaincode on peer0.gail and peer0.contractors
-echo "Installing chaincode on peer0.gail..."
-installChaincode "gail"
-echo "Install chaincode on peer0.contractors..."
-installChaincode "contractors"
+echo "Installing chaincode on peer${ORG1_PEER_INDEX}.${ORG1}..."
+installChaincode $ORG1 $ORG1_PEER_INDEX
+echo "Install chaincode on peer${ORG2_PEER_INDEX}.${ORG2}..."
+installChaincode $ORG2 $ORG2_PEER_INDEX
 
 ## query whether the chaincode is installed
-queryInstalled "gail"
+queryInstalled $ORG1 $ORG1_PEER_INDEX
 
 ## approve the definition for gail
-approveForMyOrg "gail"
+approveForMyOrg $ORG1 $ORG1_PEER_INDEX
 
 ## check whether the chaincode definition is ready to be committed
 ## expect gail to have approved and contractors not to
-checkCommitReadiness "gail" "\"GailMSP\": true" "\"ContractorsMSP\": false"
-checkCommitReadiness "contractors" "\"GailMSP\": true" "\"ContractorsMSP\": false"
+checkCommitReadiness $ORG1 $ORG1_PEER_INDEX "\"GailMSP\": true" "\"ContractorsMSP\": false"
+checkCommitReadiness $ORG2 $ORG2_PEER_INDEX "\"GailMSP\": true" "\"ContractorsMSP\": false"
 
 ## now approve also for contractors
-approveForMyOrg "contractors"
+approveForMyOrg $ORG2 $ORG2_PEER_INDEX
 
 ## check whether the chaincode definition is ready to be committed
 ## expect them both to have approved
-checkCommitReadiness "gail" "\"GailMSP\": true" "\"ContractorsMSP\": true"
-checkCommitReadiness "contractors" "\"GailMSP\": true" "\"ContractorsMSP\": true"
+checkCommitReadiness $ORG1 $ORG1_PEER_INDEX "\"GailMSP\": true" "\"ContractorsMSP\": true"
+checkCommitReadiness $ORG2 $ORG2_PEER_INDEX "\"GailMSP\": true" "\"ContractorsMSP\": true"
 
 ## now that we know for sure both orgs have approved, commit the definition
-commitChaincodeDefinition "gail" "contractors"
+commitChaincodeDefinition $ORG1 $ORG1_PEER_INDEX $ORG2 $ORG2_PEER_INDEX
 
 ## query on both orgs to see that the definition committed successfully
-queryCommitted "gail"
-queryCommitted "contractors"
+queryCommitted $ORG1 $ORG1_PEER_INDEX
+queryCommitted $ORG2 $ORG2_PEER_INDEX
 
 ## Invoke the chaincode
-chaincodeInvokeInit "gail" "contractors"
+chaincodeInvokeInit $ORG1 $ORG1_PEER_INDEX $ORG2 $ORG2_PEER_INDEX
 
 sleep 10
 
 # Query chaincode on peer0.gail
-echo "Querying chaincode on peer0.gail..."
-chaincodeQuery "gail"
+echo "Querying chaincode on peer${ORG1_PEER_INDEX}.${ORG1}..."
+chaincodeQuery $ORG1 $ORG1_PEER_INDEX
 
 exit 0
