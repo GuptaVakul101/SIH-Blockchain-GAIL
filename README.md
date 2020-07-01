@@ -11,6 +11,9 @@
 > If you see this message: `WARNING: Connection pool is full, discarding connection: localhost`. That's because the python library `requests` maintains a pool of HTTP connections that the docker library uses. If we use docker-compose with more than 10 containers, this warning will occur. Solution is to change the `DEFAULT_POOLSIZE` of requests library in `~/.local/lib/python*.*/site-packages/requests/adapters.py` to `1000`.
 
 ```shell
+# Install the required dependencies
+./install.sh
+
 # Deploy the blockchain network
 fabric/test-network/network.sh up
 
@@ -18,7 +21,7 @@ fabric/test-network/network.sh up
 fabric/test-network/network.sh createChannel
 
 # Deploy chaincode to the channel created
-fabric/test-network/network.sh deployCC -l javascript -c channelName
+fabric/test-network/network.sh deployCC
 
 # Remove the blockchain network
 fabric/test-network/network.sh down

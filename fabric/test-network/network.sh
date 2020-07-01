@@ -396,8 +396,31 @@ function createChannel() {
   fi
 }
 
+# Utility function to create multiple 'Contractors' chaincode folders
+function setupChaincode(){
+    for i in $(seq 0 $((GAIL_NODES-1))); do
+       for j in $(seq 0 $((CONTRACTOR_NODES-1))); do
+           cp -r ../chaincode/contractors ../chaincode/contractors_${i}_${j}
+           jq --arg val contractors_${i}_${j} '.name = $val' \
+../chaincode/contractors_${i}_${j}/javascript/package.json > tmp.json && \
+mv tmp.json ../chaincode/contractors_${i}_${j}/javascript/package.json
+       done
+    done
+}
+
+# Utility function to clean chaincode folders
+function cleanChaincode(){
+    for i in $(seq 0 $((GAIL_NODES-1))); do
+       for j in $(seq 0 $((CONTRACTOR_NODES-1))); do
+           rm -r ../chaincode/contractors_${i}_${j}
+       done
+    done
+}
+
 ## Call the script to isntall and instantiate a chaincode on the channel
 function deployCC() {
+    setupChaincode
+
     # for i in $(seq 0 $((GAIL_NODES-1))); do
     #    for j in $(seq 0 $((CONTRACTOR_NODES-1))); do
     #        CHANNEL_NAME="channelg${i}c${j}"
@@ -409,6 +432,8 @@ function deployCC() {
     #    done
     # done
     scripts/deployCC.sh "channelg0c0" $VERSION $CLI_DELAY $MAX_RETRY $VERBOSE $ORG1 0 $ORG2 0
+
+    cleanChaincode
   exit 0
 }
 
