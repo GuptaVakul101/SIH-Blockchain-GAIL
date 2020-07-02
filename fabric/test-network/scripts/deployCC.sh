@@ -256,6 +256,7 @@ if [[ "$ORG1" == "$ORG2" ]]; then
 		echo "Installing chaincode on peer${i}.${ORG1}..."
 		installChaincode $ORG1 $i
 	done
+	installChaincode "contractors" 0
 else
 	echo "Installing chaincode on peer${ORG1_PEER_INDEX}.${ORG1}..."
 	installChaincode $ORG1 $ORG1_PEER_INDEX
@@ -274,6 +275,9 @@ if [[ "$ORG1" == "$ORG2" ]]; then
 		## expect gail to have approved and contractors not to
 		checkCommitReadiness $ORG1 $i "\"GailMSP\": true" "\"ContractorsMSP\": false"
 	done
+	approveForMyOrg "contractors" 0
+	checkCommitReadiness "contractors" 0 "\"GailMSP\": true" "\"ContractorsMSP\": true"
+
 else
 	## query whether the chaincode is installed
 	queryInstalled $ORG1 $ORG1_PEER_INDEX
@@ -295,8 +299,8 @@ if [[ "$ORG1" != "$ORG2" ]]; then
 fi
 
 if [[ "$ORG1" == "$ORG2" ]]; then
-	SPECIAL="$ORG1 0"
-	for i in $(seq 1 $ORG2_PEER_INDEX); do
+	SPECIAL="contractors 0"
+	for i in $(seq 0 0); do
 		SPECIAL="$SPECIAL $ORG1 $i"
 	done
 	echo $SPECIAL

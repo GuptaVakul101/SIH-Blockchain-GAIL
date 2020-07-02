@@ -148,6 +148,7 @@ if [[ "$ORG1" == "$ORG2" ]]; then
 		echo "Join ${ORG1} peer number ${i} to the channel..."
 		joinChannel $ORG1 $i
 	done
+	joinChannel "contractors" 0
 else
 	echo "Join ${ORG1} peer number ${ORG1_PEER_INDEX} to the channel..."
 	joinChannel $ORG1 $ORG1_PEER_INDEX
