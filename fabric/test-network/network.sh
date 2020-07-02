@@ -431,7 +431,7 @@ function deployCC() {
     #        fi
     #    done
     # done
-    scripts/deployCC.sh "channelg0c0" $VERSION $CLI_DELAY $MAX_RETRY $VERBOSE $ORG1 0 $ORG2 0
+    scripts/deployCC.sh "channelgg" $VERSION $CLI_DELAY $MAX_RETRY $VERBOSE $ORG1 0 $ORG1 $((GAIL_NODES-1))
 
     cleanChaincode
   exit 0
@@ -460,7 +460,13 @@ function networkDown() {
 
 
     # remove channel and script artifacts
-    rm -rf channel-artifacts log.txt fabcar.tar.gz fabcar
+    for i in $(seq 0 $((GAIL_NODES-1))); do
+       for j in $(seq 0 $((CONTRACTOR_NODES-1))); do
+           rm -rf contractorsg${i}c${j}.tar.gz
+       done
+    done
+    rm -rf channel-artifacts log.txt fabcar
+    rm -rf gail.tar.gz
 
   fi
 
