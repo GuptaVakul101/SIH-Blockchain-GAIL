@@ -15,7 +15,7 @@
 ./install.sh
 
 # Deploy the blockchain network
-fabric/test-network/network.sh up
+fabric/test-network/network.sh up -ca
 
 # Create all required channels between the peer nodes (between every pair of gail and contractor and other among all gail nodes)
 fabric/test-network/network.sh createChannel
