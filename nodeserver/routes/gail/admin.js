@@ -45,7 +45,7 @@ router.post('/signup', async function(req, res, next){
     }
     else{
         // Enroll the admin user, and import the new identity into the wallet.
-        const enrollment = await ca.enroll({ enrollmentID: 'admin', enrollmentSecret: 'admin' });
+        const enrollment = await ca.enroll({ enrollmentID: 'admin', enrollmentSecret: 'adminpw' });
         const x509Identity = {
             credentials: {
                 certificate: enrollment.certificate,

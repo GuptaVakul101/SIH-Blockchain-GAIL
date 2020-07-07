@@ -255,13 +255,13 @@ function createOrgs() {
     echo "############ Create Gail Identities ######################"
     echo "##########################################################"
 
-    createGail
+    createGail $GAIL_NODES $CONTRACTOR_NODES
 
     echo "##########################################################"
     echo "############ Create Contractors Identities ######################"
     echo "##########################################################"
 
-    createContractors
+    createContractors $GAIL_NODES $CONTRACTOR_NODES
 
     echo "##########################################################"
     echo "############ Create Orderer Org Identities ###############"
@@ -421,16 +421,16 @@ function cleanChaincode(){
 function deployCC() {
     setupChaincode
 
-    for i in $(seq 0 $((GAIL_NODES-1))); do
-       for j in $(seq 0 $((CONTRACTOR_NODES-1))); do
-           CHANNEL_NAME="channelg${i}c${j}"
-           scripts/deployCC.sh $CHANNEL_NAME $VERSION $CLI_DELAY $MAX_RETRY $VERBOSE $ORG1 $i $ORG2 $j
-           if [ $? -ne 0 ]; then
-             echo "ERROR !!! Deploying chaincode failed"
-             exit 1
-           fi
-       done
-    done
+    # for i in $(seq 0 $((GAIL_NODES-1))); do
+    #    for j in $(seq 0 $((CONTRACTOR_NODES-1))); do
+    #        CHANNEL_NAME="channelg${i}c${j}"
+    #        scripts/deployCC.sh $CHANNEL_NAME $VERSION $CLI_DELAY $MAX_RETRY $VERBOSE $ORG1 $i $ORG2 $j
+    #        if [ $? -ne 0 ]; then
+    #          echo "ERROR !!! Deploying chaincode failed"
+    #          exit 1
+    #        fi
+    #    done
+    # done
     scripts/deployCC.sh "channelgg" $VERSION $CLI_DELAY $MAX_RETRY $VERBOSE $ORG1 0 $ORG1 $((GAIL_NODES-1))
 
     cleanChaincode

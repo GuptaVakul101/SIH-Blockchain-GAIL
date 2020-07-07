@@ -30,12 +30,14 @@ function createGail {
     Certificate: cacerts/localhost-7054-ca-gail.pem
     OrganizationalUnitIdentifier: orderer' > ${PWD}/organizations/peerOrganizations/gail.example.com/msp/config.yaml
 
-  echo
-	echo "Register peer0"
-  echo
-  set -x
-	fabric-ca-client register --caname ca-gail --id.name peer0 --id.secret peer0pw --id.type peer --tls.certfiles ${PWD}/organizations/fabric-ca/gail/tls-cert.pem
-  set +x
+for i in $(seq 0 $1); do
+      echo
+    	echo "Register peer${i}"
+      echo
+      set -x
+    	fabric-ca-client register --caname ca-gail --id.name peer${i} --id.secret peer${i}pw --id.type peer --tls.certfiles ${PWD}/organizations/fabric-ca/gail/tls-cert.pem
+      set +x
+done
 
   echo
   echo "Register user"
@@ -52,37 +54,40 @@ function createGail {
   set +x
 
 	mkdir -p organizations/peerOrganizations/gail.example.com/peers
-  mkdir -p organizations/peerOrganizations/gail.example.com/peers/peer0.gail.example.com
 
-  echo
-  echo "## Generate the peer0 msp"
-  echo
-  set -x
-	fabric-ca-client enroll -u https://peer0:peer0pw@localhost:7054 --caname ca-gail -M ${PWD}/organizations/peerOrganizations/gail.example.com/peers/peer0.gail.example.com/msp --csr.hosts peer0.gail.example.com --tls.certfiles ${PWD}/organizations/fabric-ca/gail/tls-cert.pem
-  set +x
+for i in $(seq 0 $1); do
+      mkdir -p organizations/peerOrganizations/gail.example.com/peers/peer${i}.gail.example.com
 
-  cp ${PWD}/organizations/peerOrganizations/gail.example.com/msp/config.yaml ${PWD}/organizations/peerOrganizations/gail.example.com/peers/peer0.gail.example.com/msp/config.yaml
+      echo
+      echo "## Generate the peer${i} msp"
+      echo
+      set -x
+    	fabric-ca-client enroll -u https://peer${i}:peer${i}pw@localhost:7054 --caname ca-gail -M ${PWD}/organizations/peerOrganizations/gail.example.com/peers/peer${i}.gail.example.com/msp --csr.hosts peer${i}.gail.example.com --tls.certfiles ${PWD}/organizations/fabric-ca/gail/tls-cert.pem
+      set +x
 
-  echo
-  echo "## Generate the peer0-tls certificates"
-  echo
-  set -x
-  fabric-ca-client enroll -u https://peer0:peer0pw@localhost:7054 --caname ca-gail -M ${PWD}/organizations/peerOrganizations/gail.example.com/peers/peer0.gail.example.com/tls --enrollment.profile tls --csr.hosts peer0.gail.example.com --csr.hosts localhost --tls.certfiles ${PWD}/organizations/fabric-ca/gail/tls-cert.pem
-  set +x
+      cp ${PWD}/organizations/peerOrganizations/gail.example.com/msp/config.yaml ${PWD}/organizations/peerOrganizations/gail.example.com/peers/peer${i}.gail.example.com/msp/config.yaml
+
+      echo
+      echo "## Generate the peer${i}-tls certificates"
+      echo
+      set -x
+      fabric-ca-client enroll -u https://peer${i}:peer${i}pw@localhost:7054 --caname ca-gail -M ${PWD}/organizations/peerOrganizations/gail.example.com/peers/peer${i}.gail.example.com/tls --enrollment.profile tls --csr.hosts peer${i}.gail.example.com --csr.hosts localhost --tls.certfiles ${PWD}/organizations/fabric-ca/gail/tls-cert.pem
+      set +x
 
 
-  cp ${PWD}/organizations/peerOrganizations/gail.example.com/peers/peer0.gail.example.com/tls/tlscacerts/* ${PWD}/organizations/peerOrganizations/gail.example.com/peers/peer0.gail.example.com/tls/ca.crt
-  cp ${PWD}/organizations/peerOrganizations/gail.example.com/peers/peer0.gail.example.com/tls/signcerts/* ${PWD}/organizations/peerOrganizations/gail.example.com/peers/peer0.gail.example.com/tls/server.crt
-  cp ${PWD}/organizations/peerOrganizations/gail.example.com/peers/peer0.gail.example.com/tls/keystore/* ${PWD}/organizations/peerOrganizations/gail.example.com/peers/peer0.gail.example.com/tls/server.key
+      cp ${PWD}/organizations/peerOrganizations/gail.example.com/peers/peer${i}.gail.example.com/tls/tlscacerts/* ${PWD}/organizations/peerOrganizations/gail.example.com/peers/peer${i}.gail.example.com/tls/ca.crt
+      cp ${PWD}/organizations/peerOrganizations/gail.example.com/peers/peer${i}.gail.example.com/tls/signcerts/* ${PWD}/organizations/peerOrganizations/gail.example.com/peers/peer${i}.gail.example.com/tls/server.crt
+      cp ${PWD}/organizations/peerOrganizations/gail.example.com/peers/peer${i}.gail.example.com/tls/keystore/* ${PWD}/organizations/peerOrganizations/gail.example.com/peers/peer${i}.gail.example.com/tls/server.key
 
-  mkdir ${PWD}/organizations/peerOrganizations/gail.example.com/msp/tlscacerts
-  cp ${PWD}/organizations/peerOrganizations/gail.example.com/peers/peer0.gail.example.com/tls/tlscacerts/* ${PWD}/organizations/peerOrganizations/gail.example.com/msp/tlscacerts/ca.crt
+      mkdir -p ${PWD}/organizations/peerOrganizations/gail.example.com/msp/tlscacerts
+      cp ${PWD}/organizations/peerOrganizations/gail.example.com/peers/peer${i}.gail.example.com/tls/tlscacerts/* ${PWD}/organizations/peerOrganizations/gail.example.com/msp/tlscacerts/ca.crt
 
-  mkdir ${PWD}/organizations/peerOrganizations/gail.example.com/tlsca
-  cp ${PWD}/organizations/peerOrganizations/gail.example.com/peers/peer0.gail.example.com/tls/tlscacerts/* ${PWD}/organizations/peerOrganizations/gail.example.com/tlsca/tlsca.gail.example.com-cert.pem
+      mkdir -p ${PWD}/organizations/peerOrganizations/gail.example.com/tlsca
+      cp ${PWD}/organizations/peerOrganizations/gail.example.com/peers/peer${i}.gail.example.com/tls/tlscacerts/* ${PWD}/organizations/peerOrganizations/gail.example.com/tlsca/tlsca.gail.example.com-cert.pem
 
-  mkdir ${PWD}/organizations/peerOrganizations/gail.example.com/ca
-  cp ${PWD}/organizations/peerOrganizations/gail.example.com/peers/peer0.gail.example.com/msp/cacerts/* ${PWD}/organizations/peerOrganizations/gail.example.com/ca/ca.gail.example.com-cert.pem
+      mkdir -p ${PWD}/organizations/peerOrganizations/gail.example.com/ca
+      cp ${PWD}/organizations/peerOrganizations/gail.example.com/peers/peer${i}.gail.example.com/msp/cacerts/* ${PWD}/organizations/peerOrganizations/gail.example.com/ca/ca.gail.example.com-cert.pem
+done
 
   mkdir -p organizations/peerOrganizations/gail.example.com/users
   mkdir -p organizations/peerOrganizations/gail.example.com/users/User1@gail.example.com
@@ -138,12 +143,14 @@ function createContractors {
     Certificate: cacerts/localhost-8054-ca-contractors.pem
     OrganizationalUnitIdentifier: orderer' > ${PWD}/organizations/peerOrganizations/contractors.example.com/msp/config.yaml
 
-  echo
-	echo "Register peer0"
-  echo
-  set -x
-	fabric-ca-client register --caname ca-contractors --id.name peer0 --id.secret peer0pw --id.type peer --tls.certfiles ${PWD}/organizations/fabric-ca/contractors/tls-cert.pem
-  set +x
+for i in $(seq 0 $2); do
+      echo
+    	echo "Register peer${i}"
+      echo
+      set -x
+    	fabric-ca-client register --caname ca-contractors --id.name peer${i} --id.secret peer${i}pw --id.type peer --tls.certfiles ${PWD}/organizations/fabric-ca/contractors/tls-cert.pem
+      set +x
+done
 
   echo
   echo "Register user"
@@ -160,37 +167,39 @@ function createContractors {
   set +x
 
 	mkdir -p organizations/peerOrganizations/contractors.example.com/peers
-  mkdir -p organizations/peerOrganizations/contractors.example.com/peers/peer0.contractors.example.com
+for i in $(seq 0 $2); do
+      mkdir -p organizations/peerOrganizations/contractors.example.com/peers/peer${i}.contractors.example.com
 
-  echo
-  echo "## Generate the peer0 msp"
-  echo
-  set -x
-	fabric-ca-client enroll -u https://peer0:peer0pw@localhost:8054 --caname ca-contractors -M ${PWD}/organizations/peerOrganizations/contractors.example.com/peers/peer0.contractors.example.com/msp --csr.hosts peer0.contractors.example.com --tls.certfiles ${PWD}/organizations/fabric-ca/contractors/tls-cert.pem
-  set +x
+      echo
+      echo "## Generate the peer${i} msp"
+      echo
+      set -x
+    	fabric-ca-client enroll -u https://peer${i}:peer${i}pw@localhost:8054 --caname ca-contractors -M ${PWD}/organizations/peerOrganizations/contractors.example.com/peers/peer${i}.contractors.example.com/msp --csr.hosts peer${i}.contractors.example.com --tls.certfiles ${PWD}/organizations/fabric-ca/contractors/tls-cert.pem
+      set +x
 
-  cp ${PWD}/organizations/peerOrganizations/contractors.example.com/msp/config.yaml ${PWD}/organizations/peerOrganizations/contractors.example.com/peers/peer0.contractors.example.com/msp/config.yaml
+      cp ${PWD}/organizations/peerOrganizations/contractors.example.com/msp/config.yaml ${PWD}/organizations/peerOrganizations/contractors.example.com/peers/peer${i}.contractors.example.com/msp/config.yaml
 
-  echo
-  echo "## Generate the peer0-tls certificates"
-  echo
-  set -x
-  fabric-ca-client enroll -u https://peer0:peer0pw@localhost:8054 --caname ca-contractors -M ${PWD}/organizations/peerOrganizations/contractors.example.com/peers/peer0.contractors.example.com/tls --enrollment.profile tls --csr.hosts peer0.contractors.example.com --csr.hosts localhost --tls.certfiles ${PWD}/organizations/fabric-ca/contractors/tls-cert.pem
-  set +x
+      echo
+      echo "## Generate the peer${i}-tls certificates"
+      echo
+      set -x
+      fabric-ca-client enroll -u https://peer${i}:peer${i}pw@localhost:8054 --caname ca-contractors -M ${PWD}/organizations/peerOrganizations/contractors.example.com/peers/peer${i}.contractors.example.com/tls --enrollment.profile tls --csr.hosts peer${i}.contractors.example.com --csr.hosts localhost --tls.certfiles ${PWD}/organizations/fabric-ca/contractors/tls-cert.pem
+      set +x
 
 
-  cp ${PWD}/organizations/peerOrganizations/contractors.example.com/peers/peer0.contractors.example.com/tls/tlscacerts/* ${PWD}/organizations/peerOrganizations/contractors.example.com/peers/peer0.contractors.example.com/tls/ca.crt
-  cp ${PWD}/organizations/peerOrganizations/contractors.example.com/peers/peer0.contractors.example.com/tls/signcerts/* ${PWD}/organizations/peerOrganizations/contractors.example.com/peers/peer0.contractors.example.com/tls/server.crt
-  cp ${PWD}/organizations/peerOrganizations/contractors.example.com/peers/peer0.contractors.example.com/tls/keystore/* ${PWD}/organizations/peerOrganizations/contractors.example.com/peers/peer0.contractors.example.com/tls/server.key
+      cp ${PWD}/organizations/peerOrganizations/contractors.example.com/peers/peer${i}.contractors.example.com/tls/tlscacerts/* ${PWD}/organizations/peerOrganizations/contractors.example.com/peers/peer${i}.contractors.example.com/tls/ca.crt
+      cp ${PWD}/organizations/peerOrganizations/contractors.example.com/peers/peer${i}.contractors.example.com/tls/signcerts/* ${PWD}/organizations/peerOrganizations/contractors.example.com/peers/peer${i}.contractors.example.com/tls/server.crt
+      cp ${PWD}/organizations/peerOrganizations/contractors.example.com/peers/peer${i}.contractors.example.com/tls/keystore/* ${PWD}/organizations/peerOrganizations/contractors.example.com/peers/peer${i}.contractors.example.com/tls/server.key
 
-  mkdir ${PWD}/organizations/peerOrganizations/contractors.example.com/msp/tlscacerts
-  cp ${PWD}/organizations/peerOrganizations/contractors.example.com/peers/peer0.contractors.example.com/tls/tlscacerts/* ${PWD}/organizations/peerOrganizations/contractors.example.com/msp/tlscacerts/ca.crt
+      mkdir -p ${PWD}/organizations/peerOrganizations/contractors.example.com/msp/tlscacerts
+      cp ${PWD}/organizations/peerOrganizations/contractors.example.com/peers/peer${i}.contractors.example.com/tls/tlscacerts/* ${PWD}/organizations/peerOrganizations/contractors.example.com/msp/tlscacerts/ca.crt
 
-  mkdir ${PWD}/organizations/peerOrganizations/contractors.example.com/tlsca
-  cp ${PWD}/organizations/peerOrganizations/contractors.example.com/peers/peer0.contractors.example.com/tls/tlscacerts/* ${PWD}/organizations/peerOrganizations/contractors.example.com/tlsca/tlsca.contractors.example.com-cert.pem
+      mkdir -p ${PWD}/organizations/peerOrganizations/contractors.example.com/tlsca
+      cp ${PWD}/organizations/peerOrganizations/contractors.example.com/peers/peer${i}.contractors.example.com/tls/tlscacerts/* ${PWD}/organizations/peerOrganizations/contractors.example.com/tlsca/tlsca.contractors.example.com-cert.pem
 
-  mkdir ${PWD}/organizations/peerOrganizations/contractors.example.com/ca
-  cp ${PWD}/organizations/peerOrganizations/contractors.example.com/peers/peer0.contractors.example.com/msp/cacerts/* ${PWD}/organizations/peerOrganizations/contractors.example.com/ca/ca.contractors.example.com-cert.pem
+      mkdir -p ${PWD}/organizations/peerOrganizations/contractors.example.com/ca
+      cp ${PWD}/organizations/peerOrganizations/contractors.example.com/peers/peer${i}.contractors.example.com/msp/cacerts/* ${PWD}/organizations/peerOrganizations/contractors.example.com/ca/ca.contractors.example.com-cert.pem
+done
 
   mkdir -p organizations/peerOrganizations/contractors.example.com/users
   mkdir -p organizations/peerOrganizations/contractors.example.com/users/User1@contractors.example.com
