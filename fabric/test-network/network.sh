@@ -273,7 +273,7 @@ function createOrgs() {
 
   echo
   echo "Generate CCP files for Gail and Contractors"
-  ./organizations/ccp-generate.sh
+  ./organizations/ccp-generate.sh $GAIL_NODES $CONTRACTOR_NODES
 }
 
 # Once you create the organization crypto material, you need to create the

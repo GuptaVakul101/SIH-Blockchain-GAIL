@@ -6,12 +6,19 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "cookie-parser": "~1.4.4",
+    "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
-    "debug": "~2.6.9",
-    "express": "~4.16.1",
-    "http-errors": "~1.6.3",
-    "jade": "~1.11.0",
-    "morgan": "~1.9.1"
+    "debug": "^4.1.1",
+    "express": "^4.17.1",
+    "fabric-ca-client": "^2.1.2",
+    "fabric-client": "^1.4.10",
+    "fabric-network": "^2.1.0",
+    "fs": "0.0.1-security",
+    "grpc": "^1.24.3",
+    "http-errors": "^1.8.0",
+    "jade": "^1.11.0",
+    "morgan": "^1.10.0",
+    "path": "^0.12.7",
+    "request": "^2.88.2"
   }
 }

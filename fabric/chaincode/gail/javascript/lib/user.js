@@ -16,8 +16,15 @@ class User extends Contract {
             numContractors: 0,
             docType: 'NUMCONTRACTORS'
         }
-
         await ctx.stub.putState('NUMCONTRACTORS', Buffer.from(JSON.stringify(numContractors)));
+
+        // Max number of contractors that can be registered (= CONTRACTOR_NODES - 1)
+        const maxContractors = {
+            numContractors: 1,
+            docType: 'MAXCONTRACTORS'
+        }
+        await ctx.stub.putState('MAXCONTRACTORS', Buffer.from(JSON.stringify(maxContractors)));
+
         return {
             success: 'true'
         };
