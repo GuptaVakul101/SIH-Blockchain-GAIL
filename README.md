@@ -6,6 +6,16 @@
 
 ---
 
+### Setting up dependencies
+
+> Make sure all the required folders are removed while doing `./network.sh down`. If you are facing permission errors while removing the blockchain network, use `sudo chown -R $USER:$USER test-network`.
+
+```shell
+curl -sSL https://bit.ly/2ysbOFE | bash -s
+```
+
+---
+
 ### Running the test network
 
 > If you see this message: `WARNING: Connection pool is full, discarding connection: localhost`. That's because the python library `requests` maintains a pool of HTTP connections that the docker library uses. If we use docker-compose with more than 10 containers, this warning will occur. Solution is to change the `DEFAULT_POOLSIZE` of requests library in `~/.local/lib/python*.*/site-packages/requests/adapters.py` to `1000`.
