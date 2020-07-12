@@ -191,7 +191,7 @@ cat <<EOF >> organizations/peerOrganizations/contractors.example.com/connection-
     },
     "certificateAuthorities": {
         "ca.contractors.example.com": {
-            "url": "https://localhost:9054",
+            "url": "https://localhost:8054",
             "caName": "ca-contractors",
             "tlsCACerts": {
                 "pem": ["$CP"]
