@@ -7,6 +7,7 @@ var logger = require('morgan');
 var gailIndexRouter = require('./routes/gail/index');
 var gailUsersRouter = require('./routes/gail/users');
 var gailAdminRouter = require('./routes/gail/admin');
+var gailProjectRouter = require('./routes/gail/projects');
 
 const cors = require('./cors');
 
@@ -25,6 +26,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/gail', gailIndexRouter);
 app.use('/gail/users', gailUsersRouter);
 app.use('/gail/admin', gailAdminRouter);
+app.use('/gail/project', gailProjectRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
