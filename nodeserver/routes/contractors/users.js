@@ -132,12 +132,31 @@ router.post('/signup', async function(req, res, next){
             }
             else{
                 // Create a new gateway for connecting to our peer node.
+                const ccpGailPath = path.resolve(__dirname, '..', '..', '..', 'fabric', 'test-network', 'organizations',
+                'peerOrganizations', 'gail.example.com', 'connection-gail.json');
+                console.log('log : 1');
+                const ccpGail = JSON.parse(fs.readFileSync(ccpGailPath, 'utf8'));
+                console.log('log : 2');
+                const gailWalletPath = path.resolve(__dirname, '..','gail','wallet');
+                console.log(gailWalletPath);
+                const gailWallet = await Wallets.newFileSystemWallet(gailWalletPath);
+                console.log('log : 4');
+                const xyz = await gailWallet.get('admin');
+                if(xyz)
+                    console.log(xyz);
+                const gatewayGail = new Gateway();
+                console.log('log : 5');
+                await gatewayGail.connect(ccpGail, { gailWallet, identity: 'dummyadmin',
+                    discovery: { enabled: true, asLocalhost: true } });
+
+                console.log('I am here');
+
                 const gateway = new Gateway();
                 await gateway.connect(ccp, { wallet, identity: req.body.username,
                     discovery: { enabled: true, asLocalhost: true } });
 
                 // Get the network (channel) our contract is deployed to.
-                const network = await gateway.getNetwork('channelgg');
+                const network = await gatewayGail.getNetwork('channelgg');
 
                 // Get the contract from the network.
                 const contract = network.getContract('gail');
@@ -155,6 +174,7 @@ router.post('/signup', async function(req, res, next){
                 await contract.submitTransaction('updateNumContractors');
                 // Disconnect from the gateway.
                 await gateway.disconnect();
+                await gatewayGail.disconnect();
                 dict.set(req.body.username,curChannelNum.toString());
 
                 res.statusCode = 200;
