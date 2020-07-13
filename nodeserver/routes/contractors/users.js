@@ -24,7 +24,7 @@ router.post('/login', async function(req, res, next) {
 
     // Create a new file system based wallet for managing identities.
     const walletPath = path.join(__dirname, 'wallet');
-    const wallet = await Wallets.newFileSystemWallet(walletPath);
+    var wallet = await Wallets.newFileSystemWallet(walletPath);
 
     // Check to see if we've already enrolled the user.
     const identity = await wallet.get(req.body.username);
@@ -72,7 +72,7 @@ router.post('/signup', async function(req, res, next){
 
     // Create a new file system based wallet for managing identities.
     const walletPath = path.join(__dirname, 'wallet');
-    const wallet = await Wallets.newFileSystemWallet(walletPath);
+    var wallet = await Wallets.newFileSystemWallet(walletPath);
 
     // Check to see if we've already enrolled the user.
     const userIdentity = await wallet.get(req.body.username);
@@ -131,37 +131,35 @@ router.post('/signup', async function(req, res, next){
                 });
             }
             else{
-                // Create a new gateway for connecting to our peer node.
-                const ccpGailPath = path.resolve(__dirname, '..', '..', '..', 'fabric', 'test-network', 'organizations',
-                'peerOrganizations', 'gail.example.com', 'connection-gail.json');
-                console.log('log : 1');
-                const ccpGail = JSON.parse(fs.readFileSync(ccpGailPath, 'utf8'));
-                console.log('log : 2');
-                const gailWalletPath = path.resolve(__dirname, '..','gail','wallet');
-                console.log(gailWalletPath);
-                const gailWallet = await Wallets.newFileSystemWallet(gailWalletPath);
-                console.log('log : 4');
-                const xyz = await gailWallet.get('admin');
-                if(xyz)
-                    console.log(xyz);
-                const gatewayGail = new Gateway();
-                console.log('log : 5');
-                await gatewayGail.connect(ccpGail, { gailWallet, identity: 'dummyadmin',
-                    discovery: { enabled: true, asLocalhost: true } });
-
-                console.log('I am here');
 
                 const gateway = new Gateway();
-                await gateway.connect(ccp, { wallet, identity: req.body.username,
+                await gateway.connect(ccp, { wallet, identity: 'admin',
                     discovery: { enabled: true, asLocalhost: true } });
+
+                // Create a new gateway for connecting to our peer node.
+                const gatewayGail = new Gateway();
+                const ccpGailPath = path.resolve(__dirname, '..', '..', '..', 'fabric', 'test-network', 'organizations',
+                'peerOrganizations', 'gail.example.com', 'connection-gail.json');
+                const ccpGail = JSON.parse(fs.readFileSync(ccpGailPath, 'utf8'));
+                const gailWalletPath = path.resolve(__dirname, '..','gail','wallet');
+                console.log('I am here1');
+                try {
+                    wallet = await Wallets.newFileSystemWallet(gailWalletPath);
+                    await gatewayGail.connect(ccpGail, { wallet, identity: 'admin',
+                        discovery: { enabled: true, asLocalhost: true } });
+                } catch (e) {
+
+                }
 
                 // Get the network (channel) our contract is deployed to.
                 const network = await gatewayGail.getNetwork('channelgg');
 
                 // Get the contract from the network.
                 const contract = network.getContract('gail');
-                const numContractors=await contract.evaluateTransaction('getNumContractors');
-                var curChannelNum=numContractors+1;
+                const numContractorsAsBytes=await contract.evaluateTransaction('getNumContractors');
+                var numContractors=JSON.parse(numContractorsAsBytes.toString());
+                var curChannelNum=numContractors.numContractors+1;
+                console.log(curChannelNum);
                 for(i=0;i<numGailNodes;i++)
                 {
                     var str='channelg'+i.toString()+'c'+curChannelNum.toString();
