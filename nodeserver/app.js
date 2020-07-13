@@ -9,6 +9,9 @@ var gailUsersRouter = require('./routes/gail/users');
 var gailAdminRouter = require('./routes/gail/admin');
 var gailProjectRouter = require('./routes/gail/projects');
 
+var contractorUsersRouter = require('./routes/contractors/users');
+var contractorAdminRouter = require('./routes/contractors/admin');
+
 const cors = require('./cors');
 
 var app = express();
@@ -27,6 +30,9 @@ app.use('/gail', gailIndexRouter);
 app.use('/gail/users', gailUsersRouter);
 app.use('/gail/admin', gailAdminRouter);
 app.use('/gail/project', gailProjectRouter);
+
+app.use('/contractors/users', contractorUsersRouter);
+app.use('/contractors/admin', contractorAdminRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
