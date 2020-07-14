@@ -451,12 +451,12 @@ function networkDown() {
     #Cleanup images
     removeUnwantedImages
     # remove orderer block and other channel configuration transactions and certs
-    rm -rf system-genesis-block/*.block organizations/peerOrganizations organizations/ordererOrganizations
+    sudo rm -rf system-genesis-block/*.block organizations/peerOrganizations organizations/ordererOrganizations
     ## remove fabric ca artifacts
-    rm -rf organizations/fabric-ca/gail/msp organizations/fabric-ca/gail/tls-cert.pem organizations/fabric-ca/gail/ca-cert.pem organizations/fabric-ca/gail/IssuerPublicKey organizations/fabric-ca/gail/IssuerRevocationPublicKey organizations/fabric-ca/gail/fabric-ca-server.db
-    rm -rf organizations/fabric-ca/contractors/msp organizations/fabric-ca/contractors/tls-cert.pem organizations/fabric-ca/contractors/ca-cert.pem organizations/fabric-ca/contractors/IssuerPublicKey organizations/fabric-ca/contractors/IssuerRevocationPublicKey organizations/fabric-ca/contractors/fabric-ca-server.db
-    rm -rf organizations/fabric-ca/ordererOrg/msp organizations/fabric-ca/ordererOrg/tls-cert.pem organizations/fabric-ca/ordererOrg/ca-cert.pem organizations/fabric-ca/ordererOrg/IssuerPublicKey organizations/fabric-ca/ordererOrg/IssuerRevocationPublicKey organizations/fabric-ca/ordererOrg/fabric-ca-server.db
-    rm -rf addOrg3/fabric-ca/org3/msp addOrg3/fabric-ca/org3/tls-cert.pem addOrg3/fabric-ca/org3/ca-cert.pem addOrg3/fabric-ca/org3/IssuerPublicKey addOrg3/fabric-ca/org3/IssuerRevocationPublicKey addOrg3/fabric-ca/org3/fabric-ca-server.db
+    sudo rm -rf organizations/fabric-ca/gail/msp organizations/fabric-ca/gail/tls-cert.pem organizations/fabric-ca/gail/ca-cert.pem organizations/fabric-ca/gail/IssuerPublicKey organizations/fabric-ca/gail/IssuerRevocationPublicKey organizations/fabric-ca/gail/fabric-ca-server.db
+    sudo rm -rf organizations/fabric-ca/contractors/msp organizations/fabric-ca/contractors/tls-cert.pem organizations/fabric-ca/contractors/ca-cert.pem organizations/fabric-ca/contractors/IssuerPublicKey organizations/fabric-ca/contractors/IssuerRevocationPublicKey organizations/fabric-ca/contractors/fabric-ca-server.db
+    sudo rm -rf organizations/fabric-ca/ordererOrg/msp organizations/fabric-ca/ordererOrg/tls-cert.pem organizations/fabric-ca/ordererOrg/ca-cert.pem organizations/fabric-ca/ordererOrg/IssuerPublicKey organizations/fabric-ca/ordererOrg/IssuerRevocationPublicKey organizations/fabric-ca/ordererOrg/fabric-ca-server.db
+    sudo rm -rf addOrg3/fabric-ca/org3/msp addOrg3/fabric-ca/org3/tls-cert.pem addOrg3/fabric-ca/org3/ca-cert.pem addOrg3/fabric-ca/org3/IssuerPublicKey addOrg3/fabric-ca/org3/IssuerRevocationPublicKey addOrg3/fabric-ca/org3/fabric-ca-server.db
 
     rm -rf organizations/fabric-ca/gail/
     rm -rf organizations/fabric-ca/contractors/
@@ -465,11 +465,11 @@ function networkDown() {
     # remove channel and script artifacts
     for i in $(seq 0 $((GAIL_NODES-1))); do
        for j in $(seq 0 $((CONTRACTOR_NODES-1))); do
-           rm -rf contractorsg${i}c${j}.tar.gz
+           sudo rm -rf contractorsg${i}c${j}.tar.gz
        done
     done
-    rm -rf channel-artifacts log.txt fabcar
-    rm -rf gail.tar.gz
+    sudo rm -rf channel-artifacts log.txt fabcar
+    sudo rm -rf gail.tar.gz
 
   fi
 

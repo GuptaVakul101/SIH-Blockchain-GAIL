@@ -46,6 +46,7 @@ router.post('/login', async function(req, res, next) {
         const contract = network.getContract('gail');
 
         const user = await contract.evaluateTransaction('getUser', req.body.username, req.body.password);
+        
         // Disconnect from the gateway.
         await gateway.disconnect();
 
