@@ -379,8 +379,8 @@ function createChannel() {
   # more to create the channel creation transaction and the anchor peer updates.
   # configtx.yaml is mounted in the cli container, which allows us to use it to
   # create the channel artifacts
-  for i in $(seq 0 $((GAIL_NODES-1))); do
-     for j in $(seq 0 $((CONTRACTOR_NODES-1))); do
+  for i in $(seq 1 $((GAIL_NODES-1))); do
+     for j in $(seq 1 $((CONTRACTOR_NODES-1))); do
          CHANNEL_NAME="channelg${i}c${j}"
          scripts/createChannel.sh $CHANNEL_NAME $CLI_DELAY $MAX_RETRY $VERBOSE $ORG1 $i $ORG2 $j
          if [ $? -ne 0 ]; then
@@ -389,7 +389,7 @@ function createChannel() {
          fi
      done
   done
- scripts/createChannel.sh "channelgg" $CLI_DELAY $MAX_RETRY $VERBOSE $ORG1 0 $ORG1 $((GAIL_NODES-1))
+ scripts/createChannel.sh "channelgg" $CLI_DELAY $MAX_RETRY $VERBOSE $ORG1 1 $ORG1 $((GAIL_NODES-1))
   if [ $? -ne 0 ]; then
     echo "Error !!! Create channel failed"
     exit 1
@@ -421,8 +421,8 @@ function cleanChaincode(){
 function deployCC() {
     setupChaincode
 
-    for i in $(seq 0 $((GAIL_NODES-1))); do
-       for j in $(seq 0 $((CONTRACTOR_NODES-1))); do
+    for i in $(seq 1 $((GAIL_NODES-1))); do
+       for j in $(seq 1 $((CONTRACTOR_NODES-1))); do
            CHANNEL_NAME="channelg${i}c${j}"
            scripts/deployCC.sh $CHANNEL_NAME $VERSION $CLI_DELAY $MAX_RETRY $VERBOSE $ORG1 $i $ORG2 $j
            if [ $? -ne 0 ]; then
@@ -431,7 +431,7 @@ function deployCC() {
            fi
        done
     done
-    scripts/deployCC.sh "channelgg" $VERSION $CLI_DELAY $MAX_RETRY $VERBOSE $ORG1 0 $ORG1 $((GAIL_NODES-1))
+    scripts/deployCC.sh "channelgg" $VERSION $CLI_DELAY $MAX_RETRY $VERBOSE $ORG1 1 $ORG1 $((GAIL_NODES-1))
 
     cleanChaincode
   exit 0
@@ -458,6 +458,9 @@ function networkDown() {
     rm -rf organizations/fabric-ca/ordererOrg/msp organizations/fabric-ca/ordererOrg/tls-cert.pem organizations/fabric-ca/ordererOrg/ca-cert.pem organizations/fabric-ca/ordererOrg/IssuerPublicKey organizations/fabric-ca/ordererOrg/IssuerRevocationPublicKey organizations/fabric-ca/ordererOrg/fabric-ca-server.db
     rm -rf addOrg3/fabric-ca/org3/msp addOrg3/fabric-ca/org3/tls-cert.pem addOrg3/fabric-ca/org3/ca-cert.pem addOrg3/fabric-ca/org3/IssuerPublicKey addOrg3/fabric-ca/org3/IssuerRevocationPublicKey addOrg3/fabric-ca/org3/fabric-ca-server.db
 
+    rm -rf organizations/fabric-ca/gail/
+    rm -rf organizations/fabric-ca/contractors/
+    rm -rf organizations/fabric-ca/ordererOrg/
 
     # remove channel and script artifacts
     for i in $(seq 0 $((GAIL_NODES-1))); do
@@ -510,7 +513,7 @@ DATABASE="leveldb"
 # number of GAIL peer nodes
 GAIL_NODES=2
 # number of Contractor peer nodes
-CONTRACTOR_NODES=4
+CONTRACTOR_NODES=2
 
 ORG1="gail"
 ORG2="contractors"

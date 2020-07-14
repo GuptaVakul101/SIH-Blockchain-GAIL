@@ -142,19 +142,22 @@ FABRIC_CFG_PATH=$PWD/../config/
 echo "Creating channel "$CHANNEL_NAME
 createChannel $ORG1 $ORG1_PEER_INDEX
 
+joinChannel "contractors" 0
+joinChannel "gail" 0
+
 ## Join all the peers to the channel
 if [[ "$ORG1" == "$ORG2" ]]; then
 	for i in $(seq $ORG1_PEER_INDEX $ORG2_PEER_INDEX); do
 		echo "Join ${ORG1} peer number ${i} to the channel..."
 		joinChannel $ORG1 $i
 	done
-	joinChannel "contractors" 0
 else
 	echo "Join ${ORG1} peer number ${ORG1_PEER_INDEX} to the channel..."
 	joinChannel $ORG1 $ORG1_PEER_INDEX
 	echo "Join ${ORG2} peer number ${ORG2_PEER_INDEX} to the channel..."
 	joinChannel $ORG2 $ORG2_PEER_INDEX
 fi
+
 
 ## Set the anchor peers for each org in the channel
 if [[ "$ORG1" == "$ORG2" ]]; then

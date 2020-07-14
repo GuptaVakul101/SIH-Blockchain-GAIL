@@ -250,13 +250,15 @@ chaincodeInvokeInit() {
 ## at first we package the chaincode
 packageChaincode $ORG1 $ORG1_PEER_INDEX
 
+installChaincode "gail" 0
+installChaincode "contractors" 0
 ## Install chaincode on peer0.gail and peer0.contractors
 if [[ "$ORG1" == "$ORG2" ]]; then
 	for i in $(seq $ORG1_PEER_INDEX $ORG2_PEER_INDEX); do
 		echo "Installing chaincode on peer${i}.${ORG1}..."
 		installChaincode $ORG1 $i
 	done
-	installChaincode "contractors" 0
+
 else
 	echo "Installing chaincode on peer${ORG1_PEER_INDEX}.${ORG1}..."
 	installChaincode $ORG1 $ORG1_PEER_INDEX
