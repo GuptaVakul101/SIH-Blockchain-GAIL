@@ -143,7 +143,7 @@ echo "Creating channel "$CHANNEL_NAME
 createChannel $ORG1 $ORG1_PEER_INDEX
 
 joinChannel "contractors" 0
-joinChannel "gail" 0
+# joinChannel "gail" 0
 
 ## Join all the peers to the channel
 if [[ "$ORG1" == "$ORG2" ]]; then
