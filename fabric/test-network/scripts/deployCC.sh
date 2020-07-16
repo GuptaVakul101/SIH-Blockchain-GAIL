@@ -250,7 +250,7 @@ chaincodeInvokeInit() {
 ## at first we package the chaincode
 packageChaincode $ORG1 $ORG1_PEER_INDEX
 
-# installChaincode "gail" 0
+##installChaincode "gail" 0
 installChaincode "contractors" 0
 ## Install chaincode on peer0.gail and peer0.contractors
 if [[ "$ORG1" == "$ORG2" ]]; then

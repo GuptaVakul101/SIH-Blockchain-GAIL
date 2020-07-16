@@ -50,7 +50,7 @@ router.post('/signup', async function(req, res, next){
                 certificate: enrollment.certificate,
                 privateKey: enrollment.key.toBytes(),
             },
-            mspId: 'GailMSP',
+            mspId: 'ContractorsMSP',
             type: 'X.509',
         };
         await wallet.put('admin', x509Identity);
@@ -59,6 +59,13 @@ router.post('/signup', async function(req, res, next){
         res.json({
             success: true,
             username: 'admin'
+        });
+
+        fs.writeFile(path.resolve(__dirname,'dictionary.js'), '{}', err => {
+
+            // Checking for errors
+            if (err) throw err;
+            console.log(dictionary); // Success
         });
     }
 });

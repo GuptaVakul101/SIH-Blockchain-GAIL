@@ -8,9 +8,6 @@ const path = require('path');
 
 const cors = require('../../cors');
 
-const numGailNodes=2;
-var dict=new Map();
-
 router.use(bodyParser.json());
 
 router.options('*', cors.corsWithOptions, (req, res) => { res.sendStatus(200); });
@@ -41,14 +38,15 @@ router.post('/login', async function(req, res, next) {
         const gateway = new Gateway();
         await gateway.connect(ccp, { wallet, identity: req.body.username,
             discovery: { enabled: true, asLocalhost: true } });
-
-        var channelNum=dict.get(req.body.username);
-
+        const dictionary=JSON.parse(fs.readFileSync(path.resolve(__dirname,'dictionary.js'), 'utf8'));
+        var channelNum=dictionary[req.body.username];
+        console.log(dictionary);
+        console.log(channelNum);
         // Get the network (channel) our contract is deployed to.
         const network = await gateway.getNetwork('channelg0c'+channelNum);
 
         // Get the contract from the network.
-        const contract = network.getContract('contractors');
+        const contract = network.getContract('contractors_0_'+channelNum);
 
         const user = await contract.evaluateTransaction('getUser', req.body.username, req.body.password);
         // Disconnect from the gateway.
@@ -115,7 +113,7 @@ router.post('/signup', async function(req, res, next){
                     certificate: enrollment.certificate,
                     privateKey: enrollment.key.toBytes(),
                 },
-                mspId: 'GailMSP',
+                mspId: 'ContractorsMSP',
                 type: 'X.509',
             };
             await wallet.put(req.body.username, x509Identity);
@@ -160,20 +158,24 @@ router.post('/signup', async function(req, res, next){
                 var numContractors=JSON.parse(numContractorsAsBytes.toString());
                 var curChannelNum=numContractors.numContractors+1;
                 console.log(curChannelNum);
-                for(i=0;i<numGailNodes;i++)
-                {
-                    var str='channelg'+i.toString()+'c'+curChannelNum.toString();
-                    console.log(str);
-                    const networkChannel = await gateway.getNetwork(str);
-                    const contractChannel = networkChannel.getContract('contractors');
-                    await contractChannel.submitTransaction('createUser',req.body.username, req.body.password);
-                }
-
+                var str='channelg0'+'c'+curChannelNum.toString();
+                console.log(str);
+                const networkChannel = await gateway.getNetwork(str);
+                const contractChannel = networkChannel.getContract('contractors_0_'+curChannelNum.toString());
+                await contractChannel.submitTransaction('createUser',req.body.username, req.body.password);
                 await contract.submitTransaction('updateNumContractors');
                 // Disconnect from the gateway.
                 await gateway.disconnect();
                 await gatewayGail.disconnect();
-                dict.set(req.body.username,curChannelNum.toString());
+
+                const dictionary=JSON.parse(fs.readFileSync(path.resolve(__dirname,'dictionary.js'), 'utf8'));
+                dictionary[req.body.username]=curChannelNum.toString();
+                fs.writeFile(path.resolve(__dirname,'dictionary.js'), JSON.stringify(dictionary), err => {
+
+                    // Checking for errors
+                    if (err) throw err;
+                    console.log(dictionary); // Success
+                });
 
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
