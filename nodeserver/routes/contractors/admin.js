@@ -65,7 +65,7 @@ router.post('/signup', async function(req, res, next){
 
             // Checking for errors
             if (err) throw err;
-            console.log(dictionary); // Success
+            // console.log(dictionary); // Success
         });
     }
 });

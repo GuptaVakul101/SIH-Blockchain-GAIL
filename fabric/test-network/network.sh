@@ -379,7 +379,7 @@ function createChannel() {
   # more to create the channel creation transaction and the anchor peer updates.
   # configtx.yaml is mounted in the cli container, which allows us to use it to
   # create the channel artifacts
-  for i in $(seq 0 $((GAIL_NODES-1))); do
+  for i in $(seq 1 $((GAIL_NODES-1))); do
      for j in $(seq 1 $((CONTRACTOR_NODES-1))); do
          CHANNEL_NAME="channelg${i}c${j}"
          scripts/createChannel.sh $CHANNEL_NAME $CLI_DELAY $MAX_RETRY $VERBOSE $ORG1 $i $ORG2 $j
@@ -389,7 +389,7 @@ function createChannel() {
          fi
      done
   done
- scripts/createChannel.sh "channelgg" $CLI_DELAY $MAX_RETRY $VERBOSE $ORG1 0 $ORG1 $((GAIL_NODES-1))
+ scripts/createChannel.sh "channelgg" $CLI_DELAY $MAX_RETRY $VERBOSE $ORG1 1 $ORG1 $((GAIL_NODES-1))
   if [ $? -ne 0 ]; then
     echo "Error !!! Create channel failed"
     exit 1
@@ -421,7 +421,7 @@ function cleanChaincode(){
 function deployCC() {
     setupChaincode
 
-    for i in $(seq 0 $((GAIL_NODES-1))); do
+    for i in $(seq 1 $((GAIL_NODES-1))); do
        for j in $(seq 1 $((CONTRACTOR_NODES-1))); do
            CHANNEL_NAME="channelg${i}c${j}"
            scripts/deployCC.sh $CHANNEL_NAME $VERSION $CLI_DELAY $MAX_RETRY $VERBOSE $ORG1 $i $ORG2 $j
@@ -431,7 +431,7 @@ function deployCC() {
            fi
        done
     done
-    scripts/deployCC.sh "channelgg" $VERSION $CLI_DELAY $MAX_RETRY $VERBOSE $ORG1 0 $ORG1 $((GAIL_NODES-1))
+    scripts/deployCC.sh "channelgg" $VERSION $CLI_DELAY $MAX_RETRY $VERBOSE $ORG1 1 $ORG1 $((GAIL_NODES-1))
 
     cleanChaincode
   exit 0
@@ -511,9 +511,9 @@ CA_IMAGETAG="latest"
 DATABASE="leveldb"
 
 # number of GAIL peer nodes
-GAIL_NODES=2
+GAIL_NODES=3
 # number of Contractor peer nodes
-CONTRACTOR_NODES=3
+CONTRACTOR_NODES=2
 
 ORG1="gail"
 ORG2="contractors"

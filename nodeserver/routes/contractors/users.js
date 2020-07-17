@@ -8,6 +8,8 @@ const path = require('path');
 
 const cors = require('../../cors');
 
+const numGailNodes=3;
+
 router.use(bodyParser.json());
 
 router.options('*', cors.corsWithOptions, (req, res) => { res.sendStatus(200); });
@@ -43,10 +45,10 @@ router.post('/login', async function(req, res, next) {
         console.log(dictionary);
         console.log(channelNum);
         // Get the network (channel) our contract is deployed to.
-        const network = await gateway.getNetwork('channelg0c'+channelNum);
+        const network = await gateway.getNetwork('channelg1c'+channelNum);
 
         // Get the contract from the network.
-        const contract = network.getContract('contractors_0_'+channelNum);
+        const contract = network.getContract('contractors_1_'+channelNum);
 
         const user = await contract.evaluateTransaction('getUser', req.body.username, req.body.password);
         // Disconnect from the gateway.
@@ -158,11 +160,14 @@ router.post('/signup', async function(req, res, next){
                 var numContractors=JSON.parse(numContractorsAsBytes.toString());
                 var curChannelNum=numContractors.numContractors+1;
                 console.log(curChannelNum);
-                var str='channelg0'+'c'+curChannelNum.toString();
-                console.log(str);
-                const networkChannel = await gateway.getNetwork(str);
-                const contractChannel = networkChannel.getContract('contractors_0_'+curChannelNum.toString());
-                await contractChannel.submitTransaction('createUser',req.body.username, req.body.password);
+                for(i=1;i<numGailNodes;i++)
+                {
+                    var str='channelg'+i.toString()+'c'+curChannelNum.toString();
+                    console.log(str);
+                    const networkChannel = await gateway.getNetwork(str);
+                    const contractChannel = networkChannel.getContract('contractors_'+i.toString()+'_'+curChannelNum.toString());
+                    await contractChannel.submitTransaction('createUser',req.body.username, req.body.password);
+                }
                 await contract.submitTransaction('updateNumContractors');
                 // Disconnect from the gateway.
                 await gateway.disconnect();
