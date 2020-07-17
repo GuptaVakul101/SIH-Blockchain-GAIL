@@ -115,7 +115,7 @@ router.post('/signup', async function(req, res, next){
                     certificate: enrollment.certificate,
                     privateKey: enrollment.key.toBytes(),
                 },
-                mspId: 'GailMSP',
+                mspId: 'ContractorsMSP',
                 type: 'X.509',
             };
             await wallet.put(req.body.username, x509Identity);
@@ -160,12 +160,12 @@ router.post('/signup', async function(req, res, next){
                 var numContractors=JSON.parse(numContractorsAsBytes.toString());
                 var curChannelNum=numContractors.numContractors+1;
                 console.log(curChannelNum);
-                for(i=0;i<numGailNodes;i++)
+                for(i=1;i<numGailNodes;i++)
                 {
                     var str='channelg'+i.toString()+'c'+curChannelNum.toString();
                     console.log(str);
                     const networkChannel = await gateway.getNetwork(str);
-                    const contractChannel = networkChannel.getContract('contractors');
+                    const contractChannel = networkChannel.getContract('contractors_'+i.toString()+'_'+curChannelNum.toString());
                     await contractChannel.submitTransaction('createUser',req.body.username, req.body.password);
                 }
 

@@ -50,7 +50,7 @@ router.post('/signup', async function(req, res, next){
                 certificate: enrollment.certificate,
                 privateKey: enrollment.key.toBytes(),
             },
-            mspId: 'GailMSP',
+            mspId: 'ContractorsMSP',
             type: 'X.509',
         };
         await wallet.put('admin', x509Identity);
