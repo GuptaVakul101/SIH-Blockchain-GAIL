@@ -73,19 +73,15 @@ router.post('/createProject', async function(req, res, next) {
             discovery: { enabled: true, asLocalhost: true } });
             const network = await gateway.getNetwork('channelgg');
             const contract = network.getContract('gail', 'Project');
-            const incrementNumProjects = await contract.evaluateTransaction('incrementNumProjects');
-            const numProjects = await contract.evaluateTransaction('getNumProjects');
+            //const incrementNumProjects = await contract.evaluateTransaction('incrementNumProjects');
+            //const numProjects = await contract.evaluateTransaction('getNumProjects');
 
-            const project = await contract.evaluateTransaction('createProject', req.body.username, req.body.id, req.body.title, req.body.description);
-            //const backproj = await contract.evaluateTransaction('getProject',req.body.id);
-            const jsonObj = JSON.parse(project.toString());
-            console.log("Project Creation: " + jsonObj.success);
-
+            await contract.submitTransaction('createProject', req.body.username, req.body.id, req.body.title, req.body.description);
             await gateway.disconnect();
 
             res.json({
                 success: true,
-                message: 'Successfully created a new Project ' 
+                message: 'Successfully created a new Project '
             });
 
         }
@@ -144,20 +140,24 @@ router.post('/getProject', async function(req, res, next) {
             discovery: { enabled: true, asLocalhost: true } });
             const network = await gateway.getNetwork('channelgg');
             const contract = network.getContract('gail', 'Project');
-            //const incrementNumProjects = await contract.evaluateTransaction('incrementNumProjects');
-            //const numProjects = await contract.evaluateTransaction('getNumProjects');
-
-            //const project = await contract.evaluateTransaction('createProject', req.body.username, req.body.id, req.body.title, req.body.description);
-            const backproj = await contract.evaluateTransaction('getProject',req.body.id);
-            const jsonObj = JSON.parse(backproj.toString());
+            const getProj = await contract.evaluateTransaction('getProject',req.body.id);
+            const jsonObj = JSON.parse(getProj.toString());
             console.log("Project Creation: " + jsonObj.success);
-
             await gateway.disconnect();
-
-            res.json({
-                success: true,
-                message: 'Successfully got the project ' + backproj
-            });
+            const project = JSON.parse(getProj.toString());
+            if("message" in project) {
+                res.json({
+                    success: false,
+                    message: 'No project of this project id found'
+                });
+            }
+            else{
+                res.json({
+                    success: true,
+                    message: 'Succesfully got project of id-' + project.id
+                });
+            }
+            
 
         }
     }
