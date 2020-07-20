@@ -3,11 +3,11 @@
 *
 * SPDX-License-Identifier: Apache-2.0
 */
- 
+
 'use strict';
- 
+
 const { Contract } = require('fabric-contract-api');
- 
+
 class Project extends Contract {
 //    async initLedger(ctx) {
 //        // Number of projects floated for id calculation
@@ -31,8 +31,16 @@ class Project extends Contract {
            contractor_id: null,
            bid_id: null
        };
- 
+
        await ctx.stub.putState('PROJECT_'+id, Buffer.from(JSON.stringify(project)));
+
+       var arr=[];
+       const temp={
+           docType: 'PROJECT_BIDS',
+           bids:arr,
+       };
+       await ctx.stub.putState('APPLIED_'+id, Buffer.from(JSON.stringify(temp)));
+
        return {
            success: 'true'
        };
@@ -47,7 +55,7 @@ class Project extends Contract {
         };
     }
     return projectAsBytes.toString();
-    
+
    }
    async createNumProjects(ctx){
     const numProjects = {
@@ -56,7 +64,7 @@ class Project extends Contract {
     };
     await ctx.stub.putState('NUMPROJECTS',Buffer.from(JSON.stringfy(numProjects)));
    }
-  
+
    async getNumProjects(ctx){
        const numProjectsAsBytes = await ctx.stub.getState('NUMPROJECTS');
        if (!numProjectsAsBytes || numProjectsAsBytes.length === 0) {
@@ -83,12 +91,18 @@ class Project extends Contract {
         newNumProj.num = (parseInt(numProj.num) + 1).toString();
         await ctx.stub.putState('NUMPROJECTS', Buffer.from(JSON.stringify(newNumProj)));
        }
+<<<<<<< HEAD
+
+       const numProjects = JSON.parse(numProjectsAsBytes.toString());
+       numProjects.numProjects += '1';
+
+       await ctx.stub.putState('NUMPROJECTS', Buffer.from(JSON.stringify(numProjects)));
+=======
+>>>>>>> 1bb9970eeac2729424beeab9eef54c193744976b
        return {
            success: 'true'
        };
    }
 }
- 
-module.exports = Project;
- 
 
+module.exports = Project;

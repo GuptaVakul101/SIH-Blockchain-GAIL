@@ -40,10 +40,8 @@ router.post('/login', async function(req, res, next) {
         const gateway = new Gateway();
         await gateway.connect(ccp, { wallet, identity: req.body.username,
             discovery: { enabled: true, asLocalhost: true } });
-        const dictionary=JSON.parse(fs.readFileSync(path.resolve(__dirname,'dictionary.js'), 'utf8'));
+        const dictionary=JSON.parse(fs.readFileSync(path.resolve(__dirname,'dictionary.json'), 'utf8'));
         var channelNum=dictionary[req.body.username];
-        console.log(dictionary);
-        console.log(channelNum);
         // Get the network (channel) our contract is deployed to.
         const network = await gateway.getNetwork('channelg1c'+channelNum);
 
@@ -155,7 +153,7 @@ router.post('/signup', async function(req, res, next){
                 const network = await gatewayGail.getNetwork('channelgg');
 
                 // Get the contract from the network.
-                const contract = network.getContract('gail');
+                const contract = network.getContract('gail','User');
                 const numContractorsAsBytes=await contract.evaluateTransaction('getNumContractors');
                 var numContractors=JSON.parse(numContractorsAsBytes.toString());
                 var curChannelNum=numContractors.numContractors+1;
@@ -165,7 +163,7 @@ router.post('/signup', async function(req, res, next){
                     var str='channelg'+i.toString()+'c'+curChannelNum.toString();
                     console.log(str);
                     const networkChannel = await gateway.getNetwork(str);
-                    const contractChannel = networkChannel.getContract('contractors_'+i.toString()+'_'+curChannelNum.toString());
+                    const contractChannel = networkChannel.getContract('contractors_'+i.toString()+'_'+curChannelNum.toString(),'User');
                     await contractChannel.submitTransaction('createUser',req.body.username, req.body.password);
                 }
                 await contract.submitTransaction('updateNumContractors');
@@ -173,9 +171,9 @@ router.post('/signup', async function(req, res, next){
                 await gateway.disconnect();
                 await gatewayGail.disconnect();
 
-                const dictionary=JSON.parse(fs.readFileSync(path.resolve(__dirname,'dictionary.js'), 'utf8'));
+                const dictionary=JSON.parse(fs.readFileSync(path.resolve(__dirname,'dictionary.json'), 'utf8'));
                 dictionary[req.body.username]=curChannelNum.toString();
-                fs.writeFile(path.resolve(__dirname,'dictionary.js'), JSON.stringify(dictionary), err => {
+                fs.writeFile(path.resolve(__dirname,'dictionary.json'), JSON.stringify(dictionary), err => {
 
                     // Checking for errors
                     if (err) throw err;

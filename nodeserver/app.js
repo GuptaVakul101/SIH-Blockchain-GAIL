@@ -9,6 +9,7 @@ var gailUsersRouter = require('./routes/gail/users');
 var gailAdminRouter = require('./routes/gail/admin');
 var gailProjectRouter = require('./routes/gail/projects');
 
+var contractorBidsRouter = require('./routes/contractors/bids');
 var contractorUsersRouter = require('./routes/contractors/users');
 var contractorAdminRouter = require('./routes/contractors/admin');
 
@@ -31,6 +32,7 @@ app.use('/gail/users', gailUsersRouter);
 app.use('/gail/admin', gailAdminRouter);
 app.use('/gail/project', gailProjectRouter);
 
+app.use('/contractors/bids', contractorBidsRouter);
 app.use('/contractors/users', contractorUsersRouter);
 app.use('/contractors/admin', contractorAdminRouter);
 
