@@ -61,7 +61,7 @@ router.post('/signup', async function(req, res, next){
             username: 'admin'
         });
 
-        fs.writeFile(path.resolve(__dirname,'dictionary.js'), '{}', err => {
+        fs.writeFile(path.resolve(__dirname,'dictionary.json'), '{}', err => {
 
             // Checking for errors
             if (err) throw err;
