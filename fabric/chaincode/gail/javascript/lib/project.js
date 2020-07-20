@@ -9,17 +9,17 @@
 const { Contract } = require('fabric-contract-api');
  
 class Project extends Contract {
-   async initLedger(ctx) {
-       // Number of projects floated for id calculation
-       const numProjects = {
-           numProjects: '0',
-           docType: 'NUMPROJECTS'
-       }
-       await ctx.stub.putState('NUMPROJECTS', Buffer.from(JSON.stringify(numProjects)));
-       return {
-           success: 'true'
-       };
-   }
+//    async initLedger(ctx) {
+//        // Number of projects floated for id calculation
+//        const numProjects = {
+//            numProjects: 0,
+//            docType: 'NUMPROJECTS'
+//        }
+//        await ctx.stub.putState('NUMPROJECTS', Buffer.from(JSON.stringify(numProjects)));
+//        return {
+//            success: 'true'
+//        };
+//    }
    async createProject(ctx, username, id, title, description) {
        const project = {
            username: username,
@@ -49,30 +49,40 @@ class Project extends Contract {
     return projectAsBytes.toString();
     
    }
+   async createNumProjects(ctx){
+    const numProjects = {
+        num: '0',
+        docType: 'NUMPROJECTS'
+    };
+    await ctx.stub.putState('NUMPROJECTS',Buffer.from(JSON.stringfy(numProjects)));
+   }
   
    async getNumProjects(ctx){
        const numProjectsAsBytes = await ctx.stub.getState('NUMPROJECTS');
        if (!numProjectsAsBytes || numProjectsAsBytes.length === 0) {
-           return {
-               success: 'false',
-               message: 'NUMPROJECTS does not exist.'
-           };
+        return {
+            success: 'false',
+            message: 'NUMPROJECTS does not exist.'
+        };
        }
        return numProjectsAsBytes.toString();
    }
+
    async incrementNumProjects(ctx){
+    const numProjects = {
+        num: '1',
+        docType: 'NUMPROJECTS'
+    };
        const numProjectsAsBytes = await ctx.stub.getState('NUMPROJECTS');
        if (!numProjectsAsBytes || numProjectsAsBytes.length === 0) {
-           return {
-               success: 'false',
-               message: 'NUMPROJECTS does not exist.'
-           };
+        await ctx.stub.putState('NUMPROJECTS', Buffer.from(JSON.stringify(numProjects)));
        }
- 
-       const numProjects = JSON.parse(numProjectsAsBytes.toString());
-       numProjects.numProjects += '1';
- 
-       await ctx.stub.putState('NUMPROJECTS', Buffer.from(JSON.stringify(numProjects)));
+       else{
+        const numProj = JSON.parse(numProjectsAsBytes.toString());
+        const newNumProj = numProj;
+        newNumProj.num = (parseInt(numProj.num) + 1).toString();
+        await ctx.stub.putState('NUMPROJECTS', Buffer.from(JSON.stringify(newNumProj)));
+       }
        return {
            success: 'true'
        };
