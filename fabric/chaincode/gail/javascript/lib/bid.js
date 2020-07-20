@@ -9,45 +9,52 @@
 const { Contract } = require('fabric-contract-api');
 
 class Bid extends Contract {
+    async initLedger(ctx) {
 
-    async applyForProject(ctx,username,projectID,bidDetails) {
+    }
+
+    async applyForProject(ctx,username,projectID,bidDetails,tempBidID) {
         const bid = {
             username: username,
             docType: 'BID',
             projectID: projectID,
-            bidDetails:bidDetails
+            bidDetails:bidDetails,
         };
-        const bidID=(new Date()).getTime().toString();
+        const bidID=tempBidID.toString();
         await ctx.stub.putState('BID_'+bidID, Buffer.from(JSON.stringify(bid)));
 
-        console.log(bid+' '+bidID);
         var applied = await ctx.stub.getState('APPLIED_'+projectID);
-        if (!applied || applied.length === 0) {
-            const temp={
-                bids:[]
-            }
-            await ctx.stub.putState('APPLIED_'+projectID, Buffer.from(JSON.stringify(temp)));
-        }
-        applied = await ctx.stub.getState('APPLIED_'+projectID);
-        applied.bids.push(bidID);
-        await ctx.stub.putState('APPLIED_'+projectID, Buffer.from(JSON.stringify(applied)));
+        var obj = JSON.parse(applied.toString());
+        obj.bids.push(bidID);
+        await ctx.stub.putState('APPLIED_'+projectID, Buffer.from(JSON.stringify(obj)));
 
-        return bidID.toString();
+        return bidID;
+
+
 
     }
     async getBid(ctx,bidID)
     {
         const bidAsBytes = await ctx.stub.getState('BID_'+bidID);
-        if (!userAsBytes || userAsBytes.length === 0) {
+        if (!bidAsBytes || bidAsBytes.length === 0) {
             return {
                 success: 'false',
                 message: 'Invalid Bid ID'
             };
         }
 
-        const bid = JSON.parse(userAsBytes.toString());
+        return bidAsBytes.toString();
 
-        return bid.toString();
+    }
+    async getProjectBids(ctx,projectID){
+        const projectBidsAsBytes = await ctx.stub.getState('APPLIED_'+projectID);
+        if (!projectBidsAsBytes || projectBidsAsBytes.length === 0) {
+            return {
+                success: 'false',
+                message: 'No bids for this project.'
+            };
+        }
+        return projectBidsAsBytes.toString();
     }
 
 }

@@ -42,8 +42,6 @@ router.post('/login', async function(req, res, next) {
             discovery: { enabled: true, asLocalhost: true } });
         const dictionary=JSON.parse(fs.readFileSync(path.resolve(__dirname,'dictionary.json'), 'utf8'));
         var channelNum=dictionary[req.body.username];
-        console.log(dictionary);
-        console.log(channelNum);
         // Get the network (channel) our contract is deployed to.
         const network = await gateway.getNetwork('channelg1c'+channelNum);
 
@@ -155,7 +153,7 @@ router.post('/signup', async function(req, res, next){
                 const network = await gatewayGail.getNetwork('channelgg');
 
                 // Get the contract from the network.
-                const contract = network.getContract('gail');
+                const contract = network.getContract('gail','User');
                 const numContractorsAsBytes=await contract.evaluateTransaction('getNumContractors');
                 var numContractors=JSON.parse(numContractorsAsBytes.toString());
                 var curChannelNum=numContractors.numContractors+1;
