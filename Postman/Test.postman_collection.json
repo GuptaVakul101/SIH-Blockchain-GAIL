@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "aebe93b0-6511-4142-badc-7b014f593d5e",
+		"_postman_id": "16ba2152-cc98-4278-bc29-4bcefa08f402",
 		"name": "Test",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -110,7 +110,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\":\"lavish\",\n    \"password\":\"password\",\n    \"id\":\"314\",\n    \"title\":\"test\",\n    \"description\":\"string\"\n\n}",
+					"raw": "{\n    \"username\":\"lavish\",\n    \"password\":\"password\",\n    \"title\":\"test\",\n    \"description\":\"string\"\n\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -133,13 +133,43 @@
 			"response": []
 		},
 		{
+			"name": "Get Project id 1",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\":\"lavish\",\n    \"password\":\"password\",\n    \"id\":\"1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/gail/project/getProject",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"gail",
+						"project",
+						"getProject"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Apply Bid",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\": \"utkarsh1\",\n    \"password\": \"password\",\n    \"projectID\": \"314\",\n    \"bidDetails\": {\n        \"price\": \"100\"\n    }\n}",
+					"raw": "{\n    \"username\": \"utkarsh1\",\n    \"password\": \"password\",\n    \"projectID\": \"1\",\n    \"bidDetails\": {\n        \"price\": \"50\",\n        \"quality\": \"5\",\n        \"rating\": \"1\"\n    }\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -156,6 +186,36 @@
 						"contractors",
 						"bids",
 						"applyForProject"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Bid evaluation",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\":\"lavish\",\n    \"password\":\"password\",\n    \"id\":\"1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/gail/bideval/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"gail",
+						"bideval",
+						""
 					]
 				}
 			},

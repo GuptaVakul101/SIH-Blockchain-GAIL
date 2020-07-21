@@ -91,14 +91,6 @@ class Project extends Contract {
         newNumProj.num = (parseInt(numProj.num) + 1).toString();
         await ctx.stub.putState('NUMPROJECTS', Buffer.from(JSON.stringify(newNumProj)));
        }
-<<<<<<< HEAD
-
-       const numProjects = JSON.parse(numProjectsAsBytes.toString());
-       numProjects.numProjects += '1';
-
-       await ctx.stub.putState('NUMPROJECTS', Buffer.from(JSON.stringify(numProjects)));
-=======
->>>>>>> 1bb9970eeac2729424beeab9eef54c193744976b
        return {
            success: 'true'
        };
