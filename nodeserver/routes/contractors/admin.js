@@ -35,7 +35,7 @@ router.post('/signup', async function(req, res, next){
     // Check to see if we've already enrolled the admin user.
     const identity = await wallet.get('admin');
     if (identity) {
-        res.statusCode = 500;
+        res.statusCode = 400;
         res.setHeader('Content-Type', 'application/json');
         res.json({
             success: false,

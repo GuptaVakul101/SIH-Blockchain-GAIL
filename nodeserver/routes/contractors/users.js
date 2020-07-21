@@ -8,7 +8,11 @@ const path = require('path');
 
 const cors = require('../../cors');
 
-const numGailNodes=3;
+const utility=require(path.join(__dirname,'utilities.js'));
+
+const constants=JSON.parse(fs.readFileSync(path.resolve(__dirname,'constants.json'), 'utf8'));
+const numGailNodes=constants['numGailNodes'];
+const numContractorNodes=constants['numContractorNodes'];
 
 router.use(bodyParser.json());
 
@@ -28,7 +32,7 @@ router.post('/login', async function(req, res, next) {
     // Check to see if we've already enrolled the user.
     const identity = await wallet.get(req.body.username);
     if (!identity) {
-        res.statusCode = 500;
+        res.statusCode = 400;
         res.setHeader('Content-Type', 'application/json');
         res.json({
             success: false,
@@ -72,10 +76,23 @@ router.post('/signup', async function(req, res, next){
     const walletPath = path.join(__dirname, 'wallet');
     var wallet = await Wallets.newFileSystemWallet(walletPath);
 
+    //Check to see max num of contractors reached
+    const boolMaxContractorsReached=await utility.checkMaxUsersReached();
+    if(boolMaxContractorsReached==true)
+    {
+        res.statusCode = 500;
+        res.setHeader('Content-Type', 'application/json');
+        res.json({
+            success: false,
+            message: 'Max number of contractors reached'
+        });
+        return;
+    }
+
     // Check to see if we've already enrolled the user.
     const userIdentity = await wallet.get(req.body.username);
     if (userIdentity) {
-        res.statusCode = 500;
+        res.statusCode = 400;
         res.setHeader('Content-Type', 'application/json');
         res.json({
             success: false,
@@ -140,7 +157,6 @@ router.post('/signup', async function(req, res, next){
                 'peerOrganizations', 'gail.example.com', 'connection-gail.json');
                 const ccpGail = JSON.parse(fs.readFileSync(ccpGailPath, 'utf8'));
                 const gailWalletPath = path.resolve(__dirname, '..','gail','wallet');
-                console.log('I am here1');
                 try {
                     wallet = await Wallets.newFileSystemWallet(gailWalletPath);
                     await gatewayGail.connect(ccpGail, { wallet, identity: 'admin',
@@ -157,14 +173,15 @@ router.post('/signup', async function(req, res, next){
                 const numContractorsAsBytes=await contract.evaluateTransaction('getNumContractors');
                 var numContractors=JSON.parse(numContractorsAsBytes.toString());
                 var curChannelNum=numContractors.numContractors+1;
+
+
                 console.log(curChannelNum);
                 for(i=1;i<numGailNodes;i++)
                 {
                     var str='channelg'+i.toString()+'c'+curChannelNum.toString();
-                    console.log(str);
                     const networkChannel = await gateway.getNetwork(str);
                     const contractChannel = networkChannel.getContract('contractors_'+i.toString()+'_'+curChannelNum.toString(),'User');
-                    await contractChannel.submitTransaction('createUser',req.body.username, req.body.password);
+                    await contractChannel.submitTransaction('createUser',req.body.username, req.body.password,req.body.email);
                 }
                 await contract.submitTransaction('updateNumContractors');
                 // Disconnect from the gateway.

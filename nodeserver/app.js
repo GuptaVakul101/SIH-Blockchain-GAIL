@@ -13,6 +13,7 @@ var gailBidEvaluationRouter = require('./routes/gail/bideval');
 var contractorBidsRouter = require('./routes/contractors/bids');
 var contractorUsersRouter = require('./routes/contractors/users');
 var contractorAdminRouter = require('./routes/contractors/admin');
+var contractorProjectRouter = require('./routes/contractors/contractorProject');
 
 const cors = require('./cors');
 
@@ -37,6 +38,7 @@ app.use('/gail/bideval', gailBidEvaluationRouter);
 app.use('/contractors/bids', contractorBidsRouter);
 app.use('/contractors/users', contractorUsersRouter);
 app.use('/contractors/admin', contractorAdminRouter);
+app.use('/contractors/project', contractorProjectRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
