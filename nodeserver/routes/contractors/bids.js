@@ -49,18 +49,8 @@ router.post('/applyForProject', async function(req, res, next) {
                 });
             }
             else{
-                const ccpPath = path.resolve(__dirname, '..', '..', '..', 'fabric', 'test-network', 'organizations',
-                'peerOrganizations', 'gail.example.com', 'connection-gail.json');
-                const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
-
-                // Create a new file system based wallet for managing identities.
-                var walletPath = path.resolve(__dirname, '..','gail','wallet');
-                const wallet = await Wallets.newFileSystemWallet(walletPath);
                 // Create a new gateway for connecting to our peer node.
-                var gateway = new Gateway();
-                await gateway.connect(ccp, { wallet, identity: 'admin',
-                    discovery: { enabled: true, asLocalhost: true } });
-
+                var gateway = await utility.getGailGateway();
                 // Get the network (channel) our contract is deployed to.
                 var network = await gateway.getNetwork('channelgg');
                 // Get the contract from the network.

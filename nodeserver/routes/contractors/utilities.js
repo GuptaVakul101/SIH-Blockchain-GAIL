@@ -126,3 +126,18 @@ exports.getProject=async function (projectid){
         return projectJson;
     }
 };
+
+exports.getGailGateway=async function (){
+    const wallet = await Wallets.newFileSystemWallet(gail_walletPath);
+    var gateway = new Gateway();
+    await gateway.connect(gail_ccp, { wallet, identity: 'admin',
+        discovery: { enabled: true, asLocalhost: true } });
+    return gateway;
+};
+exports.getContractorGateway=async function (username){
+    const wallet = await Wallets.newFileSystemWallet(contractor_walletPath);
+    var gateway = new Gateway();
+    await gateway.connect(contractor_ccp, { wallet, identity: username,
+        discovery: { enabled: true, asLocalhost: true } });
+    return gateway;
+};

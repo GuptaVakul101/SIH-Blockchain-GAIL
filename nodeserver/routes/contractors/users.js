@@ -20,11 +20,6 @@ router.options('*', cors.corsWithOptions, (req, res) => { res.sendStatus(200); }
 
 /* GET users listing. */
 router.post('/login', async function(req, res, next) {
-    // load the network configuration
-    const ccpPath = path.resolve(__dirname, '..', '..', '..', 'fabric', 'test-network', 'organizations',
-    'peerOrganizations', 'contractors.example.com', 'connection-contractors.json');
-    const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
-
     // Create a new file system based wallet for managing identities.
     const walletPath = path.join(__dirname, 'wallet');
     var wallet = await Wallets.newFileSystemWallet(walletPath);
@@ -41,9 +36,8 @@ router.post('/login', async function(req, res, next) {
     }
     else{
         // Create a new gateway for connecting to our peer node.
-        const gateway = new Gateway();
-        await gateway.connect(ccp, { wallet, identity: req.body.username,
-            discovery: { enabled: true, asLocalhost: true } });
+
+        const gateway=await utility.getContractorGateway(req.body.username);
         const dictionary=JSON.parse(fs.readFileSync(path.resolve(__dirname,'dictionary.json'), 'utf8'));
         var channelNum=dictionary[req.body.username];
         // Get the network (channel) our contract is deployed to.
@@ -191,7 +185,6 @@ router.post('/signup', async function(req, res, next){
                 const dictionary=JSON.parse(fs.readFileSync(path.resolve(__dirname,'dictionary.json'), 'utf8'));
                 dictionary[req.body.username]=curChannelNum.toString();
                 fs.writeFile(path.resolve(__dirname,'dictionary.json'), JSON.stringify(dictionary), err => {
-
                     // Checking for errors
                     if (err) throw err;
                     console.log(dictionary); // Success
