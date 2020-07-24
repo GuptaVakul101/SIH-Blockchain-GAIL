@@ -5,6 +5,7 @@ const FabricCAServices = require('fabric-ca-client');
 const { Wallets, Gateway } = require('fabric-network');
 const fs = require('fs');
 const path = require('path');
+const nodemailer = require('nodemailer');
 
 const utility=require(path.join(__dirname,'utilities.js'));
 
@@ -85,6 +86,31 @@ router.post('/updateProjectStatus', async function(req, res, next) {
             var contract = network.getContract('gail', 'Project');
             await contract.submitTransaction('updateProjectStatus', contractor['activeProjectID'],req.body.status);
             await gateway.disconnect();
+            // if(req.body.status=='completed'){
+            //     console.log('I am here');
+            //     var transporter = nodemailer.createTransport({
+            //         service: 'gmail',
+            //         auth: {
+            //           user: 'usernamegmail.com',
+            //           pass: 'password'
+            //         }
+            //       });
+                  
+            //       var mailOptions = {
+            //         from: 'username@gmail.com',
+            //         to: 'username@gmail.com',
+            //         subject: 'Sending Email using Node.js',
+            //         text: 'That was easy!'
+            //       };
+                  
+            //       transporter.sendMail(mailOptions, function(error, info){
+            //         if (error) {
+            //           console.log(error);
+            //         } else {
+            //           console.log('Email sent: ' + info.response);
+            //         }
+            //       });
+            // }
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
             res.json({
@@ -130,7 +156,7 @@ router.post('/updateProjectProgress', async function(req, res, next) {
             res.setHeader('Content-Type', 'application/json');
             res.json({
                 success: true,
-                message: 'Successfully updated project status'
+                message: 'Successfully updated project progress'
             });
         }
     }

@@ -7,6 +7,7 @@ const fs = require('fs');
 const path = require('path');
 
 const cors = require('../../cors');
+const { ContractImpl } = require('fabric-network/lib/contract');
 
 router.use(bodyParser.json());
 
@@ -152,7 +153,51 @@ router.post('/', async function(req,res,next) {
                             }
                         }
                     }
+                    const winningBid = await contract.evaluateTransaction('getBid',winnerBidID);
+                    const winningBidJson = JSON.parse(winningBid.toString());
+                    const winningContractorUsername = winningBidJson.username;
+                    const allocatedProjectID = winningBidJson.projectID;
 
+                    //updating project status from floated to in-progress, bid_id from null to winner bid ID,
+                    //contractor_id to winner contactor username.
+                    
+                    const contract2 = network.getContract('gail', 'Project');
+                    await contract2.submitTransaction('updateProjectStatus',allocatedProjectID,'in-progress');
+                    await contract2.submitTransaction('updateProjectBidID',allocatedProjectID,winnerBidID);
+                    await contract2.submitTransaction('updateProjectContractor',allocatedProjectID,winningContractorUsername);
+                   
+
+
+                    const constants=JSON.parse(fs.readFileSync(path.resolve(__dirname,'..','contractors','constants.json'), 'utf8'));
+                    const numGailNodes=constants['numGailNodes'];
+                    const ccpPath = path.resolve(__dirname, '..', '..', '..', 'fabric', 'test-network', 'organizations',
+                    'peerOrganizations', 'contractors.example.com', 'connection-contractors.json');
+                    const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
+                    const gatewayContractors = new Gateway();
+                    await gatewayContractors.connect(ccp, { wallet, identity: 'admin',
+                        discovery: { enabled: true, asLocalhost: true } });
+
+
+                   // Get the network (channel) our contract is deployed to.
+                   const network2 = await gateway.getNetwork('channelgg');
+
+                  // Get the contract from the network.
+                    const contract3 = network2.getContract('gail','User');
+                    const numContractorsAsBytes=await contract3.evaluateTransaction('getNumContractors');
+                    var numContractors=JSON.parse(numContractorsAsBytes.toString());
+                    var curChannelNum=numContractors.numContractors;
+
+
+                    console.log(curChannelNum);
+                    for(i=1;i<numGailNodes;i++)
+                    {
+                        var str='channelg'+i.toString()+'c'+curChannelNum.toString();
+                        const networkChannel = await gatewayContractors.getNetwork(str);
+                        const contractChannel = networkChannel.getContract('contractors_'+i.toString()+'_'+curChannelNum.toString(),'User');
+                        await contractChannel.submitTransaction('allocateProject',winningContractorUsername,req.body.id,winnerBidID);
+                    }
+                    // Disconnect from the gateway.
+                    await gateway.disconnect();
                     res.json({
                         success: true,
                         message: 'Winning bidID for project'+req.body.id+' is-'+winnerBidID 

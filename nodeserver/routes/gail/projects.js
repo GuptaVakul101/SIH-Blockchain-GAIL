@@ -151,15 +151,20 @@ router.post('/getProject', async function(req, res, next) {
             await gateway.disconnect();
             const project = JSON.parse(getProj.toString());
             if("message" in project) {
+                res.statusCode = 400;
+                res.setHeader('Content-Type', 'application/json');
                 res.json({
                     success: false,
                     message: 'No project of project id-'+ req.body.id + ' found.'
                 });
             }
             else{
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
                 res.json({
                     success: true,
-                    message: 'Succesfully got project of id-' + project.id
+                    message: 'Succesfully got project of id-' + project.id,
+                    object: jsonObj
                 });
             }
             
