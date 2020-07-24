@@ -27,7 +27,7 @@ class Project extends Contract {
             id: id,
             title: title,
             description: description,
-            status: 'floated',
+            status: 'floated', //in-progress, in-shipment, finished
             contractor_id: null,
             bid_id: null,
             progress:[]
@@ -58,7 +58,7 @@ class Project extends Contract {
         return projectAsBytes.toString();
 
     }
-    async updateProjectStatus(ctx,projectID,status){
+    async updateProjectBidID(ctx,id,bidID){
         const projectAsBytes = await ctx.stub.getState('PROJECT_'+id);
         if (!projectAsBytes || projectAsBytes.length === 0) {
             return {
@@ -66,11 +66,35 @@ class Project extends Contract {
                 message: 'Project with id: \'' + id + '\' does not exist.'
             };
         }
-        var project = JSON.parse(projectAsBytes.toString());status
+        var project = JSON.parse(projectAsBytes.toString());
+        project.bid_id=bidID;
+        await ctx.stub.putState('PROJECT_'+id, Buffer.from(JSON.stringify(project)));
+    }
+    async updateProjectContractor(ctx,id,contractorUsername){
+        const projectAsBytes = await ctx.stub.getState('PROJECT_'+id);
+        if (!projectAsBytes || projectAsBytes.length === 0) {
+            return {
+                success: 'false',
+                message: 'Project with id: \'' + id + '\' does not exist.'
+            };
+        }
+        var project = JSON.parse(projectAsBytes.toString());
+        project.contractor_id=contractorUsername;
+        await ctx.stub.putState('PROJECT_'+id, Buffer.from(JSON.stringify(project)));
+    }
+    async updateProjectStatus(ctx,id,status){
+        const projectAsBytes = await ctx.stub.getState('PROJECT_'+id);
+        if (!projectAsBytes || projectAsBytes.length === 0) {
+            return {
+                success: 'false',
+                message: 'Project with id: \'' + id + '\' does not exist.'
+            };
+        }
+        var project = JSON.parse(projectAsBytes.toString());
         project.status=status;
         await ctx.stub.putState('PROJECT_'+id, Buffer.from(JSON.stringify(project)));
     }
-    async updateProjectProgress(ctx,projectID,description,timestamp){
+    async updateProjectProgress(ctx,id,description,timestamp){
         const projectAsBytes = await ctx.stub.getState('PROJECT_'+id);
         if (!projectAsBytes || projectAsBytes.length === 0) {
             return {
