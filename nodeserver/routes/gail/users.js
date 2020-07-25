@@ -46,13 +46,38 @@ router.post('/login', async function(req, res, next) {
         const contract = network.getContract('gail');
 
         const user = await contract.evaluateTransaction('getUser', req.body.username, req.body.password);
+        const jsonObject = JSON.parse(user.toString());
 
         // Disconnect from the gateway.
         await gateway.disconnect();
 
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'application/json');
-        res.json(JSON.parse(user.toString()));
+        if(jsonObject.hasOwnProperty('success')) {
+            console.log("Contains Success");
+            console.log(jsonObject.success);
+            if(jsonObject.success == 'false') {
+                res.statusCode = 500;
+                res.setHeader('Content-Type', 'application/json');
+                res.json({
+                    success: false,
+                    message: "Authentication failed"
+                });
+            } else {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json({
+                    success: true,
+                    message: "Successful Login"
+                });
+            }
+
+        } else {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json({
+                success: true,
+                message: "Successful Login"
+            });
+        }
     }
 });
 
