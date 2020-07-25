@@ -1,15 +1,20 @@
 var express = require("express");
 var router = express.Router({mergeParams: true});
 var http = require('http');
+var cookieParser = require('cookie-parser');
 
 
 router.get("/", function(req,res){
-	res.render("landing");
+	res.render("landing", { currentUser: req.cookies.username} );
 });
 
 //SHOW REGISTER FORM
 router.get("/register",function(req,res){
-    res.render("register");
+	if(req.cookies.username != null && req.cookies.username.toString() != "")  {
+		res.redirect("/");
+		return;
+	}
+    res.render("register", { currentUser: req.cookies.username} );
 });
 
 //HANDLE SIGN UP
@@ -19,6 +24,11 @@ router.post("/register",function(req,res){
 
 	console.log(username);
 	console.log(password);
+
+	if(req.cookies.username != null && req.cookies.username.toString() != "")  {
+		res.redirect("/");
+		return;
+	}
 
 	const requestData = JSON.stringify({
 		"username": username.toString(),
@@ -52,7 +62,9 @@ router.post("/register",function(req,res){
 	    		console.log("Failed");
 	    		res.redirect('/register');
 	    	} else {
-	    		res.redirect('/login');
+	    		res.cookie("username", username.toString());
+	    		res.cookie("password", password.toString());
+	    		res.redirect('/');
 	    	}
 	  	});
 	}
@@ -64,11 +76,19 @@ router.post("/register",function(req,res){
 
 //SHOW LOGIN FORM
 router.get("/login", function(req,res){
-    res.render("login");
+	if(req.cookies.username != null && req.cookies.username.toString() != "") {
+		res.redirect("/");
+		return;
+	}
+    res.render("login", { currentUser: req.cookies.username});
 })
 
 //HANDLE LOGIN 
 router.post("/login", function(req,res){
+	if(req.cookies.username != null && req.cookies.username.toString() != "")  {
+		res.redirect("/");
+		return;
+	}
 	var username = req.body.username;
 	var password = req.body.password;
 
@@ -102,6 +122,8 @@ router.post("/login", function(req,res){
 	    	if(jsonObject.success == false) {
 	    		res.redirect('/login');
 	    	} else {
+	    		res.cookie("username", username.toString());
+	    		res.cookie("password", password.toString());
 	    		res.redirect('/');
 	    	}
 	  	});
@@ -111,6 +133,16 @@ router.post("/login", function(req,res){
 	request.write(requestData);
 	request.end();
 })
+
+router.get("/logout",function(req,res){
+    res.cookie("username", "");
+    res.cookie("password", "");
+    res.redirect("/");
+});
+
+router.get("/cookies", function(req,res){
+	res.send(req.cookies);
+});
 
 
 module.exports = router;
