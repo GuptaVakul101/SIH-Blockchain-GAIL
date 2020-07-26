@@ -43,7 +43,8 @@ class User extends Contract {
             email:email,
             activeProjectID:null,
             activeBidID:null,
-            listOfPreviousProjects:[]
+            listOfPreviousProjects:[],
+            overallRating: '0'
         };
 
         await ctx.stub.putState('CONTRACTOR_'+username, Buffer.from(JSON.stringify(user)));

@@ -20,17 +20,20 @@ class Project extends Contract {
     //            success: 'true'
     //        };
     //    }
-    async createProject(ctx, username, id, title, description) {
+    async createProject(ctx, username, id, title, description,createTimeStamp,deadline,brochurePath) {
         const project = {
             username: username,
             docType: 'PROJECT',
             id: id,
             title: title,
             description: description,
-            status: 'floated', //in-progress, in-shipment, finished
+            status: 'floated', //in-progress, in-shipment, complete_accepted, complete_rejected
             contractor_id: null,
             bid_id: null,
-            progress:[]
+            progress:[],
+            createTimeStamp: createTimeStamp,
+            deadline: deadline,
+            brochurePath: brochurePath
         };
 
         await ctx.stub.putState('PROJECT_'+id, Buffer.from(JSON.stringify(project)));

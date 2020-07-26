@@ -50,11 +50,12 @@ class User extends Contract {
         return userAsBytes.toString();
     }
 
-    async createUser(ctx, username, password) {
+    async createUser(ctx, username, password,email) {
         const user = {
             username: username,
             docType: 'USER',
-            password: password
+            password: password,
+            email: email
         };
 
         await ctx.stub.putState('USER_'+username, Buffer.from(JSON.stringify(user)));
