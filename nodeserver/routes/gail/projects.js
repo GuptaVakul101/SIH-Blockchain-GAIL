@@ -32,13 +32,14 @@ router.post('/createProject', async function(req, res, next) {
     const wallet = await Wallets.newFileSystemWallet(walletPath);
 
     // Check to see if we've already enrolled the user.
+    console.log("Username: " + req.body.username);
     const identity = await wallet.get(req.body.username);
     if (!identity) {
         res.statusCode = 404;
         res.setHeader('Content-Type', 'application/json');
         res.json({
             success: false,
-            message: 'You dont have permission to access this page!!' 
+            message: 'You dont have permission to access this page' 
         });
     }   
     else{
