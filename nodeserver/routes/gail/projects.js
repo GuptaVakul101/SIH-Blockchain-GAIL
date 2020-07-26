@@ -175,4 +175,242 @@ router.post('/getProject', async function(req, res, next) {
 
     
 });
+
+router.post('/acceptProject', async function(req, res, next) {
+	const ccpPath = path.resolve(__dirname, '..', '..', '..', 'fabric', 'test-network', 'organizations',
+    'peerOrganizations', 'gail.example.com', 'connection-gail.json');
+    const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
+
+    // Create a new file system based wallet for managing identities.
+    const walletPath = path.join(__dirname, 'wallet');
+    const wallet = await Wallets.newFileSystemWallet(walletPath);
+
+    // Check to see if we've already enrolled the user.
+    console.log("Username: " + req.body.username);
+    const identity = await wallet.get(req.body.username);
+    if (!identity) {
+        res.statusCode = 404;
+        res.setHeader('Content-Type', 'application/json');
+        res.json({
+            success: false,
+            message: 'You dont have permission to access this page' 
+        });
+    }   
+    else{
+        // Create a new gateway for connecting to our peer node.
+        const gateway = new Gateway();
+        await gateway.connect(ccp, { wallet, identity: req.body.username,
+            discovery: { enabled: true, asLocalhost: true } });
+
+        // Get the network (channel) our contract is deployed to.
+        const network = await gateway.getNetwork('channelgg');
+
+        // Get the contract from the network.
+        const contract = network.getContract('gail', 'User');
+
+        const user = await contract.evaluateTransaction('getUser', req.body.username, req.body.password);
+        const jsonObj = JSON.parse(user.toString());
+        console.log(jsonObj.success);
+        await gateway.disconnect();
+
+        if(jsonObj.success == "false") {
+            res.statusCode = 404;
+            res.setHeader('Content-Type', 'application/json');
+            res.json({
+                success: false,
+                message: 'You dont have permission to access this page!!' 
+            });
+        } 
+        else {
+            //correct username and password, proceed further to create new project
+            const gateway = new Gateway();
+            await gateway.connect(ccp, { wallet, identity: req.body.username,
+            discovery: { enabled: true, asLocalhost: true } });
+            const network = await gateway.getNetwork('channelgg');
+            const contract = network.getContract('gail', 'Project');
+            const getProj = await contract.evaluateTransaction('getProject',req.body.id);
+            const project = JSON.parse(getProj.toString());
+            if("message" in project) {
+                res.statusCode = 400;
+                res.setHeader('Content-Type', 'application/json');
+                res.json({
+                    success: false,
+                    message: 'No project of project id-'+ req.body.id + ' found.'
+                });
+            }
+            if(project.contractor_id==null){
+                res.statusCode = 400;
+                res.setHeader('Content-Type', 'application/json');
+                res.json({
+                    success: false,
+                    message: 'Project not yet allocated.'
+                });
+            }
+            //updating status of project to completed_accepted.
+            await contract.submitTransaction('updateProjectStatus',allocatedProjectID,'complete_accepted');
+                   
+
+            //deallocating project for contractor.
+            const constants=JSON.parse(fs.readFileSync(path.resolve(__dirname,'..','contractors','constants.json'), 'utf8'));
+            const numGailNodes=constants['numGailNodes'];
+            const ccpPath = path.resolve(__dirname, '..', '..', '..', 'fabric', 'test-network', 'organizations',
+            'peerOrganizations', 'contractors.example.com', 'connection-contractors.json');
+            const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
+            const gatewayContractors = new Gateway();
+            await gatewayContractors.connect(ccp, { wallet, identity: 'admin',
+                discovery: { enabled: true, asLocalhost: true } });
+
+
+            // Get the network (channel) our contract is deployed to.
+            const network2 = await gateway.getNetwork('channelgg');
+
+            // Get the contract from the network.
+            const contract3 = network2.getContract('gail','User');
+            const numContractorsAsBytes=await contract3.evaluateTransaction('getNumContractors');
+            var numContractors=JSON.parse(numContractorsAsBytes.toString());
+            var curChannelNum=numContractors.numContractors;
+
+
+            console.log(curChannelNum);
+            for(i=1;i<numGailNodes;i++)
+            {
+                var str='channelg'+i.toString()+'c'+curChannelNum.toString();
+                const networkChannel = await gatewayContractors.getNetwork(str);
+                const contractChannel = networkChannel.getContract('contractors_'+i.toString()+'_'+curChannelNum.toString(),'User');
+                await contractChannel.submitTransaction('deallocateProject',project.contractor_id);
+            }
+            // Disconnect from the gateway.
+            await gateway.disconnect();
+            await gatewayContractors.disconnect();
+
+            res.json({
+                success: true,
+                message: 'Successfully accepted the project.' 
+            });
+
+        }
+    }
+
+    
+});
+
+router.post('/rejectProject', async function(req, res, next) {
+	const ccpPath = path.resolve(__dirname, '..', '..', '..', 'fabric', 'test-network', 'organizations',
+    'peerOrganizations', 'gail.example.com', 'connection-gail.json');
+    const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
+
+    // Create a new file system based wallet for managing identities.
+    const walletPath = path.join(__dirname, 'wallet');
+    const wallet = await Wallets.newFileSystemWallet(walletPath);
+
+    // Check to see if we've already enrolled the user.
+    console.log("Username: " + req.body.username);
+    const identity = await wallet.get(req.body.username);
+    if (!identity) {
+        res.statusCode = 404;
+        res.setHeader('Content-Type', 'application/json');
+        res.json({
+            success: false,
+            message: 'You dont have permission to access this page' 
+        });
+    }   
+    else{
+        // Create a new gateway for connecting to our peer node.
+        const gateway = new Gateway();
+        await gateway.connect(ccp, { wallet, identity: req.body.username,
+            discovery: { enabled: true, asLocalhost: true } });
+
+        // Get the network (channel) our contract is deployed to.
+        const network = await gateway.getNetwork('channelgg');
+
+        // Get the contract from the network.
+        const contract = network.getContract('gail', 'User');
+
+        const user = await contract.evaluateTransaction('getUser', req.body.username, req.body.password);
+        const jsonObj = JSON.parse(user.toString());
+        console.log(jsonObj.success);
+        await gateway.disconnect();
+
+        if(jsonObj.success == "false") {
+            res.statusCode = 404;
+            res.setHeader('Content-Type', 'application/json');
+            res.json({
+                success: false,
+                message: 'You dont have permission to access this page!!' 
+            });
+        } 
+        else {
+            //correct username and password, proceed further to create new project
+            const gateway = new Gateway();
+            await gateway.connect(ccp, { wallet, identity: req.body.username,
+            discovery: { enabled: true, asLocalhost: true } });
+            const network = await gateway.getNetwork('channelgg');
+            const contract = network.getContract('gail', 'Project');
+            const getProj = await contract.evaluateTransaction('getProject',req.body.id);
+            const project = JSON.parse(getProj.toString());
+            if("message" in project) {
+                res.statusCode = 400;
+                res.setHeader('Content-Type', 'application/json');
+                res.json({
+                    success: false,
+                    message: 'No project of project id-'+ req.body.id + ' found.'
+                });
+            }
+            if(project.contractor_id==null){
+                res.statusCode = 400;
+                res.setHeader('Content-Type', 'application/json');
+                res.json({
+                    success: false,
+                    message: 'Project not yet allocated.'
+                });
+            }
+            //updating status of project to completed_rejected.
+            await contract.submitTransaction('updateProjectStatus',allocatedProjectID,'complete_rejected');
+                   
+
+            //deallocating project for contractor.
+            const constants=JSON.parse(fs.readFileSync(path.resolve(__dirname,'..','contractors','constants.json'), 'utf8'));
+            const numGailNodes=constants['numGailNodes'];
+            const ccpPath = path.resolve(__dirname, '..', '..', '..', 'fabric', 'test-network', 'organizations',
+            'peerOrganizations', 'contractors.example.com', 'connection-contractors.json');
+            const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
+            const gatewayContractors = new Gateway();
+            await gatewayContractors.connect(ccp, { wallet, identity: 'admin',
+                discovery: { enabled: true, asLocalhost: true } });
+
+
+            // Get the network (channel) our contract is deployed to.
+            const network2 = await gateway.getNetwork('channelgg');
+
+            // Get the contract from the network.
+            const contract3 = network2.getContract('gail','User');
+            const numContractorsAsBytes=await contract3.evaluateTransaction('getNumContractors');
+            var numContractors=JSON.parse(numContractorsAsBytes.toString());
+            var curChannelNum=numContractors.numContractors;
+
+
+            console.log(curChannelNum);
+            for(i=1;i<numGailNodes;i++)
+            {
+                var str='channelg'+i.toString()+'c'+curChannelNum.toString();
+                const networkChannel = await gatewayContractors.getNetwork(str);
+                const contractChannel = networkChannel.getContract('contractors_'+i.toString()+'_'+curChannelNum.toString(),'User');
+                await contractChannel.submitTransaction('deallocateProject',project.contractor_id);
+            }
+            // Disconnect from the gateway.
+            await gateway.disconnect();
+            await gatewayContractors.disconnect();
+
+            res.json({
+                success: true,
+                message: 'Rejected the project.' 
+            });
+
+        }
+    }
+
+    
+});
+
+
 module.exports = router;

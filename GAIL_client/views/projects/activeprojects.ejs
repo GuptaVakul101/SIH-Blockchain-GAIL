@@ -1,4 +1,38 @@
 <%- include("../partials/header") %>
 
 Active Projects
-<%- include("../partials/footer") %>
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<style>
+    li:nth-child(odd){
+        background-color:lightgrey;
+    }
+</style>
+<body>
+<div class="w3-container">
+    <p> </p>
+  <ul class="w3-ul w3-card" style="width:90%">
+    <li><a href="/brochure/project1" download>
+        Project Description 1 
+      </a> </li>
+    <li><a href="/brochure/project2" download>
+        Project Description 2 
+      </a> </li><li><a href="/brochure/project3" download>
+        Project Description 3 
+      </a> </li>
+      <li><a href="/brochure/project4" download>
+        Project Description 4 
+      </a> </li>
+
+
+  </ul>
+  <br>
+
+</div>
+
+</body>
+</html>
+
+
+<%- include("../partials/footer") %> 
