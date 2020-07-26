@@ -74,7 +74,7 @@ class User extends Contract {
             };
         }
         var user = JSON.parse(userAsBytes.toString());
-        user.listOfPreviousProjects.push(projectID);
+        user.listOfPreviousProjects.push(user.activeProjectID);
         user.activeProjectID=null;
         user.activeBidID=null;
         await ctx.stub.putState('CONTRACTOR_'+username, Buffer.from(JSON.stringify(user)));

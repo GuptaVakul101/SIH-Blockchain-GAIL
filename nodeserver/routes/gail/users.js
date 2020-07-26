@@ -50,6 +50,9 @@ router.post('/login', async function(req, res, next) {
 
         // Disconnect from the gateway.
         await gateway.disconnect();
+        // res.statusCode = 200;
+        // res.setHeader('Content-Type', 'application/json');
+        // res.json(JSON.parse(user.toString()));
 
         if(jsonObject.hasOwnProperty('success')) {
             console.log("Contains Success");
@@ -163,7 +166,7 @@ router.post('/signup', async function(req, res, next){
                 // Get the contract from the network.
                 const contract = network.getContract('gail');
 
-                await contract.submitTransaction('createUser', req.body.username, req.body.password);
+                await contract.submitTransaction('createUser', req.body.username, req.body.password,req.body.email);
                 // Disconnect from the gateway.
                 await gateway.disconnect();
 
