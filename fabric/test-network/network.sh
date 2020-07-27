@@ -461,7 +461,9 @@ function networkDown() {
     rm -rf organizations/fabric-ca/gail/
     rm -rf organizations/fabric-ca/contractors/
     rm -rf organizations/fabric-ca/ordererOrg/
-
+    # remove wallet
+    rm -R ../../nodeserver/routes/gail/wallet
+    rm -R ../../nodeserver/routes/contractors/wallet
     # remove channel and script artifacts
     for i in $(seq 0 $((GAIL_NODES-1))); do
        for j in $(seq 0 $((CONTRACTOR_NODES-1))); do
