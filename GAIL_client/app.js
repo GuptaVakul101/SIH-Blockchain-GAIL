@@ -15,8 +15,9 @@ app.use(express.static(__dirname + "/public"));
 app.use("/", indexRoutes);
 app.use("/", projectRoutes);
 
-
-app.listen(3600,function(){
-    console.log("Server started at port 3600");
+const port = process.env.PORT;
+app.listen(port,function(){
+    console.log("Server started at port 8000");
 });
+
 
