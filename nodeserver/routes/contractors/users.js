@@ -31,7 +31,7 @@ router.post('/login', async function(req, res, next) {
         res.setHeader('Content-Type', 'application/json');
         res.json({
             success: false,
-            message: 'User with username: ' + req.body.username + ' does not exist'
+            message: 'User with username: ' + req.body.username + ' does not exist!!'
         });
     }
     else{
@@ -189,6 +189,15 @@ router.post('/signup', async function(req, res, next){
                     if (err) throw err;
                     console.log(dictionary); // Success
                 });
+
+                const dictionaryRev=JSON.parse(fs.readFileSync(path.resolve(__dirname,'dictionaryRev.json'), 'utf8'));
+                dictionaryRev[req.body.username]=req.body.username;
+                fs.writeFile(path.resolve(__dirname,'dictionaryRev.json'), JSON.stringify(dictionaryRev), err => {
+                    // Checking for errors
+                    if (err) throw err;
+                    console.log(dictionaryRev); // Success
+                });
+
 
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');

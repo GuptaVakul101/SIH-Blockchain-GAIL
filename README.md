@@ -3,6 +3,7 @@
 * **fabric** contains code for the Hyperledger Fabric blockchain network and chaincode (smart contracts).
 * **nodeserver** contains the NodeJS and Express backend server code.
 * **GAIL_client** contains the GAIL client website code.
+* **Contractor_client** contains the Contractor client website code.
 
 ---
 
@@ -63,4 +64,18 @@ npm install
 node app.js
 
 # Open localhost:3600 in web browser
+```
+
+---
+
+### Running NodeJS Contractor Client server
+
+```shell
+# Install all the required dependencies
+npm install
+
+# Start the node server
+node app.js
+
+# Open localhost:4200 in web browser
 ```

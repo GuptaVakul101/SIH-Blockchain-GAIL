@@ -458,12 +458,12 @@ function networkDown() {
     sudo rm -rf organizations/fabric-ca/ordererOrg/msp organizations/fabric-ca/ordererOrg/tls-cert.pem organizations/fabric-ca/ordererOrg/ca-cert.pem organizations/fabric-ca/ordererOrg/IssuerPublicKey organizations/fabric-ca/ordererOrg/IssuerRevocationPublicKey organizations/fabric-ca/ordererOrg/fabric-ca-server.db
     sudo rm -rf addOrg3/fabric-ca/org3/msp addOrg3/fabric-ca/org3/tls-cert.pem addOrg3/fabric-ca/org3/ca-cert.pem addOrg3/fabric-ca/org3/IssuerPublicKey addOrg3/fabric-ca/org3/IssuerRevocationPublicKey addOrg3/fabric-ca/org3/fabric-ca-server.db
 
-    rm -rf organizations/fabric-ca/gail/
-    rm -rf organizations/fabric-ca/contractors/
-    rm -rf organizations/fabric-ca/ordererOrg/
+    sudo rm -rf organizations/fabric-ca/gail/
+    sudo rm -rf organizations/fabric-ca/contractors/
+    sudo rm -rf organizations/fabric-ca/ordererOrg/
     # remove wallet
-    rm -R ../../nodeserver/routes/gail/wallet
-    rm -R ../../nodeserver/routes/contractors/wallet
+    sudo rm -R ../../nodeserver/routes/gail/wallet
+    sudo rm -R ../../nodeserver/routes/contractors/wallet
     # remove channel and script artifacts
     for i in $(seq 0 $((GAIL_NODES-1))); do
        for j in $(seq 0 $((CONTRACTOR_NODES-1))); do
