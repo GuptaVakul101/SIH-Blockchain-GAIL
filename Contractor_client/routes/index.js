@@ -21,10 +21,10 @@ router.get("/register",function(req,res){
 router.post("/register",function(req,res){
 	var username = req.body.username;
 	var password = req.body.password;
+	var email = req.body.email;
 
-	console.log(username);
-	console.log(password);
-
+	// console.log(username);
+	// console.log(password);
 	if(req.cookies.username != null && req.cookies.username.toString() != "")  {
 		res.redirect("/");
 		return;
@@ -32,7 +32,8 @@ router.post("/register",function(req,res){
 
 	const requestData = JSON.stringify({
 		"username": username.toString(),
-		"password": password.toString()
+		"password": password.toString(),
+		"email": email.toString()
 	});
 
 	var options = {

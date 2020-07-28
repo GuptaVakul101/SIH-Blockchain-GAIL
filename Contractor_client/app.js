@@ -3,7 +3,7 @@ var app = express();
 var bodyParser = require('body-parser');
 
 var indexRoutes = require("./routes/index");
-// var projectRoutes = require("./routes/projects");
+var projectRoutes = require("./routes/projects");
 var cookieParser = require('cookie-parser');
 
 
@@ -13,9 +13,9 @@ app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 
 app.use("/", indexRoutes);
-// app.use("/", projectRoutes);
+app.use("/", projectRoutes);
 
 
-app.listen(3600,function(){
-    console.log("Server started at port 3600");
+app.listen(4200,function(){
+    console.log("Server started at port 4200");
 });

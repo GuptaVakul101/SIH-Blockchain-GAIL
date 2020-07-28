@@ -195,20 +195,20 @@ router.post('/getAllProjects', async function (req, res, next) {
     const wallet = await Wallets.newFileSystemWallet(walletPath);
 
     // Check to see if we've already enrolled the user.
-    const identity = await wallet.get(req.body.username);
+    const identity = await wallet.get('admin');
     if (!identity) {
         res.statusCode = 404;
         res.setHeader('Content-Type', 'application/json');
         res.json({
             success: false,
-            message: 'You dont have permission to access this page!!'
+            message: 'GAIL Admin should be registered first.'
         });
     }
     else {
         // Create a new gateway for connecting to our peer node.
         const gateway = new Gateway();
         await gateway.connect(ccp, {
-            wallet, identity: req.body.username,
+            wallet, identity: 'admin',
             discovery: { enabled: true, asLocalhost: true }
         });
 
@@ -216,49 +216,25 @@ router.post('/getAllProjects', async function (req, res, next) {
         const network = await gateway.getNetwork('channelgg');
 
         // Get the contract from the network.
-        const contract = network.getContract('gail', 'User');
-
-        const user = await contract.evaluateTransaction('getUser', req.body.username, req.body.password);
-        const jsonObj = JSON.parse(user.toString());
-        console.log(jsonObj.success);
-        await gateway.disconnect();
-
-        if (jsonObj.success == "false") {
-            res.statusCode = 404;
-            res.setHeader('Content-Type', 'application/json');
-            res.json({
-                success: false,
-                message: 'You dont have permission to access this page!!'
-            });
-        }
-        else {
-            //correct username and password, proceed further to create new project
-            const gateway = new Gateway();
-            await gateway.connect(ccp, {
-                wallet, identity: req.body.username,
-                discovery: { enabled: true, asLocalhost: true }
-            });
-            const network = await gateway.getNetwork('channelgg');
-            const contract = network.getContract('gail', 'Project');
-            var allProjects = {};
-            const numProj = await contract.evaluateTransaction('getNumProjects');
-            const numProjJson = JSON.parse(numProj.toString());
-            console.log(numProjJson);
-            for (var i = 1; i <= parseInt(numProjJson.num.toString()) + 1; i++) {
-                const getProj = await contract.evaluateTransaction('getProject', i);
-                const project = JSON.parse(getProj.toString());
-                if ("message" in project) {
-                }
-                else {
-                    console.log('hello' + i.toString());
-                    allProjects[i.toString()] = JSON.stringify(project);
-                }
+        const contract = network.getContract('gail', 'Project');
+        var allProjects = {};
+        const numProj = await contract.evaluateTransaction('getNumProjects');
+        const numProjJson = JSON.parse(numProj.toString());
+        console.log(numProjJson);
+        for (var i = 1; i <= parseInt(numProjJson.num.toString()) + 1; i++) {
+            const getProj = await contract.evaluateTransaction('getProject', i);
+            const project = JSON.parse(getProj.toString());
+            if ("message" in project) {
             }
-            res.json({
-                success: true,
-                allProjects: allProjects
-            });
+            else {
+                console.log('hello' + i.toString());
+                allProjects[i.toString()] = JSON.stringify(project);
+            }
         }
+        res.json({
+            success: true,
+            allProjects: allProjects
+        });
     }
 });
 
