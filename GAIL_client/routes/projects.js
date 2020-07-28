@@ -3,7 +3,6 @@ var router = express.Router({ mergeParams: true });
 var http = require('http');
 var cookieParser = require('cookie-parser');
 
-
 router.get("/activeprojects", function (req, res) {
     if (req.cookies.username == null || req.cookies.username.toString() == "") {
         res.redirect("/login");
@@ -17,16 +16,7 @@ router.get("/activeprojects", function (req, res) {
         "password": password,
     });
 
-    var options = {
-        host: 'localhost',
-        port: '3000',
-        path: '/gail/project/getAllProjects',
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Content-Length': requestData.length
-        }
-    }
+    var options = getOptions('/gail/project/getAllProjects', requestData);
 
     callback = function (response) {
         var str = '';
@@ -43,9 +33,8 @@ router.get("/activeprojects", function (req, res) {
             }
         });
     }
-    var request = http.request(options, callback);
-    request.write(requestData);
-    request.end();
+
+    runHttpRequest(options, callback, requestData);
 });
 
 router.get("/floatedprojects", function (req, res) {
@@ -61,16 +50,7 @@ router.get("/floatedprojects", function (req, res) {
         "password": password,
     });
 
-    var options = {
-        host: 'localhost',
-        port: '3000',
-        path: '/gail/project/getAllProjects',
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Content-Length': requestData.length
-        }
-    }
+    var options = getOptions('/gail/project/getAllProjects', requestData);
 
     callback = function (response) {
         var str = '';
@@ -87,9 +67,8 @@ router.get("/floatedprojects", function (req, res) {
             }
         });
     }
-    var request = http.request(options, callback);
-    request.write(requestData);
-    request.end();
+
+    runHttpRequest(options, callback, requestData);
 });
 
 router.get("/finishedprojects", function (req, res) {
@@ -124,16 +103,7 @@ router.get("/floatedprojects/:id", function (req, res) {
         "id": id
     });
 
-    var options = {
-        host: 'localhost',
-        port: '3000',
-        path: '/gail/project/getProject',
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Content-Length': requestData.length
-        }
-    }
+    var options = getOptions('/gail/project/getProject', requestData);
 
     callback = function (response) {
         var str = '';
@@ -150,15 +120,13 @@ router.get("/floatedprojects/:id", function (req, res) {
                 console.log("Failed");
                 res.redirect('/floatedprojects');
             } else {
-                
+
                 res.send(jsonObject.object);
             }
         });
     }
 
-    var request = http.request(options, callback);
-    request.write(requestData);
-    request.end();
+    runHttpRequest(options, callback, requestData);
 });
 
 router.get("/activeprojects/:id", function (req, res) {
@@ -171,22 +139,13 @@ router.get("/activeprojects/:id", function (req, res) {
     var password = req.cookies.password.toString();
     var id = req.params.id.toString();
 
-    const requestData = JSON.stringify({
+    var requestData = JSON.stringify({
         "username": username,
         "password": password,
         "id": id
     });
 
-    var options = {
-        host: 'localhost',
-        port: '3000',
-        path: '/gail/project/getProject',
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Content-Length': requestData.length
-        }
-    }
+    var options = getOptions('/gail/project/getProject', requestData);
 
     callback = function (response) {
         var str = '';
@@ -205,70 +164,64 @@ router.get("/activeprojects/:id", function (req, res) {
                 var contractorID = jsonObject.object.contractor_id;
                 var bidID = jsonObject.object.bid_id;
 
-                res.send(jsonObject.object);
+                var requestData = JSON.stringify({
+                    "bid_id": bidID.toString()
+                });
+
+                console.log(requestData.length);
+                var options = getOptions('/gail/bideval/getSingleBid', requestData);
+
+                var callback = function (response2) {
+                    var str2 = '';
+                    response2.on('data', function (chunk) {
+                        str2 += chunk;
+                    });
+
+                    response2.on('end', function () {
+                        const jsonObject2 = JSON.parse(str2);
+                        console.log(str2);
+                        res.send(jsonObject2);
+                    });
+                }
+
+                runHttpRequest(options, callback, requestData);
             }
         });
     }
 
-    var request = http.request(options, callback);
-    request.write(requestData);
-    request.end();
+    runHttpRequest(options, callback, requestData);
 });
 
 router.post("/newproject", function (req, res) {
+
     if (req.cookies.username == null || req.cookies.username.toString() == "") {
         res.redirect("/login");
         return;
     }
 
-    var todayDate = new Date();
-    var dd = todayDate.getDate();
-    var mm = todayDate.getMonth() + 1;
-    var yyyy = todayDate.getFullYear();
-
-    if (dd < 10) {
-        dd = '0' + dd;
-    }
-    if (mm < 10) {
-        mm = '0' + mm;
-    }
-
-
     var username = req.cookies.username.toString();
     var password = req.cookies.password.toString();
     var title = req.body.title.toString();
     var description = req.body.description.toString();
-    var deadlineDate = req.body.date;
-    var todayDate = mm + "/" + dd + "/" + yyyy;
+    var deadlineDate = req.body.date.toString();
+    var todayDate = getTodayDate().toString();
 
     const requestData = JSON.stringify({
         "username": username,
         "password": password,
         "title": title,
         "description": description,
-        "currentTime": todayDate.toString(),
-        "deadlineTime": deadlineDate.toString()
+        "currentTime": todayDate,
+        "deadlineTime": deadlineDate
     });
 
-    var options = {
-        host: 'localhost',
-        port: '3000',
-        path: '/gail/project/createProject',
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Content-Length': requestData.length
-        }
-    }
+    var options = getOptions('/gail/project/createProject', requestData);
 
     callback = function (response) {
         var str = '';
-        //another chunk of data has been received, so append it to `str`
         response.on('data', function (chunk) {
             str += chunk;
         });
-
-        //the whole response has been received, so we just print it out here
         response.on('end', function () {
             console.log(str);
             const jsonObject = JSON.parse(str);
@@ -281,11 +234,43 @@ router.post("/newproject", function (req, res) {
         });
     }
 
+    runHttpRequest(options, callback, requestData);
+})
+
+function getOptions(pathTemp, requestDataTemp) {
+    return {
+        host: 'localhost',
+        port: '3000',
+        path: pathTemp,
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': requestDataTemp.length
+        }
+    };
+}
+
+function runHttpRequest(options, callback, requestData) {
     var request = http.request(options, callback);
     request.write(requestData);
     request.end();
+}
 
-})
+function getTodayDate() {
+    var todayDate = new Date();
+    var dd = todayDate.getDate();
+    var mm = todayDate.getMonth() + 1;
+    var yyyy = todayDate.getFullYear();
+
+    if (dd < 10) {
+        dd = '0' + dd;
+    }
+    if (mm < 10) {
+        mm = '0' + mm;
+    }   
+
+    return mm + "/" + dd + "/" + yyyy;
+}
 
 
 module.exports = router;
