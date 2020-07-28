@@ -35,6 +35,19 @@ class User extends Contract {
 
     }
 
+    async getUserDetails(ctx, username) {
+        const userAsBytes = await ctx.stub.getState('CONTRACTOR_'+username);
+        if (!userAsBytes || userAsBytes.length === 0) {
+            return {
+                success: 'false',
+                message: 'Contractor with username: \'' + username + '\' does not exist.'
+            };
+        }
+        
+        return userAsBytes.toString();
+
+    }
+
     async createUser(ctx, username, password,email) {
         const user = {
             docType: 'CONTRACTOR',

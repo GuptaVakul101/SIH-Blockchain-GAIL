@@ -152,7 +152,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\":\"lavish\",\n    \"password\":\"password\",\n    \"title\":\"test\",\n    \"description\":\"string\"\n    \n}",
+					"raw": "{\n    \"username\":\"lavish\",\n    \"password\":\"password\",\n    \"title\":\"test\",\n    \"description\":\"string\",\n    \"currentTime\":\"dummy\",\n    \"deadlineTime\":\"dummy\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -181,7 +181,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\":\"lavish\",\n    \"password\":\"password\",\n    \"id\":\"1\"\n}",
+					"raw": "{\n    \"id\":\"1\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -211,7 +211,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\": \"utkarsh\",\n    \"password\": \"password\",\n    \"projectID\": \"1\",\n    \"bidDetails\": {\n        \"price\": \"58\",\n        \"quality\": \"80\",\n        \"rating\": \"1\"\n    }\n}",
+					"raw": "{\n    \"username\": \"utkarsh\",\n    \"password\": \"password\",\n    \"projectID\": \"1\",\n    \"bidDetails\": {\n        \"price\": \"59\"\n    }\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -376,7 +376,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\":\"lavish\",\n    \"password\":\"password\",\n    \"id\":\"1\"\n}",
+					"raw": "{\n    \"username\":\"lavish\",\n    \"password\":\"password\",\n    \"id\":\"1\",\n    \"rating\":\"6\",\n    \"quality\":\"80\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -406,7 +406,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\":\"lavish\",\n    \"password\":\"password\",\n    \"id\":\"1\"\n}",
+					"raw": "{\n    \"username\":\"lavish\",\n    \"password\":\"password\",\n    \"id\":\"1\",\n    \"rating\":\"3\",\n    \"quality\":\"17\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -436,7 +436,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\":\"lavish\",\n    \"password\":\"password\"\n}",
+					"raw": "{\n}",
 					"options": {
 						"raw": {
 							"language": "json"

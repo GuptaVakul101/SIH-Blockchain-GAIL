@@ -50,6 +50,18 @@ class User extends Contract {
         return userAsBytes.toString();
     }
 
+    async getUserDetails(ctx, username) {
+        const userAsBytes = await ctx.stub.getState('USER_'+username);
+        if (!userAsBytes || userAsBytes.length === 0) {
+            return {
+                success: 'false',
+                message: 'User with username: \'' + username + '\' does not exist.'
+            };
+        }
+
+        return userAsBytes.toString();
+    }
+
     async createUser(ctx, username, password,email) {
         const user = {
             username: username,
