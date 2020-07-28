@@ -347,7 +347,7 @@ router.post('/acceptProject', async function (req, res, next) {
             }
             //updating status of project to completed_accepted.
             await contract.submitTransaction('updateProjectStatus', req.body.id, 'complete_accepted');
-
+            const allocatedContractor = project.contractor_id.toString();
 
             //deallocating project for contractor.
             const constants = JSON.parse(fs.readFileSync(path.resolve(__dirname, '..', 'contractors', 'constants.json'), 'utf8'));
@@ -363,21 +363,34 @@ router.post('/acceptProject', async function (req, res, next) {
 
 
             // Get the network (channel) our contract is deployed to.
-            const network2 = await gateway.getNetwork('channelgg');
+            // const network2 = await gateway.getNetwork('channelgg');
+            const dictionary=JSON.parse(fs.readFileSync(path.resolve(__dirname,'..','contractors','dictionary.json'), 'utf8'));
+            // // Get the contract from the network.
+            // const contract3 = network2.getContract('gail', 'User');
+            // const numContractorsAsBytes = await contract3.evaluateTransaction('getNumContractors');
+            // var numContractors = JSON.parse(numContractorsAsBytes.toString());
+            // var curChannelNum = numContractors.numContractors;
+            var currChannelNum = dictionary[allocatedContractor];
 
-            // Get the contract from the network.
-            const contract3 = network2.getContract('gail', 'User');
-            const numContractorsAsBytes = await contract3.evaluateTransaction('getNumContractors');
-            var numContractors = JSON.parse(numContractorsAsBytes.toString());
-            var curChannelNum = numContractors.numContractors;
 
-
-            console.log(curChannelNum);
+            console.log(currChannelNum);
             for (i = 1; i < numGailNodes; i++) {
-                var str = 'channelg' + i.toString() + 'c' + curChannelNum.toString();
+                var str = 'channelg' + i.toString() + 'c' + currChannelNum.toString();
                 const networkChannel = await gatewayContractors.getNetwork(str);
-                const contractChannel = networkChannel.getContract('contractors_' + i.toString() + '_' + curChannelNum.toString(), 'User');
-                await contractChannel.submitTransaction('deallocateProject', project.contractor_id);
+                const contractChannel = networkChannel.getContract('contractors_' + i.toString() + '_' + currChannelNum.toString(), 'User');
+                await contractChannel.submitTransaction('deallocateProject', allocatedContractor);
+
+                const numPrevProjects = await contractChannel.evaluateTransaction('getNumPrevProjs',allocatedContractor);
+                const currRating = await contractChannel.evaluateTransaction('getOverallRating',allocatedContractor);
+                const currQuality = await contractChannel.evaluateTransaction('getProductQuality',allocatedContractor);
+
+                var newRating = parseFloat(currRating)*(parseFloat(numPrevProjects)-1)+parseFloat(req.body.rating);
+                newRating = newRating/parseFloat(numPrevProjects);
+                await contractChannel.submitTransaction('updateOverallRating',allocatedContractor,newRating.toString());
+
+                var newQuality = parseFloat(currQuality)*(parseFloat(numPrevProjects)-1)+parseFloat(req.body.quality);
+                newQuality = newQuality/parseFloat(numPrevProjects);
+                await contractChannel.submitTransaction('updateProductQuality',allocatedContractor,newQuality.toString());
             }
             // Disconnect from the gateway.
             await gateway.disconnect();
