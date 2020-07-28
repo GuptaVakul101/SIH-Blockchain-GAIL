@@ -56,6 +56,49 @@ router.post('/', async function(req, res, next) {
         }
     }
 });
+
+router.post('/getContractorDetails', async function(req, res, next) {
+    const dictionary=JSON.parse(fs.readFileSync(path.resolve(__dirname,'dictionaryRev.json'), 'utf8'));
+    if(dictionary.hasOwnProperty(req.body.username)){
+        var contractorDetails=dictionary[req.body.username];
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json({
+            success: true,
+            message: 'Successfully get contractor details',
+            contractorDetails: contractorDetails
+        });
+    }else{
+        res.statusCode = 400;
+        res.setHeader('Content-Type', 'application/json');
+        res.json({
+            success: false,
+            message: 'No such contractor id exists'
+        });
+    }
+});
+
+router.post('/getBidDetails', async function(req, res, next) {
+    const dictionary=JSON.parse(fs.readFileSync(path.resolve(__dirname,'dictionaryBid.json'), 'utf8'));
+    if(dictionary.hasOwnProperty(req.body.id)){
+        var bidDetails=dictionary[req.body.id];
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json({
+            success: true,
+            message: 'Successfully get bid details',
+            bidDetails: bidDetails
+        });
+    }else{
+        res.statusCode = 400;
+        res.setHeader('Content-Type', 'application/json');
+        res.json({
+            success: false,
+            message: 'No such bid id exists'
+        });
+    }
+});
+
 router.post('/updateProjectStatus', async function(req, res, next) {
     const authCheck=await utility.authenticate(req.body.username,req.body.password);
     if(authCheck==false)
@@ -95,14 +138,14 @@ router.post('/updateProjectStatus', async function(req, res, next) {
             //           pass: 'password'
             //         }
             //       });
-                  
+
             //       var mailOptions = {
             //         from: 'username@gmail.com',
             //         to: 'username@gmail.com',
             //         subject: 'Sending Email using Node.js',
             //         text: 'That was easy!'
             //       };
-                  
+
             //       transporter.sendMail(mailOptions, function(error, info){
             //         if (error) {
             //           console.log(error);
