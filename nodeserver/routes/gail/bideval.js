@@ -90,6 +90,20 @@ router.post('/', async function (req, res, next) {
                 const allAppliedBids = await contract.evaluateTransaction('getProjectBids', req.body.id);
                 const allAppliedBidsJson = JSON.parse(allAppliedBids.toString());
                 if ("message" in allAppliedBidsJson || allAppliedBidsJson.bids.length === 0) {
+
+                    // const gateway = new Gateway();
+                    // await gateway.connect(ccp, {
+                    //     wallet, identity: 'admin',
+                    //     discovery: { enabled: true, asLocalhost: true }
+                    // });
+
+                    const network = await gateway.getNetwork('channelgg');
+                    const contract = network.getContract('gail', 'Project');
+                    // console.log(req.body.bid_id.toString());
+                    // const getBid = await contract.evaluateTransaction('getBid', req.body.bid_id.toString());
+                    // const getBidJson = JSON.parse(getBid.toString());
+                    await contract.submitTransaction('updateProjectStatus', req.body.id.toString(), 'discarded');
+
                     res.statusCode = 400;
                     res.setHeader('Content-Type', 'application/json');
                     res.json({
@@ -161,14 +175,16 @@ router.post('/', async function (req, res, next) {
                             var str = 'channelg1c' + currChannelNum.toString();
                             const networkChannel = await gatewayContractors.getNetwork(str);
                             const contractChannel = networkChannel.getContract('contractors_1_' + currChannelNum.toString(), 'User');
-                            const qualityString = await contractChannel.evaluateTransaction('getProductQuality', contractorUsername);
-                            const ratingString = await contractChannel.evaluateTransaction('getOverallRating', contractorUsername);
+                            // const qualityString = await contractChannel.evaluateTransaction('getProductQuality', contractorUsername);
+                            // const ratingString = await contractChannel.evaluateTransaction('getOverallRating', contractorUsername);
                             const getBidDetails = getBidJson.bidDetails;
                             const getBidDetailsJson = JSON.parse(getBidDetails.toString());
                             const price = parseFloat(getBidDetailsJson.price);
-                            const quality = parseFloat(qualityString.toString());
-                            const rating = parseFloat(ratingString.toString());
-                            console.log(ratingString.toString());
+                            // const quality = parseFloat(qualityString.toString());
+                            // const rating = parseFloat(ratingString.toString());
+                            const quality = 1.3;
+                            const rating = 2.4;
+                            // console.log(ratingString.toString());
                             var bidVal = (price / maxPrice) * 600 + 300 - quality * 3 + 100 - rating * 10;
                             if (winningBidValue === 0) {
                                 winnerBidID = bidID;
