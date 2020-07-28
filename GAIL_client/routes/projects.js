@@ -229,8 +229,8 @@ router.get("/floatedprojects/:id", function (req, res) {
                 console.log("Failed");
                 res.redirect('/floatedprojects');
             } else {
-
-                res.send(jsonObject.object);
+                res.render("projects/showfloatedproject", { data: jsonObject.object, currentUser: req.cookies.username });
+                // res.send(jsonObject.object);
             }
         });
     }
@@ -300,7 +300,9 @@ router.get("/activeprojects/:id", function (req, res) {
                             response3.on('end', function () {
                                 const jsonObject3 = JSON.parse(str3); //coressponding to the bid details
                                 console.log("Contractor Details: " + JSON.stringify(jsonObject3.object));
-                                res.send(jsonObject3);
+                                res.render("projects/showactiveproject", { data: jsonObject.object, data2: jsonObject2.object, data3: jsonObject3.object, currentUser: req.cookies.username });
+
+                                // res.send(jsonObject3);
                             });
                         }
 
