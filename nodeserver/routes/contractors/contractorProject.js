@@ -57,27 +57,6 @@ router.post('/', async function(req, res, next) {
     }
 });
 
-router.post('/getContractorDetails', async function(req, res, next) {
-    const dictionary=JSON.parse(fs.readFileSync(path.resolve(__dirname,'dictionaryRev.json'), 'utf8'));
-    if(dictionary.hasOwnProperty(req.body.username)){
-        var contractorDetails=dictionary[req.body.username];
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'application/json');
-        res.json({
-            success: true,
-            message: 'Successfully get contractor details',
-            contractorDetails: contractorDetails
-        });
-    }else{
-        res.statusCode = 400;
-        res.setHeader('Content-Type', 'application/json');
-        res.json({
-            success: false,
-            message: 'No such contractor id exists'
-        });
-    }
-});
-
 router.post('/getBidDetails', async function(req, res, next) {
     const dictionary=JSON.parse(fs.readFileSync(path.resolve(__dirname,'dictionaryBid.json'), 'utf8'));
     if(dictionary.hasOwnProperty(req.body.id)){

@@ -210,4 +210,26 @@ router.post('/signup', async function(req, res, next){
     }
 });
 
+router.post('/:username', async function(req, res, next) {
+    const dictionary=JSON.parse(fs.readFileSync(path.resolve(__dirname,'dictionaryRev.json'), 'utf8'));
+    var contractorUsername = req.params.username.toString();
+    if(dictionary.hasOwnProperty(contractorUsername)){
+        var contractorDetails=dictionary[contractorUsername];
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json({
+            success: true,
+            message: 'Successfully get contractor details',
+            object: contractorDetails
+        });
+    }else{
+        res.statusCode = 400;
+        res.setHeader('Content-Type', 'application/json');
+        res.json({
+            success: false,
+            message: 'No such contractor id exists'
+        });
+    }
+});
+
 module.exports = router;

@@ -149,26 +149,23 @@ router.get("/activeprojects/:id", function (req, res) {
 
     callback = function (response) {
         var str = '';
-        //another chunk of data has been received, so append it to `str`
         response.on('data', function (chunk) {
             str += chunk;
         });
 
-        //the whole response has been received, so we just print it out here
         response.on('end', function () {
-            console.log(str);
-            const jsonObject = JSON.parse(str);
+            const jsonObject = JSON.parse(str); //coressponding to the project details
+            console.log("Project Details: " + JSON.stringify(jsonObject.object));
             if (jsonObject.success == false) {
                 res.redirect('/floatedprojects');
             } else {
-                var contractorID = jsonObject.object.contractor_id;
+                var contractorID = jsonObject.object.contractor_id.toString();
+                console.log(contractorID);
                 var bidID = jsonObject.object.bid_id;
 
                 var requestData = JSON.stringify({
                     "bid_id": bidID.toString()
                 });
-
-                console.log(requestData.length);
                 var options = getOptions('/gail/bideval/getSingleBid', requestData);
 
                 var callback = function (response2) {
@@ -178,10 +175,30 @@ router.get("/activeprojects/:id", function (req, res) {
                     });
 
                     response2.on('end', function () {
-                        const jsonObject2 = JSON.parse(str2);
-                        console.log(str2);
-                        res.send(jsonObject2);
+                        const jsonObject2 = JSON.parse(str2); //coressponding to the bid details
+                        console.log("Bid Details: " + JSON.stringify(jsonObject2.object));
+
+                        var requestData = JSON.stringify({
+                        });
+                        var options = getOptions('/contractors/users/' + contractorID, requestData);
+
+                        var callback = function (response3) {
+                            var str3 = '';
+                            response3.on('data', function (chunk) {
+                                str3 += chunk;
+                            });
+
+                            response3.on('end', function () {
+                                const jsonObject3 = JSON.parse(str3); //coressponding to the bid details
+                                console.log("Contractor Details: " + JSON.stringify(jsonObject3.object));
+                                res.send(jsonObject3);
+                            });
+                        }
+
+                        runHttpRequest(options, callback, requestData);
+
                     });
+
                 }
 
                 runHttpRequest(options, callback, requestData);
@@ -267,7 +284,7 @@ function getTodayDate() {
     }
     if (mm < 10) {
         mm = '0' + mm;
-    }   
+    }
 
     return mm + "/" + dd + "/" + yyyy;
 }
