@@ -31,7 +31,7 @@ router.post('/login', async function(req, res, next) {
         res.setHeader('Content-Type', 'application/json');
         res.json({
             success: false,
-            message: 'User with username: ' + req.body.username + ' does not exist'
+            message: 'User with username: ' + req.body.username + ' does not exist!!'
         });
     }
     else{
