@@ -150,6 +150,7 @@ router.get("/floatedprojects/:id", function (req, res) {
                 console.log("Failed");
                 res.redirect('/floatedprojects');
             } else {
+                
                 res.send(jsonObject.object);
             }
         });
