@@ -97,7 +97,7 @@ class User extends Contract {
         }
         var user = JSON.parse(userAsBytes.toString());
         user.overallRating=newRating;
-        await ctx.stub.putState('CONTRACTOR_'+id, Buffer.from(JSON.stringify(user)));
+        await ctx.stub.putState('CONTRACTOR_'+username, Buffer.from(JSON.stringify(user)));
     }
     async updateProductQuality(ctx,username,newQuality){
         const userAsBytes = await ctx.stub.getState('CONTRACTOR_'+username);
@@ -109,7 +109,7 @@ class User extends Contract {
         }
         var user = JSON.parse(userAsBytes.toString());
         user.productQuality=newQuality;
-        await ctx.stub.putState('CONTRACTOR_'+id, Buffer.from(JSON.stringify(user)));
+        await ctx.stub.putState('CONTRACTOR_'+username, Buffer.from(JSON.stringify(user)));
     }
     async allocateProject(ctx,username,projectID,bidID){
         const userAsBytes = await ctx.stub.getState('CONTRACTOR_'+username);
