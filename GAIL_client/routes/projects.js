@@ -1,7 +1,13 @@
 var express = require("express");
 var router = express.Router({ mergeParams: true });
 var http = require('http');
+var upload = require("express-fileupload");
 var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
+var app = express();
+
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 }));
 
 router.get("/activeprojects", function (req, res) {
     if (req.cookies.username == null || req.cookies.username.toString() == "") {
@@ -63,6 +69,7 @@ router.get("/floatedprojects", function (req, res) {
         response.on('end', function () {
             const jsonObject = JSON.parse(str);
             if (jsonObject.success == true) {
+                //for loop all Projects -> status: floated and deadline compare!
                 res.render("projects/floatedprojects", { projects: jsonObject.allProjects, currentUser: req.cookies.username });
             }
         });
@@ -215,13 +222,24 @@ router.post("/newproject", function (req, res) {
         res.redirect("/login");
         return;
     }
-
     var username = req.cookies.username.toString();
     var password = req.cookies.password.toString();
     var title = req.body.title.toString();
     var description = req.body.description.toString();
     var deadlineDate = req.body.date.toString();
     var todayDate = getTodayDate().toString();
+    var file = req.files.filename;
+
+    var getTimeStampString = new Date().getTime().toString();
+    var saveFilePath = "../nodeserver/brochureUpload/" + getTimeStampString;
+    file.mv(saveFilePath, function (err) {
+        if (err) {
+            res.redirect("/newproject");
+            return;
+        } else {
+            console.log("File downloaded successfully");
+        }
+    });
 
     const requestData = JSON.stringify({
         "username": username,
@@ -229,7 +247,8 @@ router.post("/newproject", function (req, res) {
         "title": title,
         "description": description,
         "currentTime": todayDate,
-        "deadlineTime": deadlineDate
+        "deadlineTime": deadlineDate,
+        "brochurePath": getTimeStampString
     });
 
     var options = getOptions('/gail/project/createProject', requestData);
@@ -250,7 +269,6 @@ router.post("/newproject", function (req, res) {
             }
         });
     }
-
     runHttpRequest(options, callback, requestData);
 })
 
@@ -288,6 +306,5 @@ function getTodayDate() {
 
     return mm + "/" + dd + "/" + yyyy;
 }
-
 
 module.exports = router;

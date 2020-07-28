@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router({ mergeParams: true });
 var http = require("http");
 var cookieParser = require("cookie-parser");
+var download = require('download');
 
 router.get("/", function (req, res) {
 	res.render("landing", { currentUser: req.cookies.username });
@@ -143,6 +144,14 @@ router.get("/logout", function (req, res) {
 
 router.get("/cookies", function (req, res) {
 	res.send(req.cookies);
+});
+
+router.get("/download/:path", function (req, res) {
+	var filePath = "../nodeserver/brochureUpload/" + req.params.path.toString();
+    var getTimeStampString = new Date().getTime().toString();
+	var fileName = getTimeStampString + ".pdf"; // The default name the browser will use
+	res.setHeader("Content-Type", "application/pdf");
+	res.download(filePath, fileName);
 });
 
 module.exports = router;
