@@ -114,6 +114,7 @@ router.get("/projects/:id", function(req,res) {
                 console.log("Failed");
                 res.redirect('/floatedprojects');
             } else {
+                
                 res.send(jsonObject.object);
             }
         });
