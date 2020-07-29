@@ -2,7 +2,10 @@
 
 <div class="w3-container">
 	<p> </p>
-	<ul class="w3-ul w3-card" style="width:90%">
+    <ul class="w3-ul w3-card" style="width:90%">
+        <li>
+            ----- PROJECT DETAILS -------
+        </li>
         <li>
             <%= data.title.toUpperCase() %>
         </li>
@@ -19,10 +22,34 @@
             <%= data.deadline.toUpperCase() %>
         </li>
         <li>
+            <%= data.contractor_id.toUpperCase() %>
+        </li>
+        <li>
+            <%= data.bid_id.toUpperCase() %>
+        </li>
+        <li>
             <%= data.brochurePath.toUpperCase() %>
         </li>
         <li>
+            ----- BID DETAILS -------
+        </li>
+        <li>
             <%= data2.price.toUpperCase() %>
+        </li>
+        <li>
+            <%= data2.time_period.toUpperCase() %>
+        </li>
+        <li>
+            <%= data2.standards.length %>
+        </li>
+        <li>
+            ----- CONTRACTOR DETAILS -------
+        </li>
+        <li>
+            <%= data3.username.toUpperCase() %>
+        </li>
+        <li>
+            <%= data3.email.toUpperCase() %>
         </li>
 		<form action="/dummyproject" method="post" encType="multipart/form-data">
 			<% if(data.status == "in-review") { %>
