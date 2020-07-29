@@ -7,9 +7,12 @@ const { mkdir } = require("fs");
 
 //need mid,value,merchantKey
 router.get("/payment", function(req,res){
+    console.log("hello");
+    var username='test';
     const queryObject = url.parse(req.url,true).query;
 
-    const orderId=(new Date()).getTime().toString()+"_"+mid;
+    const orderId=(new Date()).getTime().toString()+"_"+queryObject.mid;
+    console.log(orderId);
 
     var actionUrl="https://securegw-stage.paytm.in/theia/api/v1/showPaymentPage?mid="+queryObject.mid+"&orderId="+orderId;
 
@@ -40,9 +43,9 @@ router.get("/payment", function(req,res){
 
         //the whole response has been received, so we just print it out here
         response.on('end', function () {
-            const jsonObject = JSON.parse(str);
+            const jsonObject = JSON.parse(str);            
             if (jsonObject.body.resultInfo.resultMsg == "Success") {
-                res.render("payment/payment", { actionUrl: actionUrl ,mid:queryObject.mid ,orderId:orderId,txnToken:jsonObject.body.txnToken});
+                res.render("payment/payment", { currentUser:username,actionUrl: actionUrl ,mid:queryObject.mid ,orderId:orderId,txnToken:jsonObject.body.txnToken});
             }
         });
     }
@@ -51,5 +54,9 @@ router.get("/payment", function(req,res){
     request.end();
     
     
+});
+router.post("/payment/result", function (req, res) {
+    console.log(req.body);
+    res.redirect("/");
 });
 module.exports = router;

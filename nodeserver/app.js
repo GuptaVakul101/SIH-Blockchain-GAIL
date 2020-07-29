@@ -15,7 +15,7 @@ var contractorUsersRouter = require('./routes/contractors/users');
 var contractorAdminRouter = require('./routes/contractors/admin');
 var contractorProjectRouter = require('./routes/contractors/contractorProject');
 
-var initiatePaymentsRouter = require('./routes/payment/initiateTransaction');
+var initiatePaymentsRouter = require('./routes/payment/transaction');
 
 const cors = require('./cors');
 
