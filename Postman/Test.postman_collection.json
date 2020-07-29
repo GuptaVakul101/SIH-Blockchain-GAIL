@@ -1,58 +1,95 @@
 {
-	"variables": [],
 	"info": {
-		"name": "Test copy",
-		"_postman_id": "7c86c3dd-03cb-cdd1-78e9-8df0e69d59d8",
-		"description": "",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+		"_postman_id": "05fce83d-0dbc-45d6-a1f8-f09cd4e93f2f",
+		"name": "Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
 			"name": "Gail Admin Signup",
 			"request": {
-				"url": "localhost:3000/gail/admin/signup",
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": ""
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
 				},
-				"description": ""
+				"url": {
+					"raw": "localhost:3000/gail/admin/signup",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"gail",
+						"admin",
+						"signup"
+					]
+				}
 			},
 			"response": []
 		},
 		{
 			"name": "Contractor Admin signup",
 			"request": {
-				"url": "localhost:3000/contractors/admin/signup",
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
 					"raw": ""
 				},
-				"description": ""
+				"url": {
+					"raw": "localhost:3000/contractors/admin/signup",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"contractors",
+						"admin",
+						"signup"
+					]
+				}
 			},
 			"response": []
 		},
 		{
 			"name": "Gail User signup",
 			"request": {
-				"url": "localhost:3000/gail/users/signup",
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\":\"lavish\",\n    \"password\":\"password\",\n    \"email\":\"abc\"\n}"
+					"raw": "{\n    \"username\":\"lavish4\",\n    \"password\":\"password\",\n    \"email\":\"abc\",\n    \"teamname\":\"A\",\n    \"gailpic\":\"dummyGailPicPath\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
 				},
-				"description": ""
+				"url": {
+					"raw": "localhost:3000/gail/users/signup",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"gail",
+						"users",
+						"signup"
+					]
+				}
 			},
 			"response": []
 		},
 		{
 			"name": "GAIL User Login",
 			"request": {
-				"url": "localhost:3000/gail/users/login",
 				"method": "POST",
 				"header": [
 					{
@@ -64,197 +101,393 @@
 					"mode": "raw",
 					"raw": "{\n    \"username\":\"lavish\",\n    \"password\":\"password\"\n}"
 				},
-				"description": ""
+				"url": {
+					"raw": "localhost:3000/gail/users/login",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"gail",
+						"users",
+						"login"
+					]
+				}
 			},
 			"response": []
 		},
 		{
 			"name": "Contractor User signup",
 			"request": {
-				"url": "localhost:3000/contractors/users/signup",
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\":\"utkarsh\",\n    \"password\":\"password\",\n    \"email\":\"abc@abc.com\"\n}"
+					"raw": "{\n    \"username\":\"utkarsh3\",\n    \"password\":\"password\",\n    \"email\":\"abc@abc.com\",\n    \"contact\":\"989999249\",\n    \"address\":\"delhi\",\n    \"aboutUs\":\"dummyaboutUs\",\n    \"profilepic\":\"dummypath\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
 				},
-				"description": ""
+				"url": {
+					"raw": "localhost:3000/contractors/users/signup",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"contractors",
+						"users",
+						"signup"
+					]
+				}
 			},
 			"response": []
 		},
 		{
 			"name": "Add project",
 			"request": {
-				"url": "localhost:3000/gail/project/createProject",
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\":\"lavish\",\n    \"password\":\"password\",\n    \"title\":\"test\",\n    \"description\":\"string\",\n    \"currentTime\":\"dummy\",\n    \"deadlineTime\":\"dummy\"\n}"
+					"raw": "{\n    \"username\":\"lavish4\",\n    \"password\":\"password\",\n    \"title\":\"test\",\n    \"description\":\"string\",\n    \"currentTime\":\"dummy\",\n    \"deadlineTime\":\"dummy\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
 				},
-				"description": ""
+				"url": {
+					"raw": "localhost:3000/gail/project/createProject",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"gail",
+						"project",
+						"createProject"
+					]
+				}
 			},
 			"response": []
 		},
 		{
 			"name": "Get Project id 1",
 			"request": {
-				"url": "http://localhost:3000/gail/project/getProject",
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"id\":\"1\"\n}"
+					"raw": "{\n    \"id\":\"1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
 				},
-				"description": ""
+				"url": {
+					"raw": "http://localhost:3000/gail/project/getProject",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"gail",
+						"project",
+						"getProject"
+					]
+				}
 			},
 			"response": []
 		},
 		{
 			"name": "Apply Bid",
 			"request": {
-				"url": "localhost:3000/contractors/bids/applyForProject",
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\": \"utkarsh\",\n    \"password\": \"password\",\n    \"projectID\": \"1\",\n    \"bidDetails\": {\n        \"price\": \"59\"\n    }\n}"
+					"raw": "{\n    \"username\": \"utkarsh3\",\n    \"password\": \"password\",\n    \"projectID\": \"1\",\n    \"bidDetails\": {\n        \"price\": \"59\",\n        \"time_period\": \"5\",\n        \"standards\": [\"iso1\", \"iso2\"]\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
 				},
-				"description": ""
+				"url": {
+					"raw": "localhost:3000/contractors/bids/applyForProject",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"contractors",
+						"bids",
+						"applyForProject"
+					]
+				}
 			},
 			"response": []
 		},
 		{
 			"name": "Bid evaluation",
 			"request": {
-				"url": "http://localhost:3000/gail/bideval/",
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\":\"lavish\",\n    \"password\":\"password\",\n    \"id\":\"1\"\n}"
+					"raw": "{\n    \"username\":\"lavish4\",\n    \"password\":\"password\",\n    \"id\":\"1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
 				},
-				"description": ""
+				"url": {
+					"raw": "http://localhost:3000/gail/bideval/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"gail",
+						"bideval",
+						""
+					]
+				}
 			},
 			"response": []
 		},
 		{
 			"name": "Contractor User login",
 			"request": {
-				"url": "localhost:3000/contractors/users/login",
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\":\"utkarsh\",\n    \"password\":\"password\"\n}"
+					"raw": "{\n    \"username\":\"utkarsh3\",\n    \"password\":\"password\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
 				},
-				"description": ""
+				"url": {
+					"raw": "localhost:3000/contractors/users/login",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"contractors",
+						"users",
+						"login"
+					]
+				}
 			},
 			"response": []
 		},
 		{
 			"name": "Contractor get allocated project",
 			"request": {
-				"url": "localhost:3000/contractors/project/",
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n    \"username\":\"utkarsh\",\n    \"password\":\"password\"\n}"
 				},
-				"description": ""
+				"url": {
+					"raw": "localhost:3000/contractors/project/",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"contractors",
+						"project",
+						""
+					]
+				}
 			},
 			"response": []
 		},
 		{
 			"name": "Contractor update project status",
 			"request": {
-				"url": "localhost:3000/contractors/project/updateProjectStatus",
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n    \"username\":\"utkarsh\",\n    \"password\":\"password\",\n    \"status\":\"string\"\n}"
 				},
-				"description": ""
+				"url": {
+					"raw": "localhost:3000/contractors/project/updateProjectStatus",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"contractors",
+						"project",
+						"updateProjectStatus"
+					]
+				}
 			},
 			"response": []
 		},
 		{
 			"name": "Contractor update project progress",
 			"request": {
-				"url": "localhost:3000/contractors/project/updateProjectStatus",
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\":\"utkarsh\",\n    \"password\":\"password\",\n    \"description\":\"string\"\n}"
+					"raw": "{\n    \"username\":\"utkarsh\",\n    \"password\":\"password\",\n    \"description\":\"string\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
 				},
-				"description": ""
+				"url": {
+					"raw": "localhost:3000/contractors/project/updateProjectStatus",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"contractors",
+						"project",
+						"updateProjectStatus"
+					]
+				}
 			},
 			"response": []
 		},
 		{
 			"name": "Accept Project",
 			"request": {
-				"url": "http://localhost:3000/gail/project/acceptProject",
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\":\"lavish\",\n    \"password\":\"password\",\n    \"id\":\"1\",\n    \"rating\":\"6\",\n    \"quality\":\"80\"\n}"
+					"raw": "{\n    \"username\":\"lavish\",\n    \"password\":\"password\",\n    \"id\":\"1\",\n    \"rating\":\"6\",\n    \"quality\":\"80\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
 				},
-				"description": ""
+				"url": {
+					"raw": "http://localhost:3000/gail/project/acceptProject",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"gail",
+						"project",
+						"acceptProject"
+					]
+				}
 			},
 			"response": []
 		},
 		{
 			"name": "Reject Project",
 			"request": {
-				"url": "http://localhost:3000/gail/project/rejectProject",
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\":\"lavish\",\n    \"password\":\"password\",\n    \"id\":\"1\",\n    \"rating\":\"3\",\n    \"quality\":\"17\"\n}"
+					"raw": "{\n    \"username\":\"lavish\",\n    \"password\":\"password\",\n    \"id\":\"1\",\n    \"rating\":\"3\",\n    \"quality\":\"17\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
 				},
-				"description": ""
+				"url": {
+					"raw": "http://localhost:3000/gail/project/rejectProject",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"gail",
+						"project",
+						"rejectProject"
+					]
+				}
 			},
 			"response": []
 		},
 		{
 			"name": "Get All Projects",
 			"request": {
-				"url": "http://localhost:3000/gail/project/getAllProjects",
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n}"
+					"raw": "{\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
 				},
-				"description": ""
+				"url": {
+					"raw": "http://localhost:3000/gail/project/getAllProjects",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"gail",
+						"project",
+						"getAllProjects"
+					]
+				}
 			},
 			"response": []
 		},
 		{
-			"name": "Get Single Bid",
+			"name": "Update Contractor Details",
 			"request": {
-				"url": "http://localhost:3000/gail/bideval/getSingleBid",
 				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"description": ""
-					}
-				],
+				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"bid_id\":\"1595927438116\"\n}"
+					"raw": "{\n    \"username\":\"utkarsh3\",\n    \"password\":\"pass\",\n    \"email\":\"xyz@abcd.com\",\n    \"address\":\"delhi\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
 				},
-				"description": ""
+				"url": {
+					"raw": "localhost:3000/contractors/users/updateProfile",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"contractors",
+						"users",
+						"updateProfile"
+					]
+				}
 			},
 			"response": []
 		}
-	]
+	],
+	"protocolProfileBehavior": {}
 }

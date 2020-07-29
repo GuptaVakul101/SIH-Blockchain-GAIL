@@ -175,7 +175,8 @@ router.post('/signup', async function(req, res, next){
                     var str='channelg'+i.toString()+'c'+curChannelNum.toString();
                     const networkChannel = await gateway.getNetwork(str);
                     const contractChannel = networkChannel.getContract('contractors_'+i.toString()+'_'+curChannelNum.toString(),'User');
-                    await contractChannel.submitTransaction('createUser',req.body.username, req.body.password,req.body.email);
+                    await contractChannel.submitTransaction('createUser',req.body.username, req.body.password,req.body.email
+                    ,req.body.contact,req.body.address,req.body.aboutUs,req.body.profilepic);
                 }
                 await contract.submitTransaction('updateNumContractors');
                 // Disconnect from the gateway.
@@ -230,27 +231,105 @@ router.post('/profile', async function(req, res, next) {
         });
     }
 });
+router.post('/updateProfile', async function(req, res, next) {
+    //console.log('correcturl');
+    // Create a new file system based wallet for managing identities.
+    const walletPath = path.join(__dirname, 'wallet');
+    var wallet = await Wallets.newFileSystemWallet(walletPath);
 
-router.post('/:username', async function(req, res, next) {
-    const dictionary=JSON.parse(fs.readFileSync(path.resolve(__dirname,'dictionaryRev.json'), 'utf8'));
-    var contractorUsername = req.params.username.toString();
-    if(dictionary.hasOwnProperty(contractorUsername)){
-        var contractorDetails=dictionary[contractorUsername];
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'application/json');
-        res.json({
-            success: true,
-            message: 'Successfully get contractor details',
-            object: contractorDetails
-        });
-    }else{
+    // Check to see if we've already enrolled the user.
+    const identity = await wallet.get(req.body.username);
+    if (!identity) {
+        //console.log('here1');
         res.statusCode = 400;
         res.setHeader('Content-Type', 'application/json');
         res.json({
             success: false,
-            message: 'No such contractor id exists'
+            message: 'User with username: ' + req.body.username + ' does not exist!!'
         });
     }
+    else{
+        // Create a new gateway for connecting to our peer node.
+        const gateway=await utility.getContractorGateway(req.body.username);
+        const dictionary=JSON.parse(fs.readFileSync(path.resolve(__dirname,'dictionary.json'), 'utf8'));
+        var channelNum=dictionary[req.body.username];
+        // Get the network (channel) our contract is deployed to.
+        const network = await gateway.getNetwork('channelg1c'+channelNum);
+
+        // Get the contract from the network.
+        const contract = network.getContract('contractors_1_'+channelNum);
+
+        var user = await contract.evaluateTransaction('getUser', req.body.username, req.body.password);
+        const userJson = JSON.parse(user.toString());
+        //console.log(userJson);
+        if("message" in userJson){
+            //console.log('here2');
+            res.statusCode = 400;
+            res.json(userJson);
+            await gateway.disconnect();
+        }
+        else
+        // Disconnect from the gateway.
+
+        res.statusCode = 200;
+        for(i=1;i<numGailNodes;i++)
+        {
+            var str='channelg'+i.toString()+'c'+channelNum.toString();
+            const networkChannel = await gateway.getNetwork(str);
+            const contractChannel = networkChannel.getContract('contractors_'+i.toString()+'_'+channelNum.toString(),'User');
+            if ("email" in req.body){
+                await contractChannel.submitTransaction('updateUserEmail',req.body.username,req.body.password,
+                req.body.email);
+            }
+
+            if ("contact" in req.body){
+                await contractChannel.submitTransaction('updateUserContact',req.body.username,req.body.password,
+                req.body.contact);
+            }
+
+            if ("address" in req.body){
+                await contractChannel.submitTransaction('updateUserAddress',req.body.username,req.body.password,
+                req.body.address);
+            }
+
+            if ("profilepic" in req.body){
+                await contractChannel.submitTransaction('updateUserProfilePic',req.body.username,req.body.password,
+                req.body.profilepic);
+
+            }
+            if ("aboutUs" in req.body){
+                await contractChannel.submitTransaction('updateUserAboutUs',req.body.username,req.body.password,
+                req.body.aboutUs);
+            }
+
+        }
+        user = await contract.evaluateTransaction('getUser', req.body.username, req.body.password);
+        res.json(JSON.parse(user.toString()));
+    }
 });
+
+
+// router.post('/:username', async function(req, res, next) {
+//     const dictionary=JSON.parse(fs.readFileSync(path.resolve(__dirname,'dictionaryRev.json'), 'utf8'));
+//     var contractorUsername = req.params.username.toString();
+//     if(dictionary.hasOwnProperty(contractorUsername)){
+//         var contractorDetails=dictionary[contractorUsername];
+//         res.statusCode = 200;
+//         res.setHeader('Content-Type', 'application/json');
+//         res.json({
+//             success: true,
+//             message: 'Successfully get contractor details',
+//             object: contractorDetails
+//         });
+//     }else{
+//         res.statusCode = 400;
+//         res.setHeader('Content-Type', 'application/json');
+//         res.json({
+//             success: false,
+//             message: 'No such contractor id exists'
+//         });
+//     }
+// });
+
 
 module.exports = router;

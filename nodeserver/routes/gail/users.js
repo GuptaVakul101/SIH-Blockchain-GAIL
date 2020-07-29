@@ -166,7 +166,8 @@ router.post('/signup', async function(req, res, next){
                 // Get the contract from the network.
                 const contract = network.getContract('gail');
 
-                await contract.submitTransaction('createUser', req.body.username, req.body.password,req.body.email);
+                await contract.submitTransaction('createUser', req.body.username, req.body.password,req.body.email,
+                req.body.teamname,req.body.gailpic);
                 // Disconnect from the gateway.
                 await gateway.disconnect();
 
