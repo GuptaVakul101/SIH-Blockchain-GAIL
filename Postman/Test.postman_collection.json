@@ -65,7 +65,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\":\"lavish4\",\n    \"password\":\"password\",\n    \"email\":\"abc\",\n    \"teamname\":\"A\",\n    \"gailpic\":\"dummyGailPicPath\"\n}",
+					"raw": "{\n    \"username\":\"lavish\",\n    \"password\":\"password\",\n    \"email\":\"abc\",\n    \"teamname\":\"A\",\n    \"gailpic\":\"dummyGailPicPath\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -123,7 +123,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\":\"utkarsh3\",\n    \"password\":\"password\",\n    \"email\":\"abc@abc.com\",\n    \"contact\":\"989999249\",\n    \"address\":\"delhi\",\n    \"aboutUs\":\"dummyaboutUs\",\n    \"profilepic\":\"dummypath\"\n}\n",
+					"raw": "{\n    \"username\":\"utkarsh\",\n    \"password\":\"password\",\n    \"email\":\"abc@abc.com\",\n    \"contact\":\"989999249\",\n    \"address\":\"delhi\",\n    \"aboutUs\":\"dummyaboutUs\",\n    \"profilepic\":\"dummypath\"\n}\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -152,7 +152,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\":\"lavish4\",\n    \"password\":\"password\",\n    \"title\":\"test\",\n    \"description\":\"string\",\n    \"currentTime\":\"dummy\",\n    \"deadlineTime\":\"dummy\"\n}",
+					"raw": "{\n    \"username\":\"lavish\",\n    \"password\":\"password\",\n    \"title\":\"test\",\n    \"description\":\"string\",\n    \"currentTime\":\"dummy\",\n    \"deadlineTime\":\"dummy\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -211,7 +211,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\": \"utkarsh3\",\n    \"password\": \"password\",\n    \"projectID\": \"1\",\n    \"bidDetails\": {\n        \"price\": \"59\",\n        \"time_period\": \"5\",\n        \"standards\": [\"iso1\", \"iso2\"]\n    }\n}",
+					"raw": "{\n    \"username\": \"utkarsh\",\n    \"password\": \"password\",\n    \"projectID\": \"2\",\n    \"bidDetails\": {\n        \"price\": \"59\",\n        \"time_period\": \"5\",\n        \"standards\": [\"iso1\", \"iso2\"]\n    }\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -240,7 +240,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\":\"lavish4\",\n    \"password\":\"password\",\n    \"id\":\"1\"\n}",
+					"raw": "{\n    \"username\":\"lavish\",\n    \"password\":\"password\",\n    \"id\":\"1\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -270,7 +270,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\":\"utkarsh3\",\n    \"password\":\"password\"\n}",
+					"raw": "{\n    \"username\":\"utkarsh\",\n    \"password\":\"pass\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -299,7 +299,12 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\":\"utkarsh\",\n    \"password\":\"password\"\n}"
+					"raw": "{\n    \"username\":\"utkarsh\",\n    \"password\":\"password\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
 				},
 				"url": {
 					"raw": "localhost:3000/contractors/project/",
@@ -323,7 +328,12 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\":\"utkarsh\",\n    \"password\":\"password\",\n    \"status\":\"string\"\n}"
+					"raw": "{\n    \"username\":\"utkarsh\",\n    \"password\":\"password\",\n    \"status\":\"string\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
 				},
 				"url": {
 					"raw": "localhost:3000/contractors/project/updateProjectStatus",
@@ -406,7 +416,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\":\"lavish\",\n    \"password\":\"password\",\n    \"id\":\"1\",\n    \"rating\":\"3\",\n    \"quality\":\"17\"\n}",
+					"raw": "{\n    \"username\":\"lavish\",\n    \"password\":\"password\",\n    \"id\":\"2\",\n    \"rating\":\"3\",\n    \"quality\":\"17\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -466,7 +476,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\":\"utkarsh3\",\n    \"password\":\"pass\",\n    \"email\":\"xyz@abcd.com\",\n    \"address\":\"delhi\"\n}\n",
+					"raw": "{\n    \"username\":\"utkarsh\",\n    \"password\":\"password\",\n    \"email\":\"xyz@abcd.com\",\n    \"address\":\"delhi\"\n}\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -483,6 +493,35 @@
 						"contractors",
 						"users",
 						"updateProfile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all projects completed by contractor",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\":\"utkarsh\",\n    \"password\":\"password\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/contractors/users/getCompletedProjects",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"contractors",
+						"users",
+						"getCompletedProjects"
 					]
 				}
 			},

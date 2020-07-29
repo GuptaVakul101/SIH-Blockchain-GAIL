@@ -4,6 +4,7 @@ var bodyParser = require('body-parser');
 
 var indexRoutes = require("./routes/index");
 var projectRoutes = require("./routes/projects");
+var paymentRoutes = require("./routes/payment");
 var cookieParser = require('cookie-parser');
 var upload = require("express-fileupload");
 
@@ -16,6 +17,7 @@ app.use(express.static(__dirname + "/public"));
 
 app.use("/", indexRoutes);
 app.use("/", projectRoutes);
+app.use("/", paymentRoutes);
 
 const port = process.env.PORT;
 app.listen(port,function(){
