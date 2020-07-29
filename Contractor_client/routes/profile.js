@@ -101,42 +101,44 @@ router.post("/edit", function(req,res){
     var username = req.cookies.username.toString();
     var password = req.cookies.password.toString();
     var email = req.body.email.toString();
-    res.redirect('/profile');
-    // const requestData = JSON.stringify({
-    //     "username": username,
-    //     "password": password,
-    //
-    // });
-    //
-    // var options = {
-    //     host: 'localhost',
-    //     port: '3000',
-    //     path: '/contractors/users/profile',
-    //     method: 'POST',
-    //     headers: {
-    //         'Content-Type': 'application/json',
-    //         'Content-Length': requestData.length
-    //     }
-    // }
-    //
-    // callback = function (response) {
-    //     var str = '';
-    //     //another chunk of data has been received, so append it to `str`
-    //     response.on('data', function (chunk) {
-    //         str += chunk;
-    //     });
-    //
-    //     //the whole response has been received, so we just print it out here
-    //     response.on('end', function () {
-    //         const jsonObject = JSON.parse(str);
-    //         if (jsonObject.success == true) {
-    //             res.redirect('/profile');
-    //         }
-    //     });
-    // }
-    // var request = http.request(options, callback);
-    // request.write(requestData);
-    // request.end();
+    var address = req.body.address.toString();
+
+    const requestData = JSON.stringify({
+        "username": username,
+        "password": password,
+        "email": email,
+        "address": address
+    });
+
+    var options = {
+        host: 'localhost',
+        port: '3000',
+        path: '/contractors/users/updateProfile',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': requestData.length
+        }
+    }
+
+    callback = function (response) {
+        var str = '';
+        //another chunk of data has been received, so append it to `str`
+        response.on('data', function (chunk) {
+            str += chunk;
+        });
+
+        //the whole response has been received, so we just print it out here
+        response.on('end', function () {
+            const jsonObject = JSON.parse(str);
+            if (jsonObject.docType == 'CONTRACTOR') {
+                res.redirect('/profile');
+            }
+        });
+    }
+    var request = http.request(options, callback);
+    request.write(requestData);
+    request.end();
 });
 
 module.exports = router;

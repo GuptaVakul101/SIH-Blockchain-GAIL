@@ -104,6 +104,17 @@ router.post('/apply', function(req,res){
 
     var id = req.body.id.toString();
     var price = req.body.price.toString();
+    var time_period = req.body.time_period.toString();
+
+    var isoArr = [];
+    for(var i = 1; ; i++){
+        if(req.body['iso'+i.toString()] != null){
+            isoArr.push(req.body['iso'+i.toString()]);
+        }
+        else{
+            break;
+        }
+    }
 
     const requestData = JSON.stringify({
         "username": username,
@@ -111,8 +122,11 @@ router.post('/apply', function(req,res){
         "projectID": id,
         "bidDetails": {
             "price": price,
+            "time_period": time_period,
+            "standards": isoArr
         }
     });
+
 
     var options = {
         host: 'localhost',
@@ -233,6 +247,7 @@ router.get('/details', function(req,res){
             res.render("projects/projectdetails", {
                 currentUser: req.cookies.username,
                 project: jsonObject.object,
+                projectID: id,
                 progress: jsonObject.object.progress
             });
         });
@@ -252,6 +267,7 @@ router.post('/details', function(req,res){
     var password = req.cookies.password.toString();
 
     var status = req.body.status.toString();
+    var id = req.body.id.toString();
 
     const requestData = JSON.stringify({
         username: username,
@@ -281,7 +297,7 @@ router.post('/details', function(req,res){
         response.on('end', function () {
             const jsonObject = JSON.parse(str);
             if (jsonObject.success == true) {
-                res.redirect('/projects/details');
+                res.redirect('/projects/details?id='+id);
             }
         });
     }
@@ -365,37 +381,36 @@ router.get('/completed', function(req,res){
         "password": password,
     });
 
-    res.render('projects/completed', {  currentUser: req.cookies.username });
+    var options = {
+        host: 'localhost',
+        port: '3000',
+        path: '/contractors/users/getCompletedProjects',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': requestData.length
+        }
+    }
 
-    // var options = {
-    //     host: 'localhost',
-    //     port: '3000',
-    //     path: '/gail/project/getAllProjects',
-    //     method: 'POST',
-    //     headers: {
-    //         'Content-Type': 'application/json',
-    //         'Content-Length': requestData.length
-    //     }
-    // }
-    //
-    // callback = function (response) {
-    //     var str = '';
-    //     //another chunk of data has been received, so append it to `str`
-    //     response.on('data', function (chunk) {
-    //         str += chunk;
-    //     });
-    //
-    //     //the whole response has been received, so we just print it out here
-    //     response.on('end', function () {
-    //         const jsonObject = JSON.parse(str);
-    //         if (jsonObject.success == true) {
-    //             res.render("projects/floatedprojects", { projects: jsonObject.allProjects, currentUser: req.cookies.username });
-    //         }
-    //     });
-    // }
-    // var request = http.request(options, callback);
-    // request.write(requestData);
-    // request.end();
+    callback = function (response) {
+        var str = '';
+        //another chunk of data has been received, so append it to `str`
+        response.on('data', function (chunk) {
+            str += chunk;
+        });
+
+        //the whole response has been received, so we just print it out here
+        response.on('end', function () {
+            const jsonObject = JSON.parse(str);
+            console.log(jsonObject);
+            if (jsonObject.success == true) {
+                res.render("projects/completed", { projects: jsonObject.allProjects, currentUser: req.cookies.username });
+            }
+        });
+    }
+    var request = http.request(options, callback);
+    request.write(requestData);
+    request.end();
 });
 
 module.exports = router;

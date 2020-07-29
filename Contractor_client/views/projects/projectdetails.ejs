@@ -38,16 +38,16 @@
               <% if(project.type == "product" && project.status == "in-progress"){ %>
                     <form action="/projects/details" method="post">
                         <input type="hidden" name="status" value="shipping" />
-					              <input class="btn btn-primary" type="submit" value="Initiate Shipping" />
+                        <input type="hidden" name="id" value="<%= projectID %>" />
+		              <input class="btn btn-primary" type="submit" value="Initiate Shipping" />
                     </form>
               <% } else if(project.status != "in-review") { %>
                   <form action="/projects/details" method="post">
                       <input type="hidden" name="status" value="in-review" />
+                      <input type="hidden" name="id" value="<%= projectID %>" />
                       <input class="btn btn-primary" type="submit" value="Submit Project" />
                   </form>
               <% } %>
-
-
         </div>
     </div>
 </div>

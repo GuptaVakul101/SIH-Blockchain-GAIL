@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router({mergeParams: true});
 var http = require('http');
+var upload = require("express-fileupload");
 var cookieParser = require('cookie-parser');
 
 
@@ -19,21 +20,44 @@ router.get("/register",function(req,res){
 
 //HANDLE SIGN UP
 router.post("/register",function(req,res){
-	var username = req.body.username;
-	var password = req.body.password;
-	var email = req.body.email;
-
-	// console.log(username);
-	// console.log(password);
 	if(req.cookies.username != null && req.cookies.username.toString() != "")  {
 		res.redirect("/");
 		return;
 	}
 
+	var username = req.body.username;
+	var password = req.body.password;
+	var email = req.body.email;
+	var contact = req.body.contact;
+	var address = req.body.address;
+	var aboutus = req.body.aboutus;
+	var file = null;
+    if (req.files) {
+        file = req.files.profilepic;
+    }
+
+	var getTimeStampString = null;
+    if (file != null) {
+        getTimeStampString = new Date().getTime().toString();
+        var saveFilePath = "./public/ContractorProfile/" + getTimeStampString;
+        file.mv(saveFilePath, function (err) {
+            if (err) {
+                res.redirect("/register");
+                return;
+            } else {
+                console.log("File uploaded successfully");
+            }
+        });
+    }
+
 	const requestData = JSON.stringify({
 		"username": username.toString(),
 		"password": password.toString(),
-		"email": email.toString()
+		"email": email.toString(),
+		"contact": contact.toString(),
+		"address": address.toString(),
+		"aboutUs": aboutus.toString(),
+		"profilepic": getTimeStampString
 	});
 
 	var options = {

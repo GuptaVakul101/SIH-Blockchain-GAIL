@@ -118,6 +118,8 @@ router.post('/', async function (req, res, next) {
                     var winnerBidID;
                     var winningBidValue = 0.0;
                     var maxPrice = 0.0;
+                    var maxTime = 0.0;
+                    var maxNumStandards = 0;
                     for (var i = 0; i < allAppliedBidIDsArray.length; i++) {
                         const bidID = allAppliedBidIDsArray[i];
                         const getBid = await contract.evaluateTransaction('getBid', bidID);
@@ -137,11 +139,16 @@ router.post('/', async function (req, res, next) {
                             //console.log(getBidDetailsJson);
                             //console.log(getBidDetailsJson.price);
                             var price = parseFloat(getBidDetailsJson.price);
-                            //console.log(price.toString());
+                            var time = parseFloat(getBidDetailsJson.time_period);
+                            var standards = getBidDetailsJson.standards;
                             if (price > maxPrice) maxPrice = price;
+                            if (time > maxTime) maxTime = time;
+                            if (standards.length > maxNumStandards) maxNumStandards = standards.length;
                         }
                     }
-
+                    console.log('maxPrice'+maxPrice,toString());
+                    console.log('maxTime'+ maxTime.toString());
+                    console.log('maxStandards'+maxNumStandards.toString());
 
                     const constants = JSON.parse(fs.readFileSync(path.resolve(__dirname, '..', 'contractors', 'constants.json'), 'utf8'));
                     const numGailNodes = constants['numGailNodes'];
@@ -183,16 +190,19 @@ router.post('/', async function (req, res, next) {
                             const price = parseFloat(getBidDetailsJson.price);
                             const quality = parseFloat(qualityString.toString());
                             const rating = parseFloat(ratingString.toString());
+                            const time = parseFloat(getBidDetailsJson.time_period);
+                            const numStandards = getBidDetailsJson.standards.length;
                             //const quality = 1.3;
                             //const rating = 2.4;
                             console.log(ratingString.toString());
-                            var bidVal = (price / maxPrice) * 600 + 300 - quality * 3 + 100 - rating * 10;
+                            var bidVal = (maxPrice/price) * 350 + (maxTime/time) * 350 + (numStandards/maxNumStandards) * 100
+                                        + (quality/100) * 100 + (rating/10) * 100;
                             if (winningBidValue === 0) {
                                 winnerBidID = bidID;
                                 winningBidValue = bidVal;
                             }
                             else {
-                                if (bidVal < winningBidValue) {
+                                if (bidVal > winningBidValue) {
                                     winningBidValue = bidVal;
                                     winnerBidID = bidID;
                                 }

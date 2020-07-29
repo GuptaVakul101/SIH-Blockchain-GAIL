@@ -22,9 +22,7 @@ router.post("/register", function (req, res) {
 	var username = req.body.username;
 	var password = req.body.password;
 	var email = req.body.email;
-
-	console.log(username);
-	console.log(password);
+	var name = req.body.name;
 
 	if (req.cookies.username != null && req.cookies.username.toString() != "") {
 		res.redirect("/");
@@ -35,6 +33,12 @@ router.post("/register", function (req, res) {
 		username: username.toString(),
 		password: password.toString(),
 		email: email.toString(),
+		name: name.toString(),
+		contact: "",
+		teamname: "",
+		profilePic: "",
+		address: "",
+		designation: ""
 	});
 
 	var options = {
@@ -99,25 +103,14 @@ router.post("/login", function (req, res) {
 		password: password.toString(),
 	});
 
-	var options = {
-		host: "localhost",
-		port: "3000",
-		path: "/gail/users/login",
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-			"Content-Length": requestData.length,
-		},
-	};
+	var options = getOptions('/gail/users/login', requestData);
 
 	callback = function (response) {
 		var str = "";
-		//another chunk of data has been received, so append it to `str`
 		response.on("data", function (chunk) {
 			str += chunk;
 		});
 
-		//the whole response has been received, so we just print it out here
 		response.on("end", function () {
 			console.log(str);
 			const jsonObject = JSON.parse(str);
@@ -131,9 +124,7 @@ router.post("/login", function (req, res) {
 		});
 	};
 
-	var request = http.request(options, callback);
-	request.write(requestData);
-	request.end();
+    runHttpRequest(options, callback, requestData);
 });
 
 router.get("/logout", function (req, res) {
@@ -153,5 +144,108 @@ router.get("/download/:path", function (req, res) {
 	res.setHeader("Content-Type", "application/pdf");
 	res.download(filePath, fileName);
 });
+
+router.get("/editprofile", function(req,res){
+	if (req.cookies.username == null || req.cookies.username.toString() == "") {
+		res.redirect("/login");
+		return;
+	}
+
+	var username = req.cookies.username.toString();
+    var password = req.cookies.password.toString();
+    const requestData = JSON.stringify({
+        "username": username,
+        "password": password,
+	});
+	
+	var options = getOptions('/gail/users/getUserDetails', requestData);
+
+	callback = function (response) {
+        var str = '';
+        response.on('data', function (chunk) {
+            str += chunk;
+        });
+        response.on('end', function () {
+            const jsonObject = JSON.parse(str);
+            if (jsonObject.success == false) {
+                res.redirect('/');
+            } else {
+				res.render("editProfile", { currentUser: req.cookies.username, user: jsonObject.object });
+            }
+        });
+    }
+	
+    runHttpRequest(options, callback, requestData);
+});
+
+router.post("/editprofile", function (req, res) {
+
+	if (req.cookies.username == null || req.cookies.username.toString() == "") {
+		res.redirect("/login");
+		return;
+	}
+
+	var username = req.cookies.username.toString();
+    var password = req.cookies.password.toString();
+	var email = req.body.email;
+	var name = req.body.name;
+	var contact = req.body.contact;
+	var teamname = req.body.teamname;
+	var address = req.body.address;
+	var designation = req.body.designation;
+
+	const requestData = JSON.stringify({
+		username: username.toString(),
+		password: password.toString(),
+		email: email.toString(),
+		name: name.toString(),
+		contact: contact.toString(),
+		teamname: teamname.toString(),
+		profilePic: "",
+		address: address.toString(),
+		designation: designation.toString()
+	});
+
+	var options = getOptions("/gail/users/editUserDetails", requestData);
+
+	callback = function (response) {
+		var str = "";
+		response.on("data", function (chunk) {
+			str += chunk;
+		});
+
+		response.on("end", function () {
+			console.log(str);
+			const jsonObject = JSON.parse(str);
+			if (jsonObject.success == false) {
+				console.log("Unable to Edit Profile");
+				res.redirect("/editprofile");
+			} else {
+				res.redirect("/editprofile");
+			}
+		});
+	};
+
+	runHttpRequest(options, callback,requestData);
+});
+
+function getOptions(pathTemp, requestDataTemp) {
+    return {
+        host: 'localhost',
+        port: '3000',
+        path: pathTemp,
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': requestDataTemp.length
+        }
+    };
+}
+
+function runHttpRequest(options, callback, requestData) {
+    var request = http.request(options, callback);
+    request.write(requestData);
+    request.end();
+}
 
 module.exports = router;

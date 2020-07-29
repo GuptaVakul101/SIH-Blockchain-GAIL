@@ -33,13 +33,10 @@ router.post('/createProject', async function (req, res, next) {
         'peerOrganizations', 'gail.example.com', 'connection-gail.json');
     const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
 
-    // Create a new file system based wallet for managing identities.
     const walletPath = path.join(__dirname, 'wallet');
     const wallet = await Wallets.newFileSystemWallet(walletPath);
-
-    // Check to see if we've already enrolled the user.
-    console.log("Username: " + req.body.username);
     const identity = await wallet.get(req.body.username);
+
     if (!identity) {
         res.statusCode = 404;
         res.setHeader('Content-Type', 'application/json');
@@ -49,17 +46,14 @@ router.post('/createProject', async function (req, res, next) {
         });
     }
     else {
-        // Create a new gateway for connecting to our peer node.
         const gateway = new Gateway();
         await gateway.connect(ccp, {
             wallet, identity: req.body.username,
             discovery: { enabled: true, asLocalhost: true }
         });
 
-        // Get the network (channel) our contract is deployed to.
         const network = await gateway.getNetwork('channelgg');
 
-        // Get the contract from the network.
         const contract = network.getContract('gail', 'User');
 
         const user = await contract.evaluateTransaction('getUser', req.body.username, req.body.password);
@@ -208,20 +202,29 @@ router.post('/getAllProjects', async function (req, res, next) {
         const numProj = await contract.evaluateTransaction('getNumProjects');
         const numProjJson = JSON.parse(numProj.toString());
         console.log(numProjJson);
-        for (var i = 1; i <= parseInt(numProjJson.num.toString()) + 1; i++) {
-            const getProj = await contract.evaluateTransaction('getProject', i);
-            const project = JSON.parse(getProj.toString());
-            if ("message" in project) {
-            }
-            else {
-                console.log('hello' + i.toString());
-                allProjects[i.toString()] = JSON.stringify(project);
-            }
+        if("message" in numProjJson){
+            res.json({
+                success: true,
+                allProjects: allProjects
+            });
         }
-        res.json({
-            success: true,
-            allProjects: allProjects
-        });
+        else{
+            for (var i = 1; i <= parseInt(numProjJson.num.toString()) + 1; i++) {
+                const getProj = await contract.evaluateTransaction('getProject', i);
+                const project = JSON.parse(getProj.toString());
+                if ("message" in project) {
+                }
+                else {
+                    console.log('hello' + i.toString());
+                    allProjects[i.toString()] = JSON.stringify(project);
+                }
+            }
+            res.json({
+                success: true,
+                allProjects: allProjects
+            });
+        }
+        
     }
 });
 

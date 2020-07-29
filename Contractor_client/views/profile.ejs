@@ -2,6 +2,12 @@
 
 <p>Username: <%= contractor.username %></p>
 <p>Email: <%= contractor.email %></p>
+<p>Contact: <%= contractor.contact %></p>
+<p>Address: <%= contractor.address %></p>
+<p>About Us: <%= contractor.aboutUs %></p>
+<img src="ContractorProfile/<%= contractor.profilePicPath %>" />
+<p>Overall Rating: <%= contractor.overallRating %></p>
+<p>Product Quality: <%= contractor.productQuality %></p>
 
 <form action="/profile/edit" method="get">
     <input type="submit" value="Edit Profile" />

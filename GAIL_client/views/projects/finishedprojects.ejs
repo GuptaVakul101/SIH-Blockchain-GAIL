@@ -5,7 +5,7 @@
 	<ul class="w3-ul w3-card" style="width:90%">
 		<% for(var idx in projects) { %>
 			<% const temp = JSON.parse(projects[idx]); %>
-			<% if(temp.status == "finished") { %>
+			<% if(temp.status == "complete_accepted" || temp.status == "complete_rejected") { %>
 				<li>
 					<%= temp.title.toUpperCase() %>
 					<a href="/activeprojects/<%= temp.id %>" class="btn btn-primary">More Info</a>
