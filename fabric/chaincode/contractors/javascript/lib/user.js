@@ -48,7 +48,7 @@ class User extends Contract {
 
     }
 
-    async createUser(ctx, username, password,email) {
+    async createUser(ctx, username, password,email,contact, address, aboutUs, profilepic) {
         const user = {
             docType: 'CONTRACTOR',
             username: username,
@@ -58,7 +58,11 @@ class User extends Contract {
             activeBidID:null,
             listOfPreviousProjects:[],
             overallRating: '0',
-            productQuality: '0'
+            productQuality: '0',
+            contact: contact,
+            address: address,
+            aboutUs: aboutUs,
+            profilePicPath: profilepic
         };
 
         await ctx.stub.putState('CONTRACTOR_'+username, Buffer.from(JSON.stringify(user)));
@@ -99,6 +103,129 @@ class User extends Contract {
         }
         var user = JSON.parse(userAsBytes.toString());
         return user.productQuality;
+    }
+    async updateUserEmail(ctx, username, password,email) {
+        const userAsBytes = await ctx.stub.getState('CONTRACTOR_'+username);
+        if (!userAsBytes || userAsBytes.length === 0) {
+            return {
+                success: 'false',
+                message: 'Contractor with username: \'' + username + '\' does not exist.'
+            };
+        }
+        var user = JSON.parse(userAsBytes.toString());
+        if(user.password !== password){
+            return {
+                success: 'false',
+                message: 'Contractor authentication failed. Please retry with correct password.'
+            };
+        }
+        user.email=email;
+        await ctx.stub.putState('CONTRACTOR_'+username, Buffer.from(JSON.stringify(user)));
+
+    }
+    async updateUserProfilePic(ctx, username, password,profilepic) {
+        const userAsBytes = await ctx.stub.getState('CONTRACTOR_'+username);
+        if (!userAsBytes || userAsBytes.length === 0) {
+            return {
+                success: 'false',
+                message: 'Contractor with username: \'' + username + '\' does not exist.'
+            };
+        }
+
+        var user = JSON.parse(userAsBytes.toString());
+        if(user.password !== password){
+            return {
+                success: 'false',
+                message: 'Contractor authentication failed. Please retry with correct password.'
+            };
+        }
+        user.profilePicPath=profilepic;
+        await ctx.stub.putState('CONTRACTOR_'+username, Buffer.from(JSON.stringify(user)));
+
+    }
+    async updateUserPassword(ctx, username, password,newPass) {
+        const userAsBytes = await ctx.stub.getState('CONTRACTOR_'+username);
+        if (!userAsBytes || userAsBytes.length === 0) {
+            return {
+                success: 'false',
+                message: 'Contractor with username: \'' + username + '\' does not exist.'
+            };
+        }
+
+        var user = JSON.parse(userAsBytes.toString());
+        if(user.password !== password){
+            return {
+                success: 'false',
+                message: 'Contractor authentication failed. Please retry with correct password.'
+            };
+        }
+
+        user.password=newPass;
+        await ctx.stub.putState('CONTRACTOR_'+username, Buffer.from(JSON.stringify(user)));
+
+    }
+    async updateUserContact(ctx, username, password, contact) {
+        const userAsBytes = await ctx.stub.getState('CONTRACTOR_'+username);
+        if (!userAsBytes || userAsBytes.length === 0) {
+            return {
+                success: 'false',
+                message: 'Contractor with username: \'' + username + '\' does not exist.'
+            };
+        }
+
+        var user = JSON.parse(userAsBytes.toString());
+        if(user.password !== password){
+            return {
+                success: 'false',
+                message: 'Contractor authentication failed. Please retry with correct password.'
+            };
+        }
+
+        user.contact=contact;
+        await ctx.stub.putState('CONTRACTOR_'+username, Buffer.from(JSON.stringify(user)));
+
+    }
+
+    async updateUserAboutUs(ctx, username, password, aboutUs) {
+        const userAsBytes = await ctx.stub.getState('CONTRACTOR_'+username);
+        if (!userAsBytes || userAsBytes.length === 0) {
+            return {
+                success: 'false',
+                message: 'Contractor with username: \'' + username + '\' does not exist.'
+            };
+        }
+
+        var user = JSON.parse(userAsBytes.toString());
+        if(user.password !== password){
+            return {
+                success: 'false',
+                message: 'Contractor authentication failed. Please retry with correct password.'
+            };
+        }
+
+        user.aboutUs=aboutUs;
+        await ctx.stub.putState('CONTRACTOR_'+username, Buffer.from(JSON.stringify(user)));
+
+    }
+    async updateUserAddress(ctx, username, password, address) {
+        const userAsBytes = await ctx.stub.getState('CONTRACTOR_'+username);
+        if (!userAsBytes || userAsBytes.length === 0) {
+            return {
+                success: 'false',
+                message: 'Contractor with username: \'' + username + '\' does not exist.'
+            };
+        }
+        var user = JSON.parse(userAsBytes.toString());
+        if(user.password !== password){
+            return {
+                success: 'false',
+                message: 'Contractor authentication failed. Please retry with correct password.'
+            };
+        }
+
+        user.address=address;
+        await ctx.stub.putState('CONTRACTOR_'+username, Buffer.from(JSON.stringify(user)));
+
     }
     async updateOverallRating(ctx,username,newRating){
         const userAsBytes = await ctx.stub.getState('CONTRACTOR_'+username);

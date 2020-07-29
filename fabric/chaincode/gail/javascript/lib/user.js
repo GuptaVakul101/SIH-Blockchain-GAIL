@@ -62,18 +62,100 @@ class User extends Contract {
         return userAsBytes.toString();
     }
 
-    async createUser(ctx, username, password,email) {
+    async createUser(ctx, username, password,email,teamname,gailpic) {
         const user = {
             username: username,
             docType: 'USER',
             password: password,
-            email: email
+            email: email,
+            teamName: teamname,
+            staticGailPicPAth: gailpic
         };
 
         await ctx.stub.putState('USER_'+username, Buffer.from(JSON.stringify(user)));
         return {
             success: 'true'
         };
+    }
+    async updatePassword(ctx, username, password, newPass) {
+        const userAsBytes = await ctx.stub.getState('USER_'+username);
+        if (!userAsBytes || userAsBytes.length === 0) {
+            return {
+                success: 'false',
+                message: 'User with username: \'' + username + '\' does not exist.'
+            };
+        }
+
+        var user = JSON.parse(userAsBytes.toString());
+        if(user.password !== password){
+            return {
+                success: 'false',
+                message: 'User authentication failed. Please retry with correct password.'
+            };
+        }
+        user.password=newPass;
+        await ctx.stub.putState('USER_'+username, Buffer.from(JSON.stringify(user)));
+        
+    }
+    async updateGailPic(ctx, username, password, gailpic) {
+        const userAsBytes = await ctx.stub.getState('USER_'+username);
+        if (!userAsBytes || userAsBytes.length === 0) {
+            return {
+                success: 'false',
+                message: 'User with username: \'' + username + '\' does not exist.'
+            };
+        }
+
+        var user = JSON.parse(userAsBytes.toString());
+        if(user.password !== password){
+            return {
+                success: 'false',
+                message: 'User authentication failed. Please retry with correct password.'
+            };
+        }
+        user.staticGailPicPAth=gailpic;
+        await ctx.stub.putState('USER_'+username, Buffer.from(JSON.stringify(user)));
+        
+    }
+    async updateEmail(ctx, username, password, email) {
+        const userAsBytes = await ctx.stub.getState('USER_'+username);
+        if (!userAsBytes || userAsBytes.length === 0) {
+            return {
+                success: 'false',
+                message: 'User with username: \'' + username + '\' does not exist.'
+            };
+        }
+
+        var user = JSON.parse(userAsBytes.toString());
+        if(user.password !== password){
+            return {
+                success: 'false',
+                message: 'User authentication failed. Please retry with correct password.'
+            };
+        }
+        user.email=email;
+        await ctx.stub.putState('USER_'+username, Buffer.from(JSON.stringify(user)));
+        
+    }
+    async updateTeamName(ctx, username, password, teamname) {
+        const userAsBytes = await ctx.stub.getState('USER_'+username);
+        if (!userAsBytes || userAsBytes.length === 0) {
+            return {
+                success: 'false',
+                message: 'User with username: \'' + username + '\' does not exist.'
+            };
+        }
+
+        var user = JSON.parse(userAsBytes.toString());
+        if(user.password !== password){
+            return {
+                success: 'false',
+                message: 'User authentication failed. Please retry with correct password.'
+            };
+        }
+        user.teamName=teamname;
+        await ctx.stub.putState('USER_'+username, Buffer.from(JSON.stringify(user)));
+        
     }
 
     async getNumContractors(ctx){
