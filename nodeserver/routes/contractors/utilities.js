@@ -106,6 +106,38 @@ exports.getUser=async function (username,password){
     }
 };
 
+exports.getSingleUser=async function (username){
+    // Check to see if we've already enrolled the user.
+    const wallet = await Wallets.newFileSystemWallet(contractor_walletPath);
+    const identity = await wallet.get(username);
+    if(!identity){
+        return false;
+    }
+    else {
+        // Create a new gateway for connecting to our peer node.
+        const gateway = new Gateway();
+        await gateway.connect(contractor_ccp, { wallet, identity: username,
+            discovery: { enabled: true, asLocalhost: true } });
+        const dictionary=JSON.parse(fs.readFileSync(path.resolve(__dirname,'dictionary.json'), 'utf8'));
+        var channelNum=dictionary[username];
+        // Get the network (channel) our contract is deployed to.
+        const network = await gateway.getNetwork('channelg1c'+channelNum);
+
+        // Get the contract from the network.
+        const contract = network.getContract('contractors_1_'+channelNum);
+
+        const user = await contract.evaluateTransaction('getUserDetails', username);
+        await gateway.disconnect();
+        const userJson=JSON.parse(user,'utf8');
+        if(userJson.hasOwnProperty('success')){
+            return null;
+        }
+        else {
+            return userJson;
+        }
+    }
+};
+
 exports.getProject=async function (projectid){
     const wallet = await Wallets.newFileSystemWallet(gail_walletPath);
     var gateway = new Gateway();

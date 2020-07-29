@@ -140,7 +140,6 @@ router.post('/', async function (req, res, next) {
                             var price = parseFloat(getBidDetailsJson.price);
                             var time = parseFloat(getBidDetailsJson.time_period);
                             var standards = getBidDetailsJson.standards;
-                            //console.log(price.toString());
                             if (price > maxPrice) maxPrice = price;
                             if (time > maxTime) maxTime = time;
                             if (standards.length > maxNumStandards) maxNumStandards = standards.length;

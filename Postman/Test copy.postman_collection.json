@@ -80,10 +80,16 @@
 			"request": {
 				"url": "localhost:3000/contractors/users/signup",
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\":\"utkarsh\",\n    \"password\":\"password\",\n    \"email\":\"abc@abc.com\"\n}"
+					"raw": "{\n    \"username\":\"chirag\",\n    \"password\":\"chirag\",\n    \"email\":\"cgupta2727@gmail.com\",\n    \"contact\": \"7696203663\",\n    \"address\": \"Panchkula\",\n    \"aboutUs\": \"Trustworthy Company\",\n    \"profilepic\": \"tempPath\"\n}\n"
 				},
 				"description": ""
 			},
@@ -123,7 +129,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"id\":\"1\"\n}"
+					"raw": "{\n    \"id\":\"2\"\n}"
 				},
 				"description": ""
 			},
@@ -134,10 +140,16 @@
 			"request": {
 				"url": "localhost:3000/contractors/bids/applyForProject",
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\": \"utkarsh\",\n    \"password\": \"password\",\n    \"projectID\": \"1\",\n    \"bidDetails\": {\n        \"price\": \"59\"\n    }\n}"
+					"raw": "{\n    \"username\": \"chirag\",\n    \"password\": \"chirag\",\n    \"projectID\": \"3\",\n    \"bidDetails\": {\n        \"price\": \"180\",\n        \"time_period\": \"223523512335\",\n        \"standards\": [\"ISO\", \"HallMark\", \"ISO-21\"]\n    }\n}"
 				},
 				"description": ""
 			},
@@ -157,7 +169,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\":\"chirag\",\n    \"password\":\"chirag\",\n    \"id\":\"1\"\n}"
+					"raw": "{\n    \"username\":\"chirag\",\n    \"password\":\"chirag\",\n    \"id\":\"3\"\n}"
 				},
 				"description": ""
 			},
@@ -177,7 +189,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\":\"disha\",\n    \"password\":\"disha\"\n}"
+					"raw": "{\n    \"username\":\"chirag\",\n    \"password\":\"chirag\"\n}"
 				},
 				"description": ""
 			},
@@ -202,10 +214,16 @@
 			"request": {
 				"url": "localhost:3000/contractors/project/updateProjectStatus",
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\":\"utkarsh\",\n    \"password\":\"password\",\n    \"status\":\"string\"\n}"
+					"raw": "{\n    \"username\":\"chirag\",\n    \"password\":\"chirag\",\n    \"status\":\"in-review\"\n}"
 				},
 				"description": ""
 			},
@@ -281,7 +299,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"bid_id\":\"1595927438116\"\n}"
+					"raw": "{\n    \"bid_id\":\"1596046738499\"\n}"
 				},
 				"description": ""
 			},
