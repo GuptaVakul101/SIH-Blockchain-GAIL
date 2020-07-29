@@ -135,7 +135,6 @@ router.post('/apply', function(req,res){
         //the whole response has been received, so we just print it out here
         response.on('end', function () {
             const jsonObject = JSON.parse(str);
-            console.log(jsonObject);
             if (jsonObject.success == true) {
                 res.redirect('/projects/floated');
             }
@@ -181,10 +180,18 @@ router.get('/allocated', function(req,res){
         //the whole response has been received, so we just print it out here
         response.on('end', function () {
             const jsonObject = JSON.parse(str);
-            res.render("projects/allocated", {
-                project: jsonObject,
-                currentUser: req.cookies.username
-            });
+            if(jsonObject.success == false){
+                res.render("projects/allocated", {
+                    project: null,
+                    currentUser: req.cookies.username
+                });
+            }
+            else{
+                res.render("projects/allocated", {
+                    project: jsonObject,
+                    currentUser: req.cookies.username
+                });
+            }
         });
     }
     var request = http.request(options, callback);
@@ -192,27 +199,20 @@ router.get('/allocated', function(req,res){
     request.end();
 });
 
-router.get('/projectdetails', function(req,res){
+router.get('/details', function(req,res){
     if(req.cookies.username == null || req.cookies.username.toString() == "")  {
-    		res.redirect("/");
-    		return;
+		res.redirect("/");
   	}
 
-    var username = req.cookies.username.toString();
-    var password = req.cookies.password.toString();
-
     var id = req.query.id.toString();
-
     const requestData = JSON.stringify({
-        username: username,
-        password: password,
         id: id
     });
 
     var options = {
         host: 'localhost',
         port: '3000',
-        path: 'gail/project/getProject',
+        path: '/gail/project/getProject',
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -230,10 +230,10 @@ router.get('/projectdetails', function(req,res){
         //the whole response has been received, so we just print it out here
         response.on('end', function () {
             const jsonObject = JSON.parse(str);
-            console.log(jsonObject);
             res.render("projects/projectdetails", {
                 currentUser: req.cookies.username,
-                project: jsonObject
+                project: jsonObject.object,
+                progress: jsonObject.object.progress
             });
         });
     }
@@ -242,7 +242,7 @@ router.get('/projectdetails', function(req,res){
     request.end();
 });
 
-router.post('/projectdetails', function(req,res){
+router.post('/details', function(req,res){
     if(req.cookies.username == null || req.cookies.username.toString() == "")  {
     		res.redirect("/");
     		return;
@@ -281,7 +281,7 @@ router.post('/projectdetails', function(req,res){
         response.on('end', function () {
             const jsonObject = JSON.parse(str);
             if (jsonObject.success == true) {
-                res.redirect('/projectdetails');
+                res.redirect('/projects/details');
             }
         });
     }
@@ -290,7 +290,21 @@ router.post('/projectdetails', function(req,res){
     request.end();
 });
 
-router.post('/updateprogress', function(req,res){
+router.get('/progress', function(req, res){
+    if(req.cookies.username == null || req.cookies.username.toString() == "")  {
+        res.redirect("/");
+    }
+
+    var id = req.query.id;
+
+    var username = req.cookies.username.toString();
+    res.render("projects/updateprogress", {
+        projectID: id,
+        currentUser: req.cookies.username
+    });
+});
+
+router.post('/progress', function(req,res){
     if (req.cookies.username == null || req.cookies.username.toString() == "") {
         res.redirect("/");
         return;
@@ -299,6 +313,7 @@ router.post('/updateprogress', function(req,res){
     var username = req.cookies.username.toString();
     var password = req.cookies.password.toString();
     var description = req.body.description.toString();
+    var id = req.body.id.toString();
 
     const requestData = JSON.stringify({
         "username": username,
@@ -309,7 +324,7 @@ router.post('/updateprogress', function(req,res){
     var options = {
         host: 'localhost',
         port: '3000',
-        path: '/contractors/project/updateProjectStatus',
+        path: '/contractors/project/updateProjectProgress',
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -328,7 +343,7 @@ router.post('/updateprogress', function(req,res){
         response.on('end', function () {
             const jsonObject = JSON.parse(str);
             if (jsonObject.success == true) {
-                res.redirect('/projectdetails');
+                res.redirect('/projects/details?id='+id);
             }
         });
     }

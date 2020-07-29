@@ -1,7 +1,13 @@
 var express = require("express");
 var router = express.Router({ mergeParams: true });
 var http = require('http');
+var upload = require("express-fileupload");
 var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
+var app = express();
+
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 }));
 
 router.get("/activeprojects", function (req, res) {
     if (req.cookies.username == null || req.cookies.username.toString() == "") {
@@ -30,20 +36,20 @@ router.get("/activeprojects", function (req, res) {
             const jsonObject = JSON.parse(str);
             if (jsonObject.success == true) {
                 var obj = jsonObject.allProjects;
-                var flag=false;
+                var flag = false;
                 for (var key in obj) {
                     console.log(key);
                     if (obj.hasOwnProperty(key)) {
                         const requestDataNested = JSON.stringify({
                             "username": username,
                             "password": password,
-                            "id":key
+                            "id": key
                         });
                         var val = obj[key];
                         var obj2 = JSON.parse(val);
-                        var deadlineTime=obj2["deadline"];
-                        var currentStatus=obj2["status"];
-                        var currentTime=getTodayDate();
+                        var deadlineTime = obj2["deadline"];
+                        var currentStatus = obj2["status"];
+                        var currentTime = getTodayDate();
                         console.log(deadlineTime);
                         console.log(currentTime);
                         console.log(currentStatus);
@@ -60,16 +66,16 @@ router.get("/activeprojects", function (req, res) {
                         var ans2 = currentTime.localeCompare(deadlineTime);
                         console.log(ans1);
                         console.log(ans2);
-                        if(ans1==0 && ans2>0){
-                            flag=true;
+                        if (ans1 == 0 && ans2 > 0) {
+                            flag = true;
                             runHttpRequest(optionsNested, callback2, requestDataNested);
                         }
                     }
                 }
                 console.log(jsonObject.allProjects);
-                if(flag==true){
+                if (flag == true) {
                     res.redirect("/activeprojects");
-                }else{
+                } else {
                     res.render("projects/activeprojects", { projects: jsonObject.allProjects, currentUser: req.cookies.username });
                 }
                 // res.render("projects/activeprojects", { projects: jsonObject.allProjects, currentUser: req.cookies.username });
@@ -107,20 +113,20 @@ router.get("/floatedprojects", function (req, res) {
             const jsonObject = JSON.parse(str);
             if (jsonObject.success == true) {
                 var obj = jsonObject.allProjects;
-                var flag=false;
+                var flag = false;
                 for (var key in obj) {
                     console.log(key);
                     if (obj.hasOwnProperty(key)) {
                         const requestDataNested = JSON.stringify({
                             "username": username,
                             "password": password,
-                            "id":key
+                            "id": key
                         });
                         var val = obj[key];
                         var obj2 = JSON.parse(val);
-                        var deadlineTime=obj2["deadline"];
-                        var currentStatus=obj2["status"];
-                        var currentTime=getTodayDate();
+                        var deadlineTime = obj2["deadline"];
+                        var currentStatus = obj2["status"];
+                        var currentTime = getTodayDate();
                         console.log(deadlineTime);
                         console.log(currentTime);
                         console.log(currentStatus);
@@ -137,16 +143,16 @@ router.get("/floatedprojects", function (req, res) {
                         var ans2 = currentTime.localeCompare(deadlineTime);
                         console.log(ans1);
                         console.log(ans2);
-                        if(ans1==0 && ans2>0){
-                            flag=true;
+                        if (ans1 == 0 && ans2 > 0) {
+                            flag = true;
                             runHttpRequest(optionsNested, callback2, requestDataNested);
                         }
                     }
                 }
                 console.log(jsonObject.allProjects);
-                if(flag==true){
+                if (flag == true) {
                     res.redirect("/floatedprojects");
-                }else{
+                } else {
                     res.render("projects/floatedprojects", { projects: jsonObject.allProjects, currentUser: req.cookies.username });
                 }
             }
@@ -326,13 +332,30 @@ router.post("/newproject", function (req, res) {
         res.redirect("/login");
         return;
     }
-
     var username = req.cookies.username.toString();
     var password = req.cookies.password.toString();
     var title = req.body.title.toString();
     var description = req.body.description.toString();
     var deadlineDate = req.body.date.toString();
     var todayDate = getTodayDate().toString();
+    var file = null;
+    if (req.files) {
+        file = req.files.filename;
+    }
+
+    var getTimeStampString = null;
+    if (file != null) {
+        getTimeStampString = new Date().getTime().toString();
+        var saveFilePath = "../nodeserver/brochureUpload/" + getTimeStampString;
+        file.mv(saveFilePath, function (err) {
+            if (err) {
+                res.redirect("/newproject");
+                return;
+            } else {
+                console.log("File downloaded successfully");
+            }
+        });
+    }
 
     const requestData = JSON.stringify({
         "username": username,
@@ -340,7 +363,8 @@ router.post("/newproject", function (req, res) {
         "title": title,
         "description": description,
         "currentTime": todayDate,
-        "deadlineTime": deadlineDate
+        "deadlineTime": deadlineDate,
+        "brochurePath": getTimeStampString
     });
 
     var options = getOptions('/gail/project/createProject', requestData);
@@ -361,7 +385,6 @@ router.post("/newproject", function (req, res) {
             }
         });
     }
-
     runHttpRequest(options, callback, requestData);
 })
 
@@ -400,6 +423,5 @@ function getTodayDate() {
     // return mm + "/" + dd + "/" + yyyy;
     return yyyy + "/" + mm + "/" + dd;
 }
-
 
 module.exports = router;
