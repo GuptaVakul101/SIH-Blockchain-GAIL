@@ -1,3 +1,43 @@
 <%- include("../partials/header") %>
 
+<% if (project == null) { %>
+	<div class="card">
+		<div class="card-body">
+			<center> You have no completed projects. </center>
+		</div>
+	</div>
+<% } else { %>
+
+<div class="container">
+	<div class="card-group vgr-cards">
+		<div class="card">
+			<div class="card-body">
+				<h4 class="card-title"><%= project.title.toUpperCase() %></h4>
+				<p class="card-text"><%= project.description %></p>
+				<form action="/projects/details" method="get">
+					<input type="hidden" name="id" value="<%= project.id %>" />
+					<input class="btn btn-outline-primary" type="submit" value="Open" />
+				</form>
+			</div>
+		</div>
+  </div>
+</div>
+
+	<!-- <div class="w3-container">
+		<p> </p>
+		<ul class="w3-ul w3-card" style="width:90%">
+			<li>
+				<%= project.title.toUpperCase() %>
+			</li>
+			<p><%= project.description %></p>
+			<form action="/projects/details" method="get">
+				<input type="hidden" name="id" value="<%= project.id %>" />
+				<input type="submit" value="Open" />
+			</form>
+	  	</ul>
+	  <br>
+	</div> -->
+
+<% } %>
+
 <%- include("../partials/footer") %>
