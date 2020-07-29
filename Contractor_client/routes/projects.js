@@ -4,7 +4,7 @@ var http = require('http');
 var cookieParser = require('cookie-parser');
 
 
-router.get('/floatedprojects', function(req,res){
+router.get('/floated', function(req,res){
     if (req.cookies.username == null || req.cookies.username.toString() == "") {
         res.redirect("/login");
         return;
@@ -81,8 +81,8 @@ router.get('/apply', function(req,res){
         //the whole response has been received, so we just print it out here
         response.on('end', function () {
             const jsonObject = JSON.parse(str);
-            console.log(jsonObject);
             res.render("projects/applybid", {
+                project: jsonObject.object,
                 projectID: projectID,
                 currentUser: req.cookies.username
             });
@@ -104,8 +104,6 @@ router.post('/apply', function(req,res){
 
     var id = req.body.id.toString();
     var price = req.body.price.toString();
-    var quality = req.body.quality.toString();
-    var rating = req.body.rating.toString();
 
     const requestData = JSON.stringify({
         "username": username,
@@ -113,8 +111,6 @@ router.post('/apply', function(req,res){
         "projectID": id,
         "bidDetails": {
             "price": price,
-            "quality": quality,
-            "rating": rating
         }
     });
 
@@ -139,8 +135,9 @@ router.post('/apply', function(req,res){
         //the whole response has been received, so we just print it out here
         response.on('end', function () {
             const jsonObject = JSON.parse(str);
+            console.log(jsonObject);
             if (jsonObject.success == true) {
-                res.redirect('/floatedprojects');
+                res.redirect('/projects/floated');
             }
         });
     }
@@ -184,8 +181,8 @@ router.get('/allocated', function(req,res){
         //the whole response has been received, so we just print it out here
         response.on('end', function () {
             const jsonObject = JSON.parse(str);
-            console.log(jsonObject);
             res.render("projects/allocated", {
+                project: jsonObject,
                 currentUser: req.cookies.username
             });
         });
@@ -301,7 +298,6 @@ router.post('/updateprogress', function(req,res){
 
     var username = req.cookies.username.toString();
     var password = req.cookies.password.toString();
-
     var description = req.body.description.toString();
 
     const requestData = JSON.stringify({
@@ -339,6 +335,52 @@ router.post('/updateprogress', function(req,res){
     var request = http.request(options, callback);
     request.write(requestData);
     request.end();
+});
+
+router.get('/completed', function(req,res){
+    if (req.cookies.username == null || req.cookies.username.toString() == "") {
+        res.redirect("/login");
+    }
+
+    var username = req.cookies.username.toString();
+    var password = req.cookies.password.toString();
+
+    const requestData = JSON.stringify({
+        "username": username,
+        "password": password,
+    });
+
+    res.render('projects/completed', {  currentUser: req.cookies.username });
+
+    // var options = {
+    //     host: 'localhost',
+    //     port: '3000',
+    //     path: '/gail/project/getAllProjects',
+    //     method: 'POST',
+    //     headers: {
+    //         'Content-Type': 'application/json',
+    //         'Content-Length': requestData.length
+    //     }
+    // }
+    //
+    // callback = function (response) {
+    //     var str = '';
+    //     //another chunk of data has been received, so append it to `str`
+    //     response.on('data', function (chunk) {
+    //         str += chunk;
+    //     });
+    //
+    //     //the whole response has been received, so we just print it out here
+    //     response.on('end', function () {
+    //         const jsonObject = JSON.parse(str);
+    //         if (jsonObject.success == true) {
+    //             res.render("projects/floatedprojects", { projects: jsonObject.allProjects, currentUser: req.cookies.username });
+    //         }
+    //     });
+    // }
+    // var request = http.request(options, callback);
+    // request.write(requestData);
+    // request.end();
 });
 
 module.exports = router;
