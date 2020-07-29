@@ -151,9 +151,9 @@ router.post('/apply', function(req,res){
 
 router.get('/allocated', function(req,res){
     if(req.cookies.username == null || req.cookies.username.toString() == "")  {
-		res.redirect("/");
-		return;
-	}
+  		  res.redirect("/");
+  		  return;
+  	}
 
     var username = req.cookies.username.toString();
     var password = req.cookies.password.toString();
@@ -188,6 +188,152 @@ router.get('/allocated', function(req,res){
             res.render("projects/allocated", {
                 currentUser: req.cookies.username
             });
+        });
+    }
+    var request = http.request(options, callback);
+    request.write(requestData);
+    request.end();
+});
+
+router.get('/projectdetails', function(req,res){
+    if(req.cookies.username == null || req.cookies.username.toString() == "")  {
+    		res.redirect("/");
+    		return;
+  	}
+
+    var username = req.cookies.username.toString();
+    var password = req.cookies.password.toString();
+
+    var id = req.query.id.toString();
+
+    const requestData = JSON.stringify({
+        username: username,
+        password: password,
+        id: id
+    });
+
+    var options = {
+        host: 'localhost',
+        port: '3000',
+        path: 'gail/project/getProject',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': requestData.length
+        }
+    }
+
+    callback = function (response) {
+        var str = '';
+        //another chunk of data has been received, so append it to `str`
+        response.on('data', function (chunk) {
+            str += chunk;
+        });
+
+        //the whole response has been received, so we just print it out here
+        response.on('end', function () {
+            const jsonObject = JSON.parse(str);
+            console.log(jsonObject);
+            res.render("projects/projectdetails", {
+                currentUser: req.cookies.username,
+                project: jsonObject
+            });
+        });
+    }
+    var request = http.request(options, callback);
+    request.write(requestData);
+    request.end();
+});
+
+router.post('/projectdetails', function(req,res){
+    if(req.cookies.username == null || req.cookies.username.toString() == "")  {
+    		res.redirect("/");
+    		return;
+  	}
+
+    var username = req.cookies.username.toString();
+    var password = req.cookies.password.toString();
+
+    var status = req.body.status.toString();
+
+    const requestData = JSON.stringify({
+        username: username,
+        password: password,
+        status: status
+    });
+
+    var options = {
+        host: 'localhost',
+        port: '3000',
+        path: '/contractors/project/updateProjectStatus',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': requestData.length
+        }
+    }
+
+    callback = function (response) {
+        var str = '';
+        //another chunk of data has been received, so append it to `str`
+        response.on('data', function (chunk) {
+            str += chunk;
+        });
+
+        //the whole response has been received, so we just print it out here
+        response.on('end', function () {
+            const jsonObject = JSON.parse(str);
+            if (jsonObject.success == true) {
+                res.redirect('/projectdetails');
+            }
+        });
+    }
+    var request = http.request(options, callback);
+    request.write(requestData);
+    request.end();
+});
+
+router.post('/updateprogress', function(req,res){
+    if (req.cookies.username == null || req.cookies.username.toString() == "") {
+        res.redirect("/");
+        return;
+    }
+
+    var username = req.cookies.username.toString();
+    var password = req.cookies.password.toString();
+
+    var description = req.body.description.toString();
+
+    const requestData = JSON.stringify({
+        "username": username,
+        "password": password,
+        "description": description
+    });
+
+    var options = {
+        host: 'localhost',
+        port: '3000',
+        path: '/contractors/project/updateProjectStatus',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': requestData.length
+        }
+    }
+
+    callback = function (response) {
+        var str = '';
+        //another chunk of data has been received, so append it to `str`
+        response.on('data', function (chunk) {
+            str += chunk;
+        });
+
+        //the whole response has been received, so we just print it out here
+        response.on('end', function () {
+            const jsonObject = JSON.parse(str);
+            if (jsonObject.success == true) {
+                res.redirect('/projectdetails');
+            }
         });
     }
     var request = http.request(options, callback);
