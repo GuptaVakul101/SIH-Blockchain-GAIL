@@ -81,8 +81,8 @@ router.get('/apply', function(req,res){
         //the whole response has been received, so we just print it out here
         response.on('end', function () {
             const jsonObject = JSON.parse(str);
-            console.log(jsonObject);
             res.render("projects/applybid", {
+                project: jsonObject.object,
                 projectID: projectID,
                 currentUser: req.cookies.username
             });
@@ -104,8 +104,6 @@ router.post('/apply', function(req,res){
 
     var id = req.body.id.toString();
     var price = req.body.price.toString();
-    var quality = req.body.quality.toString();
-    var rating = req.body.rating.toString();
 
     const requestData = JSON.stringify({
         "username": username,
@@ -113,8 +111,6 @@ router.post('/apply', function(req,res){
         "projectID": id,
         "bidDetails": {
             "price": price,
-            "quality": quality,
-            "rating": rating
         }
     });
 
@@ -139,6 +135,7 @@ router.post('/apply', function(req,res){
         //the whole response has been received, so we just print it out here
         response.on('end', function () {
             const jsonObject = JSON.parse(str);
+            console.log(jsonObject);
             if (jsonObject.success == true) {
                 res.redirect('/floatedprojects');
             }
