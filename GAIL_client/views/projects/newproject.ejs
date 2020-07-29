@@ -3,7 +3,7 @@
 <div class="row">
     <h1 style="text-align: center">Float a New Tender</h1>
     <div style="width: 30%; margin: 25px auto;">
-        <form action="/newproject" method="post">
+        <form action="/newproject" method="post" encType="multipart/form-data">
 
             <div class="form-group">
                 <input class="form-control" type="text" name="title" placeholder="Title" required="true">
@@ -14,7 +14,7 @@
 
             <div class="form-group mt-3">
                 <label>Upload your Brochure:</label>
-              <input type="file" name="file" accept="application/pdf" /> 
+              <input type="file" name="filename" accept="application/pdf" /> 
             </div>
 
             <div class="form-group">
@@ -22,7 +22,7 @@
                     <div class="input-group-addon">
                         <i class="fa fa-calendar"></i>
                     </div>
-                <input class="form-control" id="date" name="date" placeholder="Deadline EOD- MM/DD/YYYY" type="text" />
+                <input class="form-control" id="date" name="date" placeholder="Deadline EOD- MM/DD/YYYY" type="text" required="true"/>
                 </div>
             </div>
 
@@ -38,7 +38,7 @@
         var date_input=$('input[name="date"]'); //our date input has the name "date"
         var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body";
         date_input.datepicker({
-            format: 'mm/dd/yyyy',
+            format: 'yyyy/mm/dd',
             container: container,
             todayHighlight: true,
             autoclose: true,

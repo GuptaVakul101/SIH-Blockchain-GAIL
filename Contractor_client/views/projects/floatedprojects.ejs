@@ -10,7 +10,7 @@
 					<%= temp.title.toUpperCase() %>
 				</li>
 				<p><%= temp.description %></p>
-				<form action="/apply" method="get">
+				<form action="/projects/apply" method="get">
 					<input type="hidden" name="id" value="<%= temp.id %>" />
 					<input type="submit" value="Apply" />
 				</form>

@@ -31,7 +31,7 @@ class User extends Contract {
     }
 
     async getUser(ctx, username, password) {
-        const userAsBytes = await ctx.stub.getState('USER_'+username);
+        const userAsBytes = await ctx.stub.getState('USER_' + username);
         if (!userAsBytes || userAsBytes.length === 0) {
             return {
                 success: 'false',
@@ -40,7 +40,7 @@ class User extends Contract {
         }
 
         const user = JSON.parse(userAsBytes.toString());
-        if(user.password !== password){
+        if (user.password !== password) {
             return {
                 success: 'false',
                 message: 'User authentication failed. Please retry with correct password.'
@@ -51,7 +51,7 @@ class User extends Contract {
     }
 
     async getUserDetails(ctx, username) {
-        const userAsBytes = await ctx.stub.getState('USER_'+username);
+        const userAsBytes = await ctx.stub.getState('USER_' + username);
         if (!userAsBytes || userAsBytes.length === 0) {
             return {
                 success: 'false',
@@ -61,22 +61,46 @@ class User extends Contract {
 
         return userAsBytes.toString();
     }
-
-    async createUser(ctx, username, password,email) {
+    async createUser(ctx, username, password, email, teamname, profilePic, name, contact, address, designation) {
         const user = {
             username: username,
+            name: name,
+            contact: contact,
             docType: 'USER',
             password: password,
-            email: email
+            email: email,
+            teamName: teamname,
+            profilePic: profilePic,
+            address: address,
+            designation: designation
         };
 
-        await ctx.stub.putState('USER_'+username, Buffer.from(JSON.stringify(user)));
+        await ctx.stub.putState('USER_' + username, Buffer.from(JSON.stringify(user)));
         return {
             success: 'true'
         };
     }
+    async updatePassword(ctx, username, password, newPass) {
+        const userAsBytes = await ctx.stub.getState('USER_' + username);
+        if (!userAsBytes || userAsBytes.length === 0) {
+            return {
+                success: 'false',
+                message: 'User with username: \'' + username + '\' does not exist.'
+            };
+        }
 
-    async getNumContractors(ctx){
+        var user = JSON.parse(userAsBytes.toString());
+        if (user.password !== password) {
+            return {
+                success: 'false',
+                message: 'User authentication failed. Please retry with correct password.'
+            };
+        }
+        user.password = newPass;
+        await ctx.stub.putState('USER_' + username, Buffer.from(JSON.stringify(user)));
+
+    }
+    async getNumContractors(ctx) {
         const numContractorsAsBytes = await ctx.stub.getState('NUMCONTRACTORS');
         if (!numContractorsAsBytes || numContractorsAsBytes.length === 0) {
             return {
@@ -87,8 +111,7 @@ class User extends Contract {
 
         return numContractorsAsBytes.toString();
     }
-
-    async updateNumContractors(ctx){
+    async updateNumContractors(ctx) {
         const numContractorsAsBytes = await ctx.stub.getState('NUMCONTRACTORS');
         if (!numContractorsAsBytes || numContractorsAsBytes.length === 0) {
             return {
