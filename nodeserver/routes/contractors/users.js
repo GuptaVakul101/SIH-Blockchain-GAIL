@@ -50,6 +50,7 @@ router.post('/login', async function (req, res, next) {
         // Disconnect from the gateway.
         await gateway.disconnect();
 
+
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
         res.json(JSON.parse(user.toString()));
@@ -176,9 +177,15 @@ router.post('/signup', async function (req, res, next) {
                 for (i = 1; i < numGailNodes; i++) {
                     var str = 'channelg' + i.toString() + 'c' + curChannelNum.toString();
                     const networkChannel = await gateway.getNetwork(str);
+<<<<<<< HEAD
+                    const contractChannel = networkChannel.getContract('contractors_'+i.toString()+'_'+curChannelNum.toString(),'User');
+                    await contractChannel.submitTransaction('createUser',req.body.username, req.body.password,req.body.email
+                    ,req.body.contact,req.body.address,req.body.aboutUs,req.body.profilePic);
+=======
                     const contractChannel = networkChannel.getContract('contractors_' + i.toString() + '_' + curChannelNum.toString(), 'User');
                     await contractChannel.submitTransaction('createUser', req.body.username, req.body.password, req.body.email
                         , req.body.contact, req.body.address, req.body.aboutUs, req.body.profilepic);
+>>>>>>> d81cac21aaca9b65d001749eda2f85c3f184a697
                 }
                 await contract.submitTransaction('updateNumContractors');
                 // Disconnect from the gateway.
@@ -200,6 +207,7 @@ router.post('/signup', async function (req, res, next) {
                     if (err) throw err;
                     console.log(dictionaryRev); // Success
                 });
+                await utility.sendEmail(req.body.email.toString(),'Gail: User Created','<p>Dear Contractor,<br> Your account has been successfully created with username <b>'+req.body.username.toString()+'</b> . Please visit your dashboard at GAIL website for more details.<br> Regards,<br> Gail Team</p>');
 
 
                 res.statusCode = 200;

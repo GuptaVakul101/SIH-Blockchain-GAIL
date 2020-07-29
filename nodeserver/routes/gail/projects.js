@@ -6,6 +6,7 @@ const FabricCAServices = require('fabric-ca-client');
 const { Wallets, Gateway } = require('fabric-network');
 const fs = require('fs');
 const path = require('path');
+const utility=require(path.join(__dirname,'utilities.js'));
 
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 }));
@@ -322,7 +323,7 @@ router.post('/acceptProject', async function (req, res, next) {
             const dictionary = JSON.parse(fs.readFileSync(path.resolve(__dirname, '..', 'contractors', 'dictionary.json'), 'utf8'));
             var currChannelNum = dictionary[allocatedContractor];
 
-
+            var allocatedContractorDetails;
             console.log(currChannelNum);
             for (i = 1; i < numGailNodes; i++) {
                 var str = 'channelg' + i.toString() + 'c' + currChannelNum.toString();
@@ -341,7 +342,11 @@ router.post('/acceptProject', async function (req, res, next) {
                 var newQuality = parseFloat(currQuality) * (parseFloat(numPrevProjects) - 1) + parseFloat(req.body.quality);
                 newQuality = newQuality / parseFloat(numPrevProjects);
                 await contractChannel.submitTransaction('updateProductQuality', allocatedContractor, newQuality.toString());
+                if(i==1)
+                    allocatedContractorDetails=await contractChannel.evaluateTransaction('getUserDetails',allocatedContractor);
             }
+            var allocatedContractorJson=JSON.parse(allocatedContractorDetails.toString());
+            await utility.sendEmail(allocatedContractorJson.email.toString(),'Gail:Project Accepted','<p>Dear Contractor,<br> Your work for project <b>'+project.id+'</b> has been accepted . Please visit your dashboard at GAIL website for more details.<br> Regards,<br> Gail Team</p>');
             // Disconnect from the gateway.
             await gateway.disconnect();
             await gatewayContractors.disconnect();
@@ -457,7 +462,7 @@ router.post('/rejectProject', async function (req, res, next) {
             // var curChannelNum = numContractors.numContractors;
             var currChannelNum = dictionary[allocatedContractor];
 
-
+            var allocatedContractorDetails;
             console.log(currChannelNum);
             for (i = 1; i < numGailNodes; i++) {
                 var str = 'channelg' + i.toString() + 'c' + currChannelNum.toString();
@@ -476,7 +481,11 @@ router.post('/rejectProject', async function (req, res, next) {
                 var newQuality = parseFloat(currQuality) * (parseFloat(numPrevProjects) - 1) + parseFloat(req.body.quality);
                 newQuality = newQuality / parseFloat(numPrevProjects);
                 await contractChannel.submitTransaction('updateProductQuality', allocatedContractor, newQuality.toString());
+                if(i==1)
+                    allocatedContractorDetails=await contractChannel.evaluateTransaction('getUserDetails',allocatedContractor);
             }
+            var allocatedContractorJson=JSON.parse(allocatedContractorDetails.toString());
+            await utility.sendEmail(allocatedContractorJson.email.toString(),'Gail:Project Rejected','<p>Dear Contractor,<br> Your work for project <b>'+project.id+'</b> has been rejected . Please visit your dashboard at GAIL website for more details.<br> Regards,<br> Gail Team</p>');
             // Disconnect from the gateway.
             await gateway.disconnect();
             await gatewayContractors.disconnect();

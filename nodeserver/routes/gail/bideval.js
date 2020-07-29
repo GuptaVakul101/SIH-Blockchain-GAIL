@@ -5,6 +5,7 @@ const FabricCAServices = require('fabric-ca-client');
 const { Wallets, Gateway } = require('fabric-network');
 const fs = require('fs');
 const path = require('path');
+const utility=require(path.join(__dirname,'utilities.js'));
 
 const cors = require('../../cors');
 const { ContractImpl } = require('fabric-network/lib/contract');
@@ -237,12 +238,17 @@ router.post('/', async function (req, res, next) {
 
 
                     // console.log(curChannelNum);
+                    var winningContractor;
                     for (i = 1; i < numGailNodes; i++) {
                         var str = 'channelg' + i.toString() + 'c' + channelNum.toString();
                         const networkChannel = await gatewayContractors.getNetwork(str);
                         const contractChannel = networkChannel.getContract('contractors_' + i.toString() + '_' + channelNum.toString(), 'User');
                         await contractChannel.submitTransaction('allocateProject', winningContractorUsername, req.body.id, winnerBidID);
+                        if(i==1)
+                            winningContractor=await contractChannel.evaluateTransaction('getUserDetails',winningContractorUsername);
                     }
+                    var winningContractorJson=JSON.parse(winningContractor.toString());
+                    await utility.sendEmail(winningContractorJson.email.toString(),'Gail:Bid Accepted','<p>Dear Contractor,<br> Your bid <b>'+winnerBidID+'</b> has been selected for the project <b>'+allocatedProjectID+'</b> . Please visit your dashboard at GAIL website for more details.<br> Regards,<br> Gail Team</p>');
                     // Disconnect from the gateway.
                     await gateway.disconnect();
                     res.json({
