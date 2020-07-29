@@ -5,6 +5,7 @@ const FabricCAServices = require('fabric-ca-client');
 const { Wallets, Gateway } = require('fabric-network');
 const fs = require('fs');
 const path = require('path');
+const nodemailer = require('nodemailer');
 
 const dictionary=JSON.parse(fs.readFileSync(path.resolve(__dirname,'dictionary.json'), 'utf8'));
 
@@ -22,6 +23,34 @@ const gail_ccpPath = path.resolve(__dirname, '..', '..', '..', 'fabric', 'test-n
 const gail_ccp = JSON.parse(fs.readFileSync(gail_ccpPath, 'utf8'));
 const gail_walletPath=path.resolve(__dirname, '..','gail','wallet');
 
+const gailEmail="gail.sih2020@gmail.com";
+const password="adminpassword";
+
+exports.sendEmail=async function (emailid,subject,textmessage){
+    console.log('email!');
+    var transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: gailEmail,
+          pass: password
+        }
+      });
+
+    var mailOptions = {
+        from: gailEmail,
+        to: emailid,
+        subject: subject,
+        html: textmessage
+    };
+
+    transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('Email sent: ' + info.response);
+        }
+    });
+};
 exports.checkMaxUsersReached=async function (){
     var gateway = new Gateway();
     var wallet = await Wallets.newFileSystemWallet(gail_walletPath);

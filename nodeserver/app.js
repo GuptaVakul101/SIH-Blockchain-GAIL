@@ -17,6 +17,8 @@ var contractorProjectRouter = require('./routes/contractors/contractorProject');
 
 var initiatePaymentsRouter = require('./routes/payment/transaction');
 
+var testRouter=require('./routes/gail/test')
+
 const cors = require('./cors');
 
 var app = express();
@@ -31,6 +33,8 @@ app.use(express.json({limit: "50mb"}));
 app.use(express.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use('/test', testRouter);
 
 app.use('/gail', gailIndexRouter);
 app.use('/gail/users', gailUsersRouter);
