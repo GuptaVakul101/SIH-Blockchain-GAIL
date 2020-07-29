@@ -359,7 +359,7 @@ router.post('/getCompletedProjects', async function(req, res, next) {
             discovery: { enabled: true, asLocalhost: true }
         });
 
-        
+
         // Get the network (channel) our contract is deployed to.
         const network2 = await gateway2.getNetwork('channelgg');
 
@@ -367,13 +367,14 @@ router.post('/getCompletedProjects', async function(req, res, next) {
         const contract2 = network2.getContract('gail', 'Project');
         var completedProjects = {};
         for(var i =0 ; i<prevProjs.length; i++){
-            const getProj = await contract2.evaluateTransaction('getProject', prevProjs[i]);
+            const getProj = await contract2.evaluateTransaction('getProject', prevProjs[i].id);
             const project = JSON.parse(getProj.toString());
+            console.log(project);
             if ("message" in project) {
             }
             else {
                 console.log('hello' + i.toString());
-                completedProjects[prevProjs[i]] = JSON.stringify(project);
+                completedProjects[prevProjs[i].id] = JSON.stringify(project);
             }
         }
         res.json({
@@ -381,7 +382,7 @@ router.post('/getCompletedProjects', async function(req, res, next) {
             allProjects: completedProjects
         });
     }
-    
+
 });
 router.post('/:username', async function(req, res, next) {
     const dictionary=JSON.parse(fs.readFileSync(path.resolve(__dirname,'dictionaryRev.json'), 'utf8'));
