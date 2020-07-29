@@ -104,6 +104,17 @@ router.post('/apply', function(req,res){
 
     var id = req.body.id.toString();
     var price = req.body.price.toString();
+    var time_period = req.body.time_period.toString();
+
+    var isoArr = [];
+    for(var i = 1; ; i++){
+        if(req.body['iso'+i.toString()] != null){
+            isoArr.push(req.body['iso'+i.toString()]);
+        }
+        else{
+            break;
+        }
+    }
 
     const requestData = JSON.stringify({
         "username": username,
@@ -111,8 +122,11 @@ router.post('/apply', function(req,res){
         "projectID": id,
         "bidDetails": {
             "price": price,
+            "time_period": time_period,
+            "standards": isoArr
         }
     });
+
 
     var options = {
         host: 'localhost',
@@ -233,6 +247,7 @@ router.get('/details', function(req,res){
             res.render("projects/projectdetails", {
                 currentUser: req.cookies.username,
                 project: jsonObject.object,
+                projectID: id,
                 progress: jsonObject.object.progress
             });
         });
@@ -252,6 +267,7 @@ router.post('/details', function(req,res){
     var password = req.cookies.password.toString();
 
     var status = req.body.status.toString();
+    var id = req.body.id.toString();
 
     const requestData = JSON.stringify({
         username: username,
@@ -281,7 +297,7 @@ router.post('/details', function(req,res){
         response.on('end', function () {
             const jsonObject = JSON.parse(str);
             if (jsonObject.success == true) {
-                res.redirect('/projects/details');
+                res.redirect('/projects/details?id='+id);
             }
         });
     }

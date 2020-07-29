@@ -11,19 +11,17 @@
 <div class="row">
     <h1 style="text-align: center">Apply Bid</h1>
     <div style="width: 30%; margin: 25px auto;">
-        <form  id="applyForm" method="post">
+        <form id="applyForm" method="post">
             <div class="form-group">
                 <input class="form-control" type="number" name="price" placeholder="Price">
             </div>
             <div class="form-group">
                 <input class="form-control" type="number" name="time_period" placeholder="Time Period (in days)">
             </div>
-            <div id="isostan">
-                <div class="form-group">
-                    <input class="form-control" type="text" name="iso1" placeholder="Specify ISO Standard">
-                </div>
+            <div class="form-group" id="isostan">
+                <input class="form-control" type="text" name="iso1" placeholder="Specify ISO Standard">
             </div>
-            <button class="btn btn-lg btn-primary btn-block" id="addField">Add Field</button>
+            <input type="button" class="btn btn-lg btn-primary btn-block" id="addField" value="Add Field"></input>
             <input type="hidden" name="id" value="<%= projectID %>" />
             <div class="form-group">
                 <button type="submit" formaction="/projects/apply" class="btn btn-lg btn-primary btn-block">Apply for project</button>
@@ -39,8 +37,9 @@
         var input = document.createElement('input');
         input.type = 'text';
         input.name = 'iso'+numFields.toString();
-        input.class = 'form-control'; 
-        return input
+        input.className += 'form-control';
+        input.placeholder = 'Specify ISO Standard';
+        return input;
     }
 
     var form = document.getElementById('isostan');
