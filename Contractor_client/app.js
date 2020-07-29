@@ -13,7 +13,7 @@ app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 
 app.use("/", indexRoutes);
-app.use("/", projectRoutes);
+app.use("/projects/", projectRoutes);
 app.use("/profile/", userRoutes);
 
 app.listen(4200,function(){
