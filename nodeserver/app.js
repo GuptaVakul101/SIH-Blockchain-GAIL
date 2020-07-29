@@ -15,6 +15,8 @@ var contractorUsersRouter = require('./routes/contractors/users');
 var contractorAdminRouter = require('./routes/contractors/admin');
 var contractorProjectRouter = require('./routes/contractors/contractorProject');
 
+var initiatePaymentsRouter = require('./routes/payment/transaction');
+
 const cors = require('./cors');
 
 var app = express();
@@ -40,6 +42,8 @@ app.use('/contractors/bids', contractorBidsRouter);
 app.use('/contractors/users', contractorUsersRouter);
 app.use('/contractors/admin', contractorAdminRouter);
 app.use('/contractors/project', contractorProjectRouter);
+
+app.use('/payment',initiatePaymentsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

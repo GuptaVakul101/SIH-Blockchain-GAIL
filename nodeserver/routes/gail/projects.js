@@ -201,20 +201,29 @@ router.post('/getAllProjects', async function (req, res, next) {
         const numProj = await contract.evaluateTransaction('getNumProjects');
         const numProjJson = JSON.parse(numProj.toString());
         console.log(numProjJson);
-        for (var i = 1; i <= parseInt(numProjJson.num.toString()) + 1; i++) {
-            const getProj = await contract.evaluateTransaction('getProject', i);
-            const project = JSON.parse(getProj.toString());
-            if ("message" in project) {
-            }
-            else {
-                console.log('hello' + i.toString());
-                allProjects[i.toString()] = JSON.stringify(project);
-            }
+        if("message" in numProjJson){
+            res.json({
+                success: true,
+                allProjects: allProjects
+            });
         }
-        res.json({
-            success: true,
-            allProjects: allProjects
-        });
+        else{
+            for (var i = 1; i <= parseInt(numProjJson.num.toString()) + 1; i++) {
+                const getProj = await contract.evaluateTransaction('getProject', i);
+                const project = JSON.parse(getProj.toString());
+                if ("message" in project) {
+                }
+                else {
+                    console.log('hello' + i.toString());
+                    allProjects[i.toString()] = JSON.stringify(project);
+                }
+            }
+            res.json({
+                success: true,
+                allProjects: allProjects
+            });
+        }
+        
     }
 });
 
