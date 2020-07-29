@@ -38,6 +38,16 @@ fabric/test-network/network.sh deployCC
 fabric/test-network/network.sh down
 ```
 
+OR
+
+```shell
+# Install the required dependencies
+./install.sh
+
+# Create the blockchain network
+./restart.sh
+```
+
 ---
 
 ### Running NodeJS backend server
@@ -61,7 +71,7 @@ npm start
 npm install
 
 # Start the node server
-node app.js
+PORT=8000 node app.js
 
 # Open localhost:3600 in web browser
 ```

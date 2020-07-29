@@ -35,7 +35,50 @@ router.get("/activeprojects", function (req, res) {
         response.on('end', function () {
             const jsonObject = JSON.parse(str);
             if (jsonObject.success == true) {
-                res.render("projects/activeprojects", { projects: jsonObject.allProjects, currentUser: req.cookies.username });
+                var obj = jsonObject.allProjects;
+                var flag = false;
+                for (var key in obj) {
+                    console.log(key);
+                    if (obj.hasOwnProperty(key)) {
+                        const requestDataNested = JSON.stringify({
+                            "username": username,
+                            "password": password,
+                            "id": key
+                        });
+                        var val = obj[key];
+                        var obj2 = JSON.parse(val);
+                        var deadlineTime = obj2["deadline"];
+                        var currentStatus = obj2["status"];
+                        var currentTime = getTodayDate();
+                        console.log(deadlineTime);
+                        console.log(currentTime);
+                        console.log(currentStatus);
+                        var optionsNested = getOptions('/gail/bideval/', requestDataNested);
+                        callback2 = function (response) {
+                            response.on('data', function (chunk) {
+
+                            });
+                            response.on('end', function () {
+
+                            });
+                        }
+                        var ans1 = currentStatus.localeCompare("floated");
+                        var ans2 = currentTime.localeCompare(deadlineTime);
+                        console.log(ans1);
+                        console.log(ans2);
+                        if (ans1 == 0 && ans2 > 0) {
+                            flag = true;
+                            runHttpRequest(optionsNested, callback2, requestDataNested);
+                        }
+                    }
+                }
+                console.log(jsonObject.allProjects);
+                if (flag == true) {
+                    res.redirect("/activeprojects");
+                } else {
+                    res.render("projects/activeprojects", { projects: jsonObject.allProjects, currentUser: req.cookies.username });
+                }
+                // res.render("projects/activeprojects", { projects: jsonObject.allProjects, currentUser: req.cookies.username });
             }
         });
     }
@@ -69,12 +112,52 @@ router.get("/floatedprojects", function (req, res) {
         response.on('end', function () {
             const jsonObject = JSON.parse(str);
             if (jsonObject.success == true) {
-                //for loop all Projects -> status: floated and deadline compare!
-                res.render("projects/floatedprojects", { projects: jsonObject.allProjects, currentUser: req.cookies.username });
+                var obj = jsonObject.allProjects;
+                var flag = false;
+                for (var key in obj) {
+                    console.log(key);
+                    if (obj.hasOwnProperty(key)) {
+                        const requestDataNested = JSON.stringify({
+                            "username": username,
+                            "password": password,
+                            "id": key
+                        });
+                        var val = obj[key];
+                        var obj2 = JSON.parse(val);
+                        var deadlineTime = obj2["deadline"];
+                        var currentStatus = obj2["status"];
+                        var currentTime = getTodayDate();
+                        console.log(deadlineTime);
+                        console.log(currentTime);
+                        console.log(currentStatus);
+                        var optionsNested = getOptions('/gail/bideval/', requestDataNested);
+                        callback2 = function (response) {
+                            response.on('data', function (chunk) {
+
+                            });
+                            response.on('end', function () {
+
+                            });
+                        }
+                        var ans1 = currentStatus.localeCompare("floated");
+                        var ans2 = currentTime.localeCompare(deadlineTime);
+                        console.log(ans1);
+                        console.log(ans2);
+                        if (ans1 == 0 && ans2 > 0) {
+                            flag = true;
+                            runHttpRequest(optionsNested, callback2, requestDataNested);
+                        }
+                    }
+                }
+                console.log(jsonObject.allProjects);
+                if (flag == true) {
+                    res.redirect("/floatedprojects");
+                } else {
+                    res.render("projects/floatedprojects", { projects: jsonObject.allProjects, currentUser: req.cookies.username });
+                }
             }
         });
     }
-
     runHttpRequest(options, callback, requestData);
 });
 
@@ -83,7 +166,32 @@ router.get("/finishedprojects", function (req, res) {
         res.redirect("/login");
         return;
     }
-    res.render("projects/finishedprojects", { currentUser: req.cookies.username });
+    var username = req.cookies.username.toString();
+    var password = req.cookies.password.toString();
+    const requestData = JSON.stringify({
+        "username": username,
+        "password": password,
+    });
+
+    var options = getOptions('/gail/project/getAllProjects', requestData);
+
+    callback = function (response) {
+        var str = '';
+        //another chunk of data has been received, so append it to `str`
+        response.on('data', function (chunk) {
+            str += chunk;
+        });
+
+        //the whole response has been received, so we just print it out here
+        response.on('end', function () {
+            const jsonObject = JSON.parse(str);
+            if (jsonObject.success == true) {
+                // res.render("projects/finishedprojects", { currentUser: req.cookies.username });
+                res.render("projects/finishedprojects", { projects: jsonObject.allProjects, currentUser: req.cookies.username });
+            }
+        });
+    }
+    runHttpRequest(options, callback, requestData);
 })
 
 router.get("/newproject", function (req, res) {
@@ -127,8 +235,8 @@ router.get("/floatedprojects/:id", function (req, res) {
                 console.log("Failed");
                 res.redirect('/floatedprojects');
             } else {
-
-                res.send(jsonObject.object);
+                res.render("projects/showfloatedproject", { data: jsonObject.object, currentUser: req.cookies.username });
+                // res.send(jsonObject.object);
             }
         });
     }
@@ -198,7 +306,9 @@ router.get("/activeprojects/:id", function (req, res) {
                             response3.on('end', function () {
                                 const jsonObject3 = JSON.parse(str3); //coressponding to the bid details
                                 console.log("Contractor Details: " + JSON.stringify(jsonObject3.object));
-                                res.send(jsonObject3);
+                                res.render("projects/showactiveproject", { data: jsonObject.object, data2: jsonObject2.object, data3: jsonObject3.object, currentUser: req.cookies.username });
+
+                                // res.send(jsonObject3);
                             });
                         }
 
@@ -228,18 +338,24 @@ router.post("/newproject", function (req, res) {
     var description = req.body.description.toString();
     var deadlineDate = req.body.date.toString();
     var todayDate = getTodayDate().toString();
-    var file = req.files.filename;
+    var file = null;
+    if (req.files) {
+        file = req.files.filename;
+    }
 
-    var getTimeStampString = new Date().getTime().toString();
-    var saveFilePath = "../nodeserver/brochureUpload/" + getTimeStampString;
-    file.mv(saveFilePath, function (err) {
-        if (err) {
-            res.redirect("/newproject");
-            return;
-        } else {
-            console.log("File downloaded successfully");
-        }
-    });
+    var getTimeStampString = null;
+    if (file != null) {
+        getTimeStampString = new Date().getTime().toString();
+        var saveFilePath = "../nodeserver/brochureUpload/" + getTimeStampString;
+        file.mv(saveFilePath, function (err) {
+            if (err) {
+                res.redirect("/newproject");
+                return;
+            } else {
+                console.log("File downloaded successfully");
+            }
+        });
+    }
 
     const requestData = JSON.stringify({
         "username": username,
@@ -304,7 +420,8 @@ function getTodayDate() {
         mm = '0' + mm;
     }
 
-    return mm + "/" + dd + "/" + yyyy;
+    // return mm + "/" + dd + "/" + yyyy;
+    return yyyy + "/" + mm + "/" + dd;
 }
 
 module.exports = router;

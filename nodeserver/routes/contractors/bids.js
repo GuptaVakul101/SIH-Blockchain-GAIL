@@ -59,18 +59,6 @@ router.post('/applyForProject', async function(req, res, next) {
                 await contract.submitTransaction('applyForProject', req.body.username, req.body.projectID,JSON.stringify(req.body.bidDetails),bidID);
                 await gateway.disconnect();
 
-                try {
-                    const dictionaryBid=JSON.parse(fs.readFileSync(path.resolve(__dirname,'dictionaryBid.json'), 'utf8'));
-                    dictionaryBid[bidID.toString()]=req.body.bidDetails;
-                    fs.writeFile(path.resolve(__dirname,'dictionaryBid.json'), JSON.stringify(dictionaryBid), err => {
-                        // Checking for errors
-                        if (err) throw err;
-                        console.log(dictionaryBid); // Success
-                    });
-                } catch (err) {
-                    console.log(err);
-                }
-
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
                 res.json({
