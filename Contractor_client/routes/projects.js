@@ -181,8 +181,8 @@ router.get('/allocated', function(req,res){
         //the whole response has been received, so we just print it out here
         response.on('end', function () {
             const jsonObject = JSON.parse(str);
-            console.log(jsonObject);
             res.render("projects/allocated", {
+                project: jsonObject,
                 currentUser: req.cookies.username
             });
         });
