@@ -308,28 +308,102 @@ router.post('/updateProfile', async function(req, res, next) {
     }
 });
 
+router.post('/getCompletedProjects', async function(req, res, next) {
+    //console.log('correcturl');
+    // Create a new file system based wallet for managing identities.
+    const walletPath = path.join(__dirname, 'wallet');
+    var wallet = await Wallets.newFileSystemWallet(walletPath);
 
-// router.post('/:username', async function(req, res, next) {
-//     const dictionary=JSON.parse(fs.readFileSync(path.resolve(__dirname,'dictionaryRev.json'), 'utf8'));
-//     var contractorUsername = req.params.username.toString();
-//     if(dictionary.hasOwnProperty(contractorUsername)){
-//         var contractorDetails=dictionary[contractorUsername];
-//         res.statusCode = 200;
-//         res.setHeader('Content-Type', 'application/json');
-//         res.json({
-//             success: true,
-//             message: 'Successfully get contractor details',
-//             object: contractorDetails
-//         });
-//     }else{
-//         res.statusCode = 400;
-//         res.setHeader('Content-Type', 'application/json');
-//         res.json({
-//             success: false,
-//             message: 'No such contractor id exists'
-//         });
-//     }
-// });
+    // Check to see if we've already enrolled the user.
+    const identity = await wallet.get(req.body.username);
+    if (!identity) {
+        //console.log('here1');
+        res.statusCode = 400;
+        res.setHeader('Content-Type', 'application/json');
+        res.json({
+            success: false,
+            message: 'User with username: ' + req.body.username + ' does not exist!!'
+        });
+    }
+    else{
+        // Create a new gateway for connecting to our peer node.
+        const gateway=await utility.getContractorGateway(req.body.username);
+        const dictionary=JSON.parse(fs.readFileSync(path.resolve(__dirname,'dictionary.json'), 'utf8'));
+        var channelNum=dictionary[req.body.username];
+        // Get the network (channel) our contract is deployed to.
+        const network = await gateway.getNetwork('channelg1c'+channelNum);
+
+        // Get the contract from the network.
+        const contract = network.getContract('contractors_1_'+channelNum);
+
+        var user = await contract.evaluateTransaction('getUser', req.body.username, req.body.password);
+        const userJson = JSON.parse(user.toString());
+        //console.log(userJson);
+        if("message" in userJson){
+            //console.log('here2');
+            res.statusCode = 400;
+            res.json(userJson);
+            await gateway.disconnect();
+        }
+        else
+        // Disconnect from the gateway.
+
+        res.statusCode = 200;
+        const ccpPath2 = path.resolve(__dirname, '..', '..', '..', 'fabric', 'test-network', 'organizations',
+        'peerOrganizations', 'gail.example.com', 'connection-gail.json');
+        const ccp2 = JSON.parse(fs.readFileSync(ccpPath2, 'utf8'));
+        const prevProjs = userJson.listOfPreviousProjects;
+        const gateway2 = new Gateway();
+        await gateway2.connect(ccp2, {
+            wallet, identity: 'admin',
+            discovery: { enabled: true, asLocalhost: true }
+        });
+
+        
+        // Get the network (channel) our contract is deployed to.
+        const network2 = await gateway2.getNetwork('channelgg');
+
+        // Get the contract from the network.
+        const contract2 = network2.getContract('gail', 'Project');
+        var completedProjects = {};
+        for(var i =0 ; i<prevProjs.length; i++){
+            const getProj = await contract2.evaluateTransaction('getProject', prevProjs[i]);
+            const project = JSON.parse(getProj.toString());
+            if ("message" in project) {
+            }
+            else {
+                console.log('hello' + i.toString());
+                completedProjects[prevProjs[i]] = JSON.stringify(project);
+            }
+        }
+        res.json({
+            success: true,
+            allProjects: completedProjects
+        });
+    }
+    
+});
+router.post('/:username', async function(req, res, next) {
+    const dictionary=JSON.parse(fs.readFileSync(path.resolve(__dirname,'dictionaryRev.json'), 'utf8'));
+    var contractorUsername = req.params.username.toString();
+    if(dictionary.hasOwnProperty(contractorUsername)){
+        var contractorDetails=dictionary[contractorUsername];
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json({
+            success: true,
+            message: 'Successfully get contractor details',
+            object: contractorDetails
+        });
+    }else{
+        res.statusCode = 400;
+        res.setHeader('Content-Type', 'application/json');
+        res.json({
+            success: false,
+            message: 'No such contractor id exists'
+        });
+    }
+});
 
 
 module.exports = router;
