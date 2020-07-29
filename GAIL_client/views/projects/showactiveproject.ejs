@@ -24,6 +24,26 @@
         <li>
             <%= data2.price.toUpperCase() %>
         </li>
+		<form action="/dummyproject" method="post" encType="multipart/form-data">
+			<% if(data.status == "in-review") { %>
+				<div class="form-group">
+	                <input class="form-control" type="text" name="rating" placeholder="Rating" required="true">
+	            </div>
+				<div class="form-group">
+	                <input class="form-control" type="text" name="quality" placeholder="Quality" required="true">
+	            </div>
+				<div class="form-group">
+	                <input class="form-control" type="text" name="review" placeholder="Review" required="true">
+	            </div>
+				<div class="form-group">
+	                <button type="submit" formmethod="post" formaction="/acceptproject/<%= data.id %>" class="btn btn-lg btn-primary btn-block">Accept</button>
+	            </div>
+				<div class="form-group">
+					<button type="submit" formmethod="post" formaction="/rejectproject/<%= data.id %>" class="btn btn-lg btn-primary btn-block">Reject</button>
+	            </div>
+			<% } %>
+        </form>
+
   	</ul>
   <br>
 </div>
