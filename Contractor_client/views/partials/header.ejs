@@ -27,7 +27,7 @@
                             <li><a href="/login" class="btn btn-lg">Login</a></li>
                             <li><a href="/register" class="btn btn-lg">Register</a></li>
                         <% } else{ %>
-                            <li><a class="btn btn-lg">Signed In As <%= currentUser.toUpperCase() %> </a></li>
+                            <li><a href="/profile" class="btn btn-lg">Signed In As <%= currentUser.toUpperCase() %> </a></li>
                             <li><a href="/logout" class="btn btn-lg">Logout</a></li>
                         <% } %>
                     </ul>

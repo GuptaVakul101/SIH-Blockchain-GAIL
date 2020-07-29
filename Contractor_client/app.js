@@ -1,11 +1,11 @@
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
 
 var indexRoutes = require("./routes/index");
 var projectRoutes = require("./routes/projects");
-var cookieParser = require('cookie-parser');
-
+var userRoutes = require("./routes/profile");
 
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended:true}));
@@ -14,7 +14,7 @@ app.use(express.static(__dirname + "/public"));
 
 app.use("/", indexRoutes);
 app.use("/", projectRoutes);
-
+app.use("/profile/", userRoutes);
 
 app.listen(4200,function(){
     console.log("Server started at port 4200");
