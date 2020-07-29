@@ -10,6 +10,7 @@
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
         <link rel="stylesheet" type="text/css" href="/stylesheets/main.css">
+        <link rel="stylesheet" type="text/css" href="css/spinner.css">
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     </head>
     <body>
@@ -32,6 +33,7 @@
                             <li><a href="/register" class="btn btn-lg">SignUp</a></li>
                         <% } else{ %>
                             <li><a class="btn btn-lg">Signed In As <%= currentUser.toUpperCase() %> </a></li>
+                            <li><a href="/editprofile" class="btn btn-lg">Edit Profile</a></li>
                             <li><a href="/logout" class="btn btn-lg">Logout</a></li>
                         <% } %>   
                     </ul>

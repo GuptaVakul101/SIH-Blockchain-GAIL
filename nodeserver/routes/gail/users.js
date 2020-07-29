@@ -186,4 +186,103 @@ router.post('/signup', async function (req, res, next) {
     }
 });
 
+router.post('/getUserDetails', async function (req, res, next) {
+    const ccpPath = path.resolve(__dirname, '..', '..', '..', 'fabric', 'test-network', 'organizations',
+        'peerOrganizations', 'gail.example.com', 'connection-gail.json');
+    const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
+
+    const walletPath = path.join(__dirname, 'wallet');
+    const wallet = await Wallets.newFileSystemWallet(walletPath);
+    const identity = await wallet.get(req.body.username);
+
+    if (!identity) {
+        res.statusCode = 404;
+        res.setHeader('Content-Type', 'application/json');
+        res.json({
+            success: false,
+            message: 'You dont have permission to access this page'
+        });
+    }
+    else {
+        const gateway = new Gateway();
+        await gateway.connect(ccp, { wallet, identity: req.body.username, discovery: { enabled: true, asLocalhost: true } });
+
+        const network = await gateway.getNetwork('channelgg');
+        const contract = network.getContract('gail', 'User');
+
+        const user = await contract.evaluateTransaction('getUser', req.body.username, req.body.password);
+        const jsonObj = JSON.parse(user.toString());
+        console.log(jsonObj.success);
+        await gateway.disconnect();
+
+        if (jsonObj.success == "false") {
+            res.statusCode = 404;
+            res.setHeader('Content-Type', 'application/json');
+            res.json({
+                success: false,
+                message: 'You dont have permission to access this page!!'
+            });
+        } else {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json({
+                success: true,
+                object: jsonObj
+            });
+        }
+    }
+
+});
+
+router.post('/editUserDetails', async function (req, res, next) {
+    const ccpPath = path.resolve(__dirname, '../../..', 'fabric/test-network/organizations/peerOrganizations', 'gail.example.com/connection-gail.json');
+    const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
+
+    const caURL = ccp.certificateAuthorities['ca.gail.example.com'].url;
+
+    const walletPath = path.join(__dirname, 'wallet');
+    const wallet = await Wallets.newFileSystemWallet(walletPath);
+
+    const userIdentity = await wallet.get(req.body.username);
+    if (!userIdentity) {
+        res.statusCode = 500;
+        res.setHeader('Content-Type', 'application/json');
+        res.json({
+            success: false,
+            message: 'User with username: ' + req.body.username + ' does not exists in the wallet'
+        });
+    } else {
+        const adminIdentity = await wallet.get('admin');
+        if (!adminIdentity) {
+            res.statusCode = 500;
+            res.setHeader('Content-Type', 'application/json');
+            res.json({
+                success: false,
+                message: 'admin should be registered before registering client user'
+            });
+        } else {
+            const gateway = new Gateway();
+            await gateway.connect(ccp, {
+                wallet, identity: req.body.username,
+                discovery: { enabled: true, asLocalhost: true }
+            });
+
+            const network = await gateway.getNetwork('channelgg');
+            const contract = network.getContract('gail');
+
+            await contract.submitTransaction('createUser', req.body.username, req.body.password, req.body.email, req.body.teamname, req.body.profilePic, 
+                req.body.name, req.body.contact, req.body.address, req.body.designation);
+
+            await gateway.disconnect();
+
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json({
+                success: true,
+                message: "Successfully edited Details"
+            });
+        }
+    }
+});
+
 module.exports = router;
