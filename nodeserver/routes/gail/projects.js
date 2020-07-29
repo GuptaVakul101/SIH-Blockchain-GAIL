@@ -316,13 +316,7 @@ router.post('/acceptProject', async function (req, res, next) {
 
 
             // Get the network (channel) our contract is deployed to.
-            // const network2 = await gateway.getNetwork('channelgg');
             const dictionary = JSON.parse(fs.readFileSync(path.resolve(__dirname, '..', 'contractors', 'dictionary.json'), 'utf8'));
-            // // Get the contract from the network.
-            // const contract3 = network2.getContract('gail', 'User');
-            // const numContractorsAsBytes = await contract3.evaluateTransaction('getNumContractors');
-            // var numContractors = JSON.parse(numContractorsAsBytes.toString());
-            // var curChannelNum = numContractors.numContractors;
             var currChannelNum = dictionary[allocatedContractor];
 
 
@@ -331,7 +325,7 @@ router.post('/acceptProject', async function (req, res, next) {
                 var str = 'channelg' + i.toString() + 'c' + currChannelNum.toString();
                 const networkChannel = await gatewayContractors.getNetwork(str);
                 const contractChannel = networkChannel.getContract('contractors_' + i.toString() + '_' + currChannelNum.toString(), 'User');
-                await contractChannel.submitTransaction('deallocateProject', allocatedContractor);
+                await contractChannel.submitTransaction('deallocateProject', allocatedContractor, req.body.rating, req.body.quality, req.body.review);
 
                 const numPrevProjects = await contractChannel.evaluateTransaction('getNumPrevProjs', allocatedContractor);
                 const currRating = await contractChannel.evaluateTransaction('getOverallRating', allocatedContractor);
@@ -353,7 +347,6 @@ router.post('/acceptProject', async function (req, res, next) {
                 success: true,
                 message: 'Successfully accepted the project.'
             });
-
         }
     }
 
@@ -467,7 +460,7 @@ router.post('/rejectProject', async function (req, res, next) {
                 var str = 'channelg' + i.toString() + 'c' + currChannelNum.toString();
                 const networkChannel = await gatewayContractors.getNetwork(str);
                 const contractChannel = networkChannel.getContract('contractors_' + i.toString() + '_' + currChannelNum.toString(), 'User');
-                await contractChannel.submitTransaction('deallocateProject', allocatedContractor);
+                await contractChannel.submitTransaction('deallocateProject', allocatedContractor, req.body.rating, req.body.quality, req.body.review);
 
                 const numPrevProjects = await contractChannel.evaluateTransaction('getNumPrevProjs', allocatedContractor);
                 const currRating = await contractChannel.evaluateTransaction('getOverallRating', allocatedContractor);
@@ -489,7 +482,6 @@ router.post('/rejectProject', async function (req, res, next) {
                 success: true,
                 message: 'Rejected the project.'
             });
-
         }
     }
 

@@ -27,7 +27,7 @@ class Project extends Contract {
             id: id,
             title: title,
             description: description,
-            status: 'floated', //in-progress, in-shipment, complete_accepted, complete_rejected
+            status: 'floated', //in-progress, in-shipment, in-review, complete_accepted, complete_rejected
             contractor_id: null,
             bid_id: null,
             progress:[],

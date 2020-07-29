@@ -13,10 +13,10 @@ router.use(bodyParser.json());
 router.options('*', cors.corsWithOptions, (req, res) => { res.sendStatus(200); });
 
 /* GET users listing. */
-router.post('/login', async function(req, res, next) {
+router.post('/login', async function (req, res, next) {
     // load the network configuration
     const ccpPath = path.resolve(__dirname, '..', '..', '..', 'fabric', 'test-network', 'organizations',
-    'peerOrganizations', 'gail.example.com', 'connection-gail.json');
+        'peerOrganizations', 'gail.example.com', 'connection-gail.json');
     const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
 
     // Create a new file system based wallet for managing identities.
@@ -33,11 +33,13 @@ router.post('/login', async function(req, res, next) {
             message: 'User with username: ' + req.body.username + ' does not exist'
         });
     }
-    else{
+    else {
         // Create a new gateway for connecting to our peer node.
         const gateway = new Gateway();
-        await gateway.connect(ccp, { wallet, identity: req.body.username,
-            discovery: { enabled: true, asLocalhost: true } });
+        await gateway.connect(ccp, {
+            wallet, identity: req.body.username,
+            discovery: { enabled: true, asLocalhost: true }
+        });
 
         // Get the network (channel) our contract is deployed to.
         const network = await gateway.getNetwork('channelgg');
@@ -54,10 +56,10 @@ router.post('/login', async function(req, res, next) {
         // res.setHeader('Content-Type', 'application/json');
         // res.json(JSON.parse(user.toString()));
 
-        if(jsonObject.hasOwnProperty('success')) {
+        if (jsonObject.hasOwnProperty('success')) {
             console.log("Contains Success");
             console.log(jsonObject.success);
-            if(jsonObject.success == 'false') {
+            if (jsonObject.success == 'false') {
                 res.statusCode = 500;
                 res.setHeader('Content-Type', 'application/json');
                 res.json({
@@ -84,10 +86,10 @@ router.post('/login', async function(req, res, next) {
     }
 });
 
-router.post('/signup', async function(req, res, next){
+router.post('/signup', async function (req, res, next) {
     // load the network configuration
     const ccpPath = path.resolve(__dirname, '..', '..', '..', 'fabric', 'test-network', 'organizations',
-    'peerOrganizations', 'gail.example.com', 'connection-gail.json');
+        'peerOrganizations', 'gail.example.com', 'connection-gail.json');
     const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
 
     // Create a new CA client for interacting with the CA.
@@ -108,7 +110,7 @@ router.post('/signup', async function(req, res, next){
             message: 'User with username: ' + req.body.username + ' already exists in the wallet'
         });
     }
-    else{
+    else {
         // Check to see if we've already enrolled the admin user.
         const adminIdentity = await wallet.get('admin');
         if (!adminIdentity) {
@@ -119,7 +121,7 @@ router.post('/signup', async function(req, res, next){
                 message: 'admin should be registered before registering client user'
             });
         }
-        else{
+        else {
             // build a user object for authenticating with the CA
             const provider = wallet.getProviderRegistry().getProvider(adminIdentity.type);
             const adminUser = await provider.getUserContext(adminIdentity, 'admin');
@@ -154,11 +156,13 @@ router.post('/signup', async function(req, res, next){
                     message: 'User registration failed'
                 });
             }
-            else{
+            else {
                 // Create a new gateway for connecting to our peer node.
                 const gateway = new Gateway();
-                await gateway.connect(ccp, { wallet, identity: req.body.username,
-                    discovery: { enabled: true, asLocalhost: true } });
+                await gateway.connect(ccp, {
+                    wallet, identity: req.body.username,
+                    discovery: { enabled: true, asLocalhost: true }
+                });
 
                 // Get the network (channel) our contract is deployed to.
                 const network = await gateway.getNetwork('channelgg');
@@ -166,8 +170,8 @@ router.post('/signup', async function(req, res, next){
                 // Get the contract from the network.
                 const contract = network.getContract('gail');
 
-                await contract.submitTransaction('createUser', req.body.username, req.body.password,req.body.email,
-                req.body.teamname,req.body.gailpic);
+                await contract.submitTransaction('createUser', req.body.username, req.body.password, req.body.email,
+                    req.body.teamname, req.body.profilePic, req.body.name, req.body.contact, req.body.address, req.body.designation);
                 // Disconnect from the gateway.
                 await gateway.disconnect();
 
