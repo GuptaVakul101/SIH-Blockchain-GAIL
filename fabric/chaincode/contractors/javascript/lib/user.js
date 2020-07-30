@@ -48,7 +48,7 @@ class User extends Contract {
 
     }
 
-    async createUser(ctx, username, password, email, contact, address, aboutUs, profilepic) {
+    async createUser(ctx, username, password, email, contact, address, aboutUs, profilepic, merchantID, merchantKey) {
         const user = {
             docType: 'CONTRACTOR',
             username: username,
@@ -62,7 +62,9 @@ class User extends Contract {
             contact: contact,
             address: address,
             aboutUs: aboutUs,
-            profilePicPath: profilepic
+            profilePicPath: profilepic,
+            merchantID: merchantID,
+            merchantKey: merchantKey
         };
 
         await ctx.stub.putState('CONTRACTOR_' + username, Buffer.from(JSON.stringify(user)));
