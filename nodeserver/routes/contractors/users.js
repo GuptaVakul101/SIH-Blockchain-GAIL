@@ -177,15 +177,9 @@ router.post('/signup', async function (req, res, next) {
                 for (i = 1; i < numGailNodes; i++) {
                     var str = 'channelg' + i.toString() + 'c' + curChannelNum.toString();
                     const networkChannel = await gateway.getNetwork(str);
-<<<<<<< HEAD
-                    const contractChannel = networkChannel.getContract('contractors_'+i.toString()+'_'+curChannelNum.toString(),'User');
-                    await contractChannel.submitTransaction('createUser',req.body.username, req.body.password,req.body.email
-                    ,req.body.contact,req.body.address,req.body.aboutUs,req.body.profilePic);
-=======
                     const contractChannel = networkChannel.getContract('contractors_' + i.toString() + '_' + curChannelNum.toString(), 'User');
                     await contractChannel.submitTransaction('createUser', req.body.username, req.body.password, req.body.email
                         , req.body.contact, req.body.address, req.body.aboutUs, req.body.profilepic);
->>>>>>> d81cac21aaca9b65d001749eda2f85c3f184a697
                 }
                 await contract.submitTransaction('updateNumContractors');
                 // Disconnect from the gateway.
