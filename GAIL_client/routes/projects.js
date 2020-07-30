@@ -248,7 +248,12 @@ router.get("/floatedprojects/:id", function (req, res) {
 
                     response2.on('end', function () {
                         const jsonObject2 = JSON.parse(str2);
-                        res.render("projects/showfloatedproject", { data: jsonObject.object, currentUser: req.cookies.username, allBidDetails: jsonObject2.allBids });
+                        if(jsonObject2.success == true) {
+                            res.render("projects/showfloatedproject", { data: jsonObject.object, currentUser: req.cookies.username, allBidDetails: jsonObject2.allBids });
+                        } else {
+                            res.render("projects/showfloatedproject", { data: jsonObject.object, currentUser: req.cookies.username, allBidDetails: [] });
+                        }
+
                         // res.send(jsonObject2.allBids);
                     });
                 }

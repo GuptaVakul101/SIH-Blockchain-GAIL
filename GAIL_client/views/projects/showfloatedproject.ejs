@@ -17,16 +17,15 @@
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 </head>
 
-<body>
+<body style="background-color: #f1f1f1;">
 
     <nav class="navbar navbar-expand-md" style="background-color: #222222; color: #9d9d9d;">
-
         <a class="navbar-brand" href="/" class="btn btn-md">GAIL</a>
         <a class="navbar-brand" href="/activeprojects" class="btn btn-md">Active Projects</a>
         <a class="navbar-brand" href="/floatedprojects" class="btn btn-md">Floated Projects</a>
         <a class="navbar-brand" href="/finishedprojects" class="btn btn-md">Finished Projects</a>
         <a class="navbar-brand" href="/newproject" class="btn btn-md">Float a new Project</a>
-       
+
         <button class="navbar-toggler" data-toggle="collapse" data-target="#navbarMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -37,7 +36,8 @@
                 <li><a href="/login" class="navbar-brand btn-md" style="color: #9d9d9d;">Login</a></li>
                 <li><a href="/register" class="navbar-brand btn btn-md" style="color: #9d9d9d;">SignUp</a></li>
                 <% } else{ %>
-                <li><a class="navbar-brand btn btn-md" href="#" style="color: #9d9d9d;">Signed In As <%= currentUser.toUpperCase() %> </a></li>
+                <li><a class="navbar-brand btn btn-md" href="#" style="color: #9d9d9d;">Signed In As
+                        <%= currentUser.toUpperCase() %> </a></li>
                 <li><a href="/editprofile" class="navbar-brand btn btn-md" style="color: #9d9d9d;">Edit Profile</a></li>
                 <li><a href="/logout" class="navbar-brand btn btn-md" style="color: #9d9d9d;">Logout</a></li>
                 <% } %>
@@ -50,34 +50,44 @@
         <h1 style="text-align: center;"><%=data.title%></h1>
     </div>
     <br>
-    <div class="card text-white bg-info mb-3" style="width: 40em; margin: 0 auto;">
+    <div class="card mb-3" style="width: 40em; margin: 0 auto; border-color: coral; background-color: #90ee90;">
         <div class="card-body" style="text-align: center;">
             <h4 class="card-text" style="font-weight: bolder;"><%= data.description %></h4>
-            <h6 style="color: red;">Deadline Date: <%= data.deadline %></h6>
-            <h6>Created Date: <%= data.deadline %></h6>
+            <h6 style="color: red; font-weight: bold;">Deadline Date: <%= data.deadline %></h6>
+            <h6>Created Date: <%= data.createTimeStamp %></h6>
+            <p>
+                <% if(data.brochurePath != "null") { %>
+                    <a href= "/download/<%= data.brochurePath%>" >Download Brochure</a>
+                    <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                <% } %>
+            </p>
         </div>
     </div>
 
-    <% for(var idx in allBidDetails) { %>
-		<% const singleBid = allBidDetails[idx]%>
-		<%= JSON.parse(singleBid.object.bidDetails).price %>
-	<% } %>
-
+    <% if(allBidDetails.length === 0) {%>
+        <h1 style="text-align: center; color: cornflowerblue; margin-top: 50px;">No Bids Applied Yet</h1>
+    <% } else { %>
+        <div class="container" style="margin-top: 30px;">
+            <div class="row card-deck" style="display:flex; flex-wrap: wrap;">
+                <% for(var idx in allBidDetails) { %>
+                <% const singleBid = allBidDetails[idx]%>
+                <div class="col-md-4 col-sm-6">
+                    <div class="card border-primary">
+                        <div class="card-body" style="text-align: center; min-width: 10em;">
+                            <h4 class="card-title" style="font-weight: bolder; color: saddlebrown;">Bid by: <%= singleBid.object.username.toUpperCase() %></h4>
+                            <p class="card-text">
+                                <span style="font-weight: bold;">Bid ID: </span><%= singleBid.id %> <br>
+                                <span style="font-weight: bold;">Bid Price: </span> <%= JSON.parse(singleBid.object.bidDetails).price %> <br>
+                                <span style="font-weight: bold;">Estimated Days for Completion: </span> <%= JSON.parse(singleBid.object.bidDetails).time_period %> days <br>
+                                <span style="font-weight: bold;">Standard Certifications: </span> <%= JSON.parse(singleBid.object.bidDetails).standards %>
+                            </p>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+                <% } %>
+            </div>
+        </div>
+    <% }%>
 </body>
-
-<!-- "object": {
-    "username": "chirag",
-    "docType": "PROJECT",
-    "id": "4",
-    "title": "Steel Pipes ",
-    "description": "Good Steel Pipes for sewage and other road materials.",
-    "status": "floated",
-    "contractor_id": null,
-    "bid_id": null,
-    "progress": [],
-    "createTimeStamp": "2020/07/29",
-    "deadline": "2020/09/02",
-    "brochurePath": "1596044117604"
-} -->
-
 </html>
