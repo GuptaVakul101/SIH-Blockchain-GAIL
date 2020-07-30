@@ -235,6 +235,7 @@ router.post('/profile', async function (req, res, next) {
         });
     }
 });
+
 router.post('/updateProfile', async function (req, res, next) {
     //console.log('correcturl');
     // Create a new file system based wallet for managing identities.
