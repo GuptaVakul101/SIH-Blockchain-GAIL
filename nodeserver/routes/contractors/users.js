@@ -179,7 +179,7 @@ router.post('/signup', async function (req, res, next) {
                     const networkChannel = await gateway.getNetwork(str);
                     const contractChannel = networkChannel.getContract('contractors_' + i.toString() + '_' + curChannelNum.toString(), 'User');
                     await contractChannel.submitTransaction('createUser', req.body.username, req.body.password, req.body.email
-                        , req.body.contact, req.body.address, req.body.aboutUs, req.body.profilepic);
+                        , req.body.contact, req.body.address, req.body.aboutUs, req.body.profilepic, req.body.mid, req.body.mkey);
                 }
                 await contract.submitTransaction('updateNumContractors');
                 // Disconnect from the gateway.
