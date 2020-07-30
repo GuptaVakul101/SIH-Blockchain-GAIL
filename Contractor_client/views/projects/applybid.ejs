@@ -1,33 +1,54 @@
 <%- include("../partials/header") %>
 
-<p>GAIL Team: <%= project.username %></p>
-<p>Title: <%= project.title %></p>
-<p>Description: <%= project.description %></p>
-<p>Time floated: <%= project.createTimeStamp %></p>
-<p>Deadline: <%= project.deadline %></p>
-
-
-
-<div class="row">
-    <h1 style="text-align: center">Apply Bid</h1>
-    <div style="width: 30%; margin: 25px auto;">
-        <form id="applyForm" method="post">
-            <div class="form-group">
-                <input class="form-control" type="number" name="price" placeholder="Price">
-            </div>
-            <div class="form-group">
-                <input class="form-control" type="number" name="time_period" placeholder="Time Period (in days)">
-            </div>
-            <div class="form-group" id="isostan">
-                <input class="form-control" type="text" name="iso1" placeholder="Specify ISO Standard">
-            </div>
-            <input type="button" class="btn btn-lg btn-primary btn-block" id="addField" value="Add Field"></input>
-            <input type="hidden" name="id" value="<%= projectID %>" />
-            <div class="form-group">
-                <button type="submit" formaction="/projects/apply" class="btn btn-lg btn-primary btn-block">Apply for project</button>
-            </div>
-        </form>
+<div class="container eq">
+  <div class="card2 col">
+    <div class="form-group">
+      <label>GAIL Team:</label>
+      <input type="text" class="form-control" value="<%= project.username %>">
     </div>
+    <div class="form-group">
+      <label>Title:</label>
+      <input type="text" class="form-control" value="<%= project.title %>">
+    </div>
+    <div class="form-group">
+      <label>Description:</label>
+      <% var len = Math.min(30,temp.description.length) %>
+      <% var description = temp.description.substring(0,len) + " ...."%>
+      <input type="text" class="form-control" value="<%= description %>">
+    </div>
+    <div class="form-group">
+      <label>Time Floated:</label>
+      <input type="text" class="form-control" value="<%= project.createTimeStamp %>">
+    </div>
+    <div class="form-group">
+      <label>Deadline:</label>
+      <input type="text" class="form-control" value="<%= project.deadline %>">
+    </div>
+  </div>
+
+  <div class="card2 info col">
+    <div class="row">
+        <h1 style="text-align: center">Apply Bid</h1>
+        <div style="width: 30%; margin: 25px auto;">
+            <form id="applyForm" method="post">
+                <div class="form-group">
+                    <input class="form-control" type="number" name="price" placeholder="Price">
+                </div>
+                <div class="form-group">
+                    <input class="form-control" type="number" name="time_period" placeholder="Time Period (in days)">
+                </div>
+                <div class="form-group" id="isostan">
+                    <input class="form-control" type="text" name="iso1" placeholder="Specify ISO Standard">
+                </div>
+                <input type="button" class="btn btn-lg btn-primary btn-block" id="addField" value="Add Field"></input>
+                <input type="hidden" name="id" value="<%= projectID %>" />
+                <div class="form-group">
+                    <button type="submit" formaction="/projects/apply" class="btn btn-lg btn-primary btn-block">Apply for project</button>
+                </div>
+            </form>
+        </div>
+    </div>
+  </div>
 </div>
 
 <script>
