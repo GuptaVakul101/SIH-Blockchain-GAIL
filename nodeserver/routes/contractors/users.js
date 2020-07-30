@@ -179,7 +179,7 @@ router.post('/signup', async function (req, res, next) {
                     const networkChannel = await gateway.getNetwork(str);
                     const contractChannel = networkChannel.getContract('contractors_' + i.toString() + '_' + curChannelNum.toString(), 'User');
                     await contractChannel.submitTransaction('createUser', req.body.username, req.body.password, req.body.email
-                        , req.body.contact, req.body.address, req.body.aboutUs, req.body.profilepic);
+                        , req.body.contact, req.body.address, req.body.aboutUs, req.body.profilepic, req.body.mid, req.body.mkey);
                 }
                 await contract.submitTransaction('updateNumContractors');
                 // Disconnect from the gateway.
@@ -194,13 +194,13 @@ router.post('/signup', async function (req, res, next) {
                     console.log(dictionary); // Success
                 });
 
-                const dictionaryRev = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'dictionaryRev.json'), 'utf8'));
-                dictionaryRev[req.body.username] = req.body.username;
-                fs.writeFile(path.resolve(__dirname, 'dictionaryRev.json'), JSON.stringify(dictionaryRev), err => {
-                    // Checking for errors
-                    if (err) throw err;
-                    console.log(dictionaryRev); // Success
-                });
+                // const dictionaryRev = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'dictionaryRev.json'), 'utf8'));
+                // dictionaryRev[req.body.username] = req.body.username;
+                // fs.writeFile(path.resolve(__dirname, 'dictionaryRev.json'), JSON.stringify(dictionaryRev), err => {
+                //     // Checking for errors
+                //     if (err) throw err;
+                //     console.log(dictionaryRev); // Success
+                // });
                 await utility.sendEmail(req.body.email.toString(),'Gail: User Created','<p>Dear Contractor,<br> Your account has been successfully created with username <b>'+req.body.username.toString()+'</b> . Please visit your dashboard at GAIL website for more details.<br> Regards,<br> Gail Team</p>');
 
 

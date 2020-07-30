@@ -8,7 +8,11 @@ const { mkdir } = require("fs");
 //need mid,value,merchantKey
 router.get("/payment", function(req,res){
     console.log("hello");
-    var username='test';
+    if (req.cookies.username == null || req.cookies.username.toString() == "") {
+        res.redirect("/login");
+        return;
+    }
+    var username = req.cookies.username.toString();
     const queryObject = url.parse(req.url,true).query;
 
     const orderId=(new Date()).getTime().toString()+"_"+queryObject.mid;
@@ -43,7 +47,7 @@ router.get("/payment", function(req,res){
 
         //the whole response has been received, so we just print it out here
         response.on('end', function () {
-            const jsonObject = JSON.parse(str);            
+            const jsonObject = JSON.parse(str);
             if (jsonObject.body.resultInfo.resultMsg == "Success") {
                 res.render("payment/payment", { currentUser:username,actionUrl: actionUrl ,mid:queryObject.mid ,orderId:orderId,txnToken:jsonObject.body.txnToken});
             }
@@ -52,11 +56,11 @@ router.get("/payment", function(req,res){
     var request = http.request(options, callback);
     request.write(requestData);
     request.end();
-    
-    
+
+
 });
 router.post("/payment/result", function (req, res) {
     console.log(req.body);
-    res.redirect("/");
+    res.redirect("/activeprojects");
 });
 module.exports = router;
