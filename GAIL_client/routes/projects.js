@@ -235,8 +235,24 @@ router.get("/floatedprojects/:id", function (req, res) {
                 console.log("Failed");
                 res.redirect('/floatedprojects');
             } else {
-                res.render("projects/showfloatedproject", { data: jsonObject.object, currentUser: req.cookies.username });
-                // res.send(jsonObject.object);
+
+                const requestData2 = JSON.stringify({
+                    "id": id
+                });
+                var options2 = getOptions('/gail/project/getAllBids', requestData2);
+                callback2 = function (response2) {
+                    var str2 = '';
+                    response2.on('data', function (chunk) {
+                        str2 += chunk;
+                    });
+
+                    response2.on('end', function () {
+                        const jsonObject2 = JSON.parse(str2);
+                        res.render("projects/showfloatedproject", { data: jsonObject.object, currentUser: req.cookies.username, allBidDetails: jsonObject2.allBids });
+                        // res.send(jsonObject2.allBids);
+                    });
+                }
+                runHttpRequest(options2, callback2, requestData2);
             }
         });
     }
@@ -386,7 +402,7 @@ router.post("/newproject", function (req, res) {
         });
     }
     runHttpRequest(options, callback, requestData);
-})
+});
 
 router.post("/acceptproject/:id", function (req, res) {
 
@@ -401,10 +417,10 @@ router.post("/acceptproject/:id", function (req, res) {
     const requestData = JSON.stringify({
         "username": username,
         "password": password,
-        "rating":req.body.rating.toString(),
-        "quality":req.body.quality.toString(),
-        "review":req.body.review.toString(),
-        "id":id.toString()
+        "rating": req.body.rating.toString(),
+        "quality": req.body.quality.toString(),
+        "review": req.body.review.toString(),
+        "id": id.toString()
     });
 
     var options = getOptions('/gail/project/acceptProject', requestData);
@@ -500,7 +516,7 @@ router.post("/acceptproject/:id", function (req, res) {
         });
     }
     runHttpRequest(options, callback, requestData);
-})
+});
 
 router.post("/rejectproject/:id", function (req, res) {
 
@@ -515,10 +531,10 @@ router.post("/rejectproject/:id", function (req, res) {
     const requestData = JSON.stringify({
         "username": username,
         "password": password,
-        "rating":req.body.rating.toString(),
-        "quality":req.body.quality.toString(),
-        "review":req.body.review.toString(),
-        "id":id.toString()
+        "rating": req.body.rating.toString(),
+        "quality": req.body.quality.toString(),
+        "review": req.body.review.toString(),
+        "id": id.toString()
     });
 
     var options = getOptions('/gail/project/rejectProject', requestData);
@@ -614,7 +630,18 @@ router.post("/rejectproject/:id", function (req, res) {
         });
     }
     runHttpRequest(options, callback, requestData);
-})
+});
+
+router.post("/getAllBids/:id", function (req, res) {
+    if (req.cookies.username == null || req.cookies.username.toString() == "") {
+        res.redirect("/login");
+        return;
+    }
+    var id = req.params.id.toString();
+
+});
+
+
 
 function getOptions(pathTemp, requestDataTemp) {
     return {
