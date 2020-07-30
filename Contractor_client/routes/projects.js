@@ -413,4 +413,50 @@ router.get('/completed', function(req,res){
     request.end();
 });
 
+router.get('/completed/details', function(req,res){
+    if(req.cookies.username == null || req.cookies.username.toString() == "")  {
+		res.redirect("/");
+  	}
+
+    var id = req.query.id.toString();
+    const requestData = JSON.stringify({
+        id: id
+    });
+
+    var options = {
+        host: 'localhost',
+        port: '3000',
+        path: '/gail/project/getProject',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': requestData.length
+        }
+    }
+
+    callback = function (response) {
+        var str = '';
+        //another chunk of data has been received, so append it to `str`
+        response.on('data', function (chunk) {
+            str += chunk;
+        });
+
+        //the whole response has been received, so we just print it out here
+        response.on('end', function () {
+            const jsonObject = JSON.parse(str);
+            console.log(jsonObject);
+            res.render("projects/completedetails", {
+                currentUser: req.cookies.username,
+                project: jsonObject.object,
+                projectID: id,
+                progress: jsonObject.object.progress
+            });
+        });
+    }
+    var request = http.request(options, callback);
+    request.write(requestData);
+    request.end();
+});
+
+
 module.exports = router;

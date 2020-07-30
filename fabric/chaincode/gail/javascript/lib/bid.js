@@ -56,7 +56,6 @@ class Bid extends Contract {
         }
         return projectBidsAsBytes.toString();
     }
-
 }
 
 module.exports = Bid;
