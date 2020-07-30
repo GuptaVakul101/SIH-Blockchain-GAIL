@@ -31,6 +31,8 @@ router.post("/register",function(req,res){
 	var contact = req.body.contact;
 	var address = req.body.address;
 	var aboutus = req.body.aboutus;
+	var mid = req.body.mid;
+	var mkey = req.body.mkey;
 	var file = null;
     if (req.files) {
         file = req.files.profilepic;
@@ -57,8 +59,12 @@ router.post("/register",function(req,res){
 		"contact": contact.toString(),
 		"address": address.toString(),
 		"aboutUs": aboutus.toString(),
+		"mid": mid.toString(),
+		"mkey": mkey.toString(),
 		"profilepic": getTimeStampString
 	});
+
+	console.log(requestData);
 
 	var options = {
 		host: 'localhost',
