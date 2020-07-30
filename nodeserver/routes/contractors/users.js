@@ -194,13 +194,13 @@ router.post('/signup', async function (req, res, next) {
                     console.log(dictionary); // Success
                 });
 
-                const dictionaryRev = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'dictionaryRev.json'), 'utf8'));
-                dictionaryRev[req.body.username] = req.body.username;
-                fs.writeFile(path.resolve(__dirname, 'dictionaryRev.json'), JSON.stringify(dictionaryRev), err => {
-                    // Checking for errors
-                    if (err) throw err;
-                    console.log(dictionaryRev); // Success
-                });
+                // const dictionaryRev = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'dictionaryRev.json'), 'utf8'));
+                // dictionaryRev[req.body.username] = req.body.username;
+                // fs.writeFile(path.resolve(__dirname, 'dictionaryRev.json'), JSON.stringify(dictionaryRev), err => {
+                //     // Checking for errors
+                //     if (err) throw err;
+                //     console.log(dictionaryRev); // Success
+                // });
                 await utility.sendEmail(req.body.email.toString(),'Gail: User Created','<p>Dear Contractor,<br> Your account has been successfully created with username <b>'+req.body.username.toString()+'</b> . Please visit your dashboard at GAIL website for more details.<br> Regards,<br> Gail Team</p>');
 
 
