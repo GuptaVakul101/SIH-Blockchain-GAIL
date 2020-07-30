@@ -4,25 +4,23 @@
   <div class="card2 col">
     <div class="form-group">
       <label>GAIL Team:</label>
-      <input type="text" class="form-control" value="<%= project.username %>">
+      <input type="text" class="form-control" value="<%= project.username.toUpperCase() %>" readonly>
     </div>
     <div class="form-group">
       <label>Title:</label>
-      <input type="text" class="form-control" value="<%= project.title %>">
+      <input type="text" class="form-control" value="<%= project.title %>" readonly>
     </div>
     <div class="form-group">
       <label>Description:</label>
-      <% var len = Math.min(30,temp.description.length) %>
-      <% var description = temp.description.substring(0,len) + " ...."%>
-      <input type="text" class="form-control" value="<%= description %>">
+      <input type="text" class="form-control" value="<%= project.description %>" readonly>
     </div>
     <div class="form-group">
       <label>Time Floated:</label>
-      <input type="text" class="form-control" value="<%= project.createTimeStamp %>">
+      <input type="text" class="form-control" value="<%= project.createTimeStamp %>" readonly>
     </div>
     <div class="form-group">
       <label>Deadline:</label>
-      <input type="text" class="form-control" value="<%= project.deadline %>">
+      <input type="text" class="form-control" value="<%= project.deadline %>" readonly>
     </div>
   </div>
 
@@ -42,7 +40,7 @@
                 </div>
                 <input type="button" class="btn btn-lg btn-primary btn-block" id="addField" value="Add Field"></input>
                 <input type="hidden" name="id" value="<%= projectID %>" />
-                <div class="form-group">
+                <div class="form-group" style="margin-top: 10px;">
                     <button type="submit" formaction="/projects/apply" class="btn btn-lg btn-primary btn-block">Apply for project</button>
                 </div>
             </form>

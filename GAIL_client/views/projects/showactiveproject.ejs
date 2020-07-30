@@ -30,9 +30,14 @@
             color: #9d9d9d;
         }
 
-        .card {
+        .project-status-card {
             z-index: 0;
             background-color: #ECEFF1;
+            border-radius: 10px
+        }
+
+        .card {
+            z-index: 0;
             border-radius: 10px
         }
 
@@ -131,8 +136,6 @@
             margin-right: 15px
         }
 
-        .icon-content {}
-
         @media screen and (max-width: 992px) {
             .icon-content {
                 width: 50%
@@ -207,7 +210,7 @@
     </style>
 </head>
 
-<body>
+<body style="padding-top: 50px;">
 
     <nav class="navbar navbar-expand-md fixed-top" style="background-color: #222222; color: #9d9d9d;">
         <a class="navbar-brand" href="/" class="btn btn-md">GAIL</a>
@@ -235,10 +238,9 @@
             </ul>
         </div>
     </nav>
-    <br>
-    <br>
+
     <div class="container px-1 px-md-4 py-5 mx-auto">
-        <div class="card">
+        <div class="card project-status-card">
             <h4 style="text-align: center; font-weight: bolder;" class="mt-2 mb-6">Project's Current Status</h4>
             <div class="row d-flex justify-content-center mt-2">
                 <div class="col-12">
@@ -329,20 +331,28 @@
         </div>
     </div>
 
-    Chigu
+    <div class="container" style="margin-top: 20px; margin-bottom: 40px">
+        <h3 style="font-weight: bold;">Remarks</h3>
+        <% for(var idx in project.progress) { %>
+            <% const temp = project.progress[idx]; %>
+                <div class="card border-info" style="margin-bottom: 10px; width: 50%;">
+                  <div class="card-body">
+                    <blockquote class="blockquote mb-0">
+                      <p style="font-size: 16px"><%= temp.description %></p>
+                      <% var givenDate = new Date(parseInt(temp.timestamp)); %>
+                      <footer class="blockquote-footer" style="font-size: 14px; margin-top: -10px"><%= givenDate.toLocaleString() %><cite title="Source Title"></cite></footer>
+                    </blockquote>
+                  </div>
+                </div>
+        <% } %>
+    </div>
+
+
     <script>
-        $("#projectDetails").on("click", function () {
-            $("#projectDetailsDiv").slideToggle(500);
-        });
-        $("#contractorDetails").on("click", function () {
-            $("#contractorDetailsDiv").slideToggle(500);
-        });
         $("#toggleDetails").on("click", function () {
             $("#detailsContainer").slideToggle(500);
         });
     </script>
-
-
 </body>
 
 </html>

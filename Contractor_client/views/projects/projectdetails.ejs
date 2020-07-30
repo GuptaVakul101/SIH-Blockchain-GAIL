@@ -124,9 +124,6 @@
     margin-right: 15px
 }
 
-.icon-content {
-}
-
 @media screen and (max-width: 992px) {
     .icon-content {
         width: 50%
@@ -304,7 +301,8 @@
               <div class="card-body">
                 <blockquote class="blockquote mb-0">
                   <p style="font-size: 16px"><%= temp.description %></p>
-                  <footer class="blockquote-footer" style="font-size: 14px; margin-top: -10px"><%= temp.timestamp %><cite title="Source Title"></cite></footer>
+                  <% var givenDate = new Date(parseInt(temp.timestamp)); %>
+                  <footer class="blockquote-footer" style="font-size: 14px; margin-top: -10px"><%= givenDate.toLocaleString() %><cite title="Source Title"></cite></footer>
                 </blockquote>
               </div>
             </div>
