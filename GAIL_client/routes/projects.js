@@ -327,7 +327,7 @@ router.get("/activeprojects/:id", function (req, res) {
                             response3.on('end', function () {
                                 const jsonObject3 = JSON.parse(str3); //coressponding to the bid details
                                 console.log("Contractor Details: " + str3);
-                                res.render("projects/showactiveproject", { data: jsonObject.object, data2: jsonObject2.object, data3: jsonObject3.object, currentUser: req.cookies.username });
+                                res.render("projects/showactiveproject", { project: jsonObject.object, bid: jsonObject2.object, contractor: jsonObject3.object, currentUser: req.cookies.username });
 
                                 // res.send(jsonObject3);
                             });
