@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router({mergeParams: true});
 var http = require('http');
+var upload = require("express-fileupload");
 var cookieParser = require('cookie-parser');
 
 

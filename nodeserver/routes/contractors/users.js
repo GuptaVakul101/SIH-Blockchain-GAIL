@@ -179,7 +179,7 @@ router.post('/signup', async function (req, res, next) {
                     const networkChannel = await gateway.getNetwork(str);
                     const contractChannel = networkChannel.getContract('contractors_' + i.toString() + '_' + curChannelNum.toString(), 'User');
                     await contractChannel.submitTransaction('createUser', req.body.username, req.body.password, req.body.email
-                        , req.body.contact, req.body.address, req.body.aboutUs, req.body.profilepic);
+                        , req.body.contact, req.body.address, req.body.aboutUs, req.body.profilepic, req.body.mid, req.body.mkey);
                 }
                 await contract.submitTransaction('updateNumContractors');
                 // Disconnect from the gateway.
@@ -369,14 +369,15 @@ router.post('/getCompletedProjects', async function (req, res, next) {
         // Get the contract from the network.
         const contract2 = network2.getContract('gail', 'Project');
         var completedProjects = {};
-        for (var i = 0; i < prevProjs.length; i++) {
-            const getProj = await contract2.evaluateTransaction('getProject', prevProjs[i]);
+        for(var i =0 ; i<prevProjs.length; i++){
+            const getProj = await contract2.evaluateTransaction('getProject', prevProjs[i].id);
             const project = JSON.parse(getProj.toString());
+            console.log(project);
             if ("message" in project) {
             }
             else {
                 console.log('hello' + i.toString());
-                completedProjects[prevProjs[i]] = JSON.stringify(project);
+                completedProjects[prevProjs[i].id] = JSON.stringify(project);
             }
         }
         res.json({
