@@ -50,14 +50,14 @@
         <h1 style="text-align: center;"><%=data.title%></h1>
     </div>
     <br>
-    <div class="card mb-3" style="width: 40em; margin: 0 auto; border-color: coral; background-color: #90ee90;">
+    <div class="card mb-3" style="width: 40em; margin: 0 auto; border-color: coral; border-radius: 10px;">
         <div class="card-body" style="text-align: center;">
             <h4 class="card-text" style="font-weight: bolder;"><%= data.description %></h4>
             <h6 style="color: red; font-weight: bold;">Deadline Date: <%= data.deadline %></h6>
             <h6>Created Date: <%= data.createTimeStamp %></h6>
             <p>
                 <% if(data.brochurePath != "null") { %>
-                    <a href= "/download/<%= data.brochurePath%>" >Download Brochure</a>
+                    <a href= "/download/<%= data.brochurePath%>" style="color: blue;">Download Brochure</a>
                     <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                 <% } %>
             </p>

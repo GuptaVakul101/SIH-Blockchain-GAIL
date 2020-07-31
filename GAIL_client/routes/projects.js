@@ -347,6 +347,87 @@ router.get("/activeprojects/:id", function (req, res) {
     runHttpRequest(options, callback, requestData);
 });
 
+router.get("/finishedprojects/:id", function (req, res) {
+    if (req.cookies.username == null || req.cookies.username.toString() == "") {
+        res.redirect("/login");
+        return;
+    }
+
+    var username = req.cookies.username.toString();
+    var password = req.cookies.password.toString();
+    var id = req.params.id.toString();
+
+    var requestData = JSON.stringify({
+        "username": username,
+        "password": password,
+        "id": id
+    });
+
+    var options = getOptions('/gail/project/getProject', requestData);
+
+    callback = function (response) {
+        var str = '';
+        response.on('data', function (chunk) {
+            str += chunk;
+        });
+
+        response.on('end', function () {
+            const jsonObject = JSON.parse(str); //coressponding to the project details
+            console.log("Project Details: " + JSON.stringify(jsonObject.object));
+            if (jsonObject.success == false) {
+                res.redirect('/floatedprojects');
+            } else {
+                var contractorID = jsonObject.object.contractor_id.toString();
+                console.log(contractorID);
+                var bidID = jsonObject.object.bid_id;
+
+                var requestData = JSON.stringify({
+                    "bid_id": bidID.toString()
+                });
+                var options = getOptions('/gail/bideval/getSingleBid', requestData);
+
+                var callback = function (response2) {
+                    var str2 = '';
+                    response2.on('data', function (chunk) {
+                        str2 += chunk;
+                    });
+
+                    response2.on('end', function () {
+                        const jsonObject2 = JSON.parse(str2); //coressponding to the bid details
+                        console.log("Bid Details: " + JSON.stringify(jsonObject2.object));
+
+                        var requestData = JSON.stringify({
+                        });
+                        var options = getOptions('/contractors/users/' + contractorID, requestData);
+
+                        var callback = function (response3) {
+                            var str3 = '';
+                            response3.on('data', function (chunk) {
+                                str3 += chunk;
+                            });
+
+                            response3.on('end', function () {
+                                const jsonObject3 = JSON.parse(str3); //coressponding to the bid details
+                                console.log("Contractor Details: " + str3);
+                                // res.send(jsonObject);
+                                res.render("projects/showfinishedproject", { project: jsonObject.object, bid: jsonObject2.object, contractor: jsonObject3.object, currentUser: req.cookies.username });
+                            });
+                        }
+
+                        runHttpRequest(options, callback, requestData);
+
+                    });
+
+                }
+
+                runHttpRequest(options, callback, requestData);
+            }
+        });
+    }
+
+    runHttpRequest(options, callback, requestData);
+});
+
 router.post("/newproject", function (req, res) {
 
     if (req.cookies.username == null || req.cookies.username.toString() == "") {
@@ -504,6 +585,8 @@ router.post("/acceptproject/:id", function (req, res) {
                                                     var price = jsonObject3.object.price.toString();
                                                     var mid = jsonObject4.object.merchantID.toString();
                                                     var mkey = jsonObject4.object.merchantKey.toString();
+                                                    mid = "zaIKaq44908600148140";
+                                                    mkey = "u7uTLYfplLfLriru";
                                                     res.redirect('/payment?mid='+mid+'&value='+price+'&merchantKey='+mkey);
                                                 }
                                             });
@@ -645,8 +728,6 @@ router.post("/getAllBids/:id", function (req, res) {
     var id = req.params.id.toString();
 
 });
-
-
 
 function getOptions(pathTemp, requestDataTemp) {
     return {
