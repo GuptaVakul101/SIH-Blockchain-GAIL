@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>GAIL Corporation</title>
+  <title>Contractor</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -120,11 +120,10 @@
 <body style="padding-top: 70px;">
 
   <nav class="navbar navbar-expand-md fixed-top" style="background-color: #222222; color: #9d9d9d;">
-    <a class="navbar-brand" href="/" class="btn btn-md">GAIL</a>
-    <a class="navbar-brand" href="/activeprojects" class="btn btn-md">Active Projects</a>
-    <a class="navbar-brand" href="/floatedprojects" class="btn btn-md">Floated Projects</a>
-    <a class="navbar-brand" href="/finishedprojects" class="btn btn-md">Finished Projects</a>
-    <a class="navbar-brand" href="/newproject" class="btn btn-md">Float a new Project</a>
+    <a class="navbar-brand" href="/" class="btn btn-lg">Contractors</a>
+    <a class="navbar-brand" href="/projects/floated" class="btn btn-lg">Floated Projects</a>
+    <a class="navbar-brand" href="/projects/allocated" class="btn btn-lg">Allocated Projects</a>
+    <a class="navbar-brand" href="/projects/completed" class="btn btn-lg">Completed Projects</a>
 
 
     <button class="navbar-toggler" data-toggle="collapse" data-target="#navbarMenu">
@@ -137,9 +136,9 @@
         <li><a href="/login" class="navbar-brand btn-md" style="color: #9d9d9d;">Login</a></li>
         <li><a href="/register" class="navbar-brand btn btn-md" style="color: #9d9d9d;">SignUp</a></li>
         <% } else{ %>
-        <li><a class="navbar-brand btn btn-md" href="#" style="color: #9d9d9d;">Signed In As
+        <li><a class="navbar-brand btn btn-md" href="/profile" style="color: #9d9d9d;">Signed In As
             <%= currentUser.toUpperCase() %> </a></li>
-        <li><a href="/editprofile" class="navbar-brand btn btn-md" style="color: #9d9d9d;">Edit Profile</a></li>
+        <li><a href="/edit_profile" class="navbar-brand btn btn-md" style="color: #9d9d9d;">Edit Profile</a></li>
         <li><a href="/logout" class="navbar-brand btn btn-md" style="color: #9d9d9d;">Logout</a></li>
         <% } %>
       </ul>
