@@ -124,9 +124,6 @@
     margin-right: 15px
 }
 
-.icon-content {
-}
-
 @media screen and (max-width: 992px) {
     .icon-content {
         width: 50%
@@ -198,22 +195,19 @@
 </head>
 <body>
 
-
-
-
     <div class="container px-1 px-md-4 py-5 mx-auto">
         <div class="card">
             <div class="row d-flex justify-content-between px-3 top">
-                <div class="d-flex">
-                    <h5>ORDER <span class="text-primary font-weight-bold">#Y34XDHR</span></h5>
-                    <% if(project.type == "product" && project.status == "in-progress"){ %>
-                    <form action="/projects/details" method="post">
-                        <input type="hidden" name="status" value="shipping" />
+                <div class="container-fluid" style="width: 50%;">
+                    <h5 style="float: left;">ORDER <span class="text-primary font-weight-bold">#Y34XDHR</span></h5>
+                    <% if(project.type == "Product" && project.status == "in-progress"){ %>
+                    <form style="float: right;" action="/projects/details" method="post">
+                        <input type="hidden" name="status" value="in-shipment" />
                         <input type="hidden" name="id" value="<%= projectID %>" />
                       <input class="btn btn-primary" type="submit" value="Initiate Shipping" />
                     </form>
               <% } else if(project.status != "in-review") { %>
-                  <form action="/projects/details" method="post">
+                  <form style="float: right;" action="/projects/details" method="post">
                       <input type="hidden" name="status" value="in-review" />
                       <input type="hidden" name="id" value="<%= projectID %>" />
                       <input class="btn btn-primary" type="submit" value="Submit Project" />
@@ -307,7 +301,8 @@
               <div class="card-body">
                 <blockquote class="blockquote mb-0">
                   <p style="font-size: 16px"><%= temp.description %></p>
-                  <footer class="blockquote-footer" style="font-size: 14px; margin-top: -10px"><%= temp.timestamp %><cite title="Source Title"></cite></footer>
+                  <% var givenDate = new Date(parseInt(temp.timestamp)); %>
+                  <footer class="blockquote-footer" style="font-size: 14px; margin-top: -10px"><%= givenDate.toLocaleString() %><cite title="Source Title"></cite></footer>
                 </blockquote>
               </div>
             </div>

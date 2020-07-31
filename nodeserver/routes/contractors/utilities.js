@@ -85,6 +85,7 @@ exports.authenticate=async function (username,password){
         const gateway = new Gateway();
         await gateway.connect(contractor_ccp, { wallet, identity: username,
             discovery: { enabled: true, asLocalhost: true } });
+        const dictionary=JSON.parse(fs.readFileSync(path.resolve(__dirname,'dictionary.json'), 'utf8'));
         var channelNum=dictionary[username];
         // Get the network (channel) our contract is deployed to.
         const network = await gateway.getNetwork('channelg1c'+channelNum);

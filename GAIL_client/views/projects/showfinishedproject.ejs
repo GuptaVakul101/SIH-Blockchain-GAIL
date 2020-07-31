@@ -26,6 +26,14 @@
             background-repeat: no-repeat
         }
 
+        .checked {
+            color: orange
+        }
+
+        .fa-star {
+            font-size: 30px;
+        }
+
         .displayCard {
             background-color: beige;
         }
@@ -218,7 +226,7 @@
             visibility: hidden;
             width: 250px;
             background-color: turquoise;
-            font-w
+            font-weight: bold;
             color: #fff;
             text-align: center;
             border-radius: 6px;
@@ -238,7 +246,7 @@
     </style>
 </head>
 
-<body style="padding-top: 50px;">
+<body style="padding-top: 70px;">
 
     <nav class="navbar navbar-expand-md fixed-top" style="background-color: #222222; color: #9d9d9d;">
         <a class="navbar-brand" href="/" class="btn btn-md">GAIL</a>
@@ -267,59 +275,16 @@
         </div>
     </nav>
 
-    <div class="container px-1 px-md-4 py-5 mx-auto">
-        <div class="card project-status-card">
-            <h4 style="text-align: center; font-weight: bolder;" class="mt-2 mb-6">Project's Current Status</h4>
-            <div class="row d-flex justify-content-center mt-2">
-                <div class="col-12">
-                    <ul id="progressbar" class="text-center">
-                        <% if(project.status == "in-progress"){ %>
-                        <li class="active step0"></li>
-                        <li class="active step0"></li>
-                        <li class="step0"></li>
-                        <li class="step0"></li>
-                        <% } else if (project.status == "in-shipment"){ %>
-                        <li class="active step0"></li>
-                        <li class="active step0"></li>
-                        <li class="active step0"></li>
-                        <li class="step0"></li>
-                        <% } else if (project.status == "in-review"){ %>
-                        <li class="active step0"></li>
-                        <li class="active step0"></li>
-                        <li class="active step0"></li>
-                        <li class="active step0"></li>
-                        <% } %>
-                    </ul>
-                </div>
-            </div>
-            <div class="row justify-content-between top">
-                <div class="row d-flex icon-content"> <img class="icon" src="https://i.imgur.com/9nnc9Et.png">
-                    <div class="d-flex flex-column">
-                        <p class="font-weight-bold">Project<br>Allocated</p>
-                    </div>
-                </div>
-                <div class="row d-flex icon-content"> <img class="icon" src="https://i.imgur.com/u1AzR7w.png">
-                    <div class="d-flex flex-column">
-                        <p class="font-weight-bold">In<br>Progress</p>
-                    </div>
-                </div>
-                <div class="row d-flex icon-content"> <img class="icon" src="https://i.imgur.com/TkPm63y.png">
-                    <div class="d-flex flex-column">
-                        <p class="font-weight-bold">Order<br>En Route</p>
-                    </div>
-                </div>
-                <div class="row d-flex icon-content"> <img class="icon" src="https://i.imgur.com/HdsziHP.png">
-                    <div class="d-flex flex-column">
-                        <p class="font-weight-bold">Order<br>Arrived</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div class="text-center">
-        <button id="toggleDetails" class="btn btn-outline-success">Toggle Project/Contractor/Bid Details</button>
+        <% if(project.status == "complete_accepted") { %>
+        <button id="toggleDetails" class="btn btn-outline-success" style="font-weight: bold; border-width: 3px;">Project
+            Status: ACCEPTED %></button>
+        <% } else{ %>
+        <button id="toggleDetails" class="btn btn-outline-danger" style="font-weight: bold; border-width: 3px;">Project
+            Status: REJECTED </button>
+        <% } %>
     </div>
+    <br>
 
     <div class="container" id="detailsContainer">
         <div class="row card-deck" style="display:flex; flex-wrap: wrap;">
@@ -376,10 +341,23 @@
         </div>
     </div>
 
+    <div class="text-center">
+        <% var totalPrice = parseInt(bid.price)%>
+        <% if(project.status == "complete_accepted") { %>
+            <button id="toggleDetails" class="btn btn-outline-success" style="font-weight: bold; border-width: 3px;">
+                Amount Paid:  <span class="fa fa-inr"></span><%= totalPrice %>
+            </button>
+        <% } else{ %>
+            <button id="toggleDetails" class="btn btn-outline-danger" style="font-weight: bold; border-width: 3px;">
+                Amount Paid:  <span class="fa fa-inr"></span><%= 0.25*totalPrice %>
+            </button>
+        <% } %>
+    </div>
+
     <div class="container" style="margin-top: 20px; margin-bottom: 40px">
         <div class="row card-deck" style="display:flex; flex-wrap: wrap;">
             <div class="col-md-6 col-sm-6">
-                <h3 style="font-weight: bold;">Remarks</h3>
+                <h3 style="font-weight: bold;">Remarks by Contractor</h3>
                 <% for(var idx in project.progress) { %>
                 <% const temp = project.progress[idx]; %>
                 <div class="card border-info" style="margin-bottom: 10px;">
@@ -395,42 +373,45 @@
                 <% } %>
             </div>
 
-            <% if(project.status == "in-review") { %>
             <div class="col-md-6 col-sm-6">
-                <h3 style="font-weight: bold;">Send Review</h3>
-                <form encType="multipart/form-data">
-                    <div class="form-group">
-                        <input class="form-control" type="number" name="rating" placeholder="Rating*" min="1" max="10"
-                            step="1" required="true">
-                    </div>
-                    <div class="form-group">
-                        <input class="form-control" type="number" name="quality" placeholder="Quality*" min="1" max="10"
-                            step="1" required="true">
-                    </div>
-                    <div class="form-group">
-                        <input class="form-control" type="text" name="review" placeholder="Review*" required="true">
-                    </div>
-                    <div class="form-group text-center">
-                        <button type="submit" formmethod="post" formaction="/acceptproject/<%= project.id %>"
-                            class="btn btn-lg btn-success btn-block" style="width: 50%;">Accept</button>
-                    </div>
-                    <div class="form-group text-center">
-                        <button type="submit" formmethod="post" formaction="/rejectproject/<%= project.id %>"
-                            class="btn btn-lg btn-danger btn-block" style="width: 50%;">Reject</button>
-                    </div>
-                </form>
-            </div>
-            <% } %>
-        </div>
+                <h3 style="font-weight: bold;">Reviews by GAIL</h3>
+                <% for(var i in contractor.listOfPreviousProjects) {%>
+                    <% if(contractor.listOfPreviousProjects[i].id === project.id) { %>
+                        <% var rating = parseInt(contractor.listOfPreviousProjects[i].rating)%>
+                        <% var quality = parseInt(contractor.listOfPreviousProjects[i].quality)%>
+                        <% var review = contractor.listOfPreviousProjects[i].review%>
 
+                        <div>
+                            <label style="font-size: 30px; font-weight: 300; margin-right: 10px;">Rating: </label>
+                            <% for(var idx=0; idx < rating; idx++ ) {%>
+                                <span class="fa fa-star checked"></span>
+                            <% }%>
+                            <% for(var idx=0; idx < 10-rating; idx++ ) {%>
+                                <span class="fa fa-star"></span>
+                            <% }%>
+                        </div>
+
+                        <div>
+                            <label style="font-size: 30px; font-weight: 300; margin-right: 10px;">Quality: </label>
+                            <% for(var idx=0; idx < quality; idx++ ) {%>
+                                <span class="fa fa-star checked"></span>
+                            <% }%>
+                            <% for(var idx=0; idx < 10-quality; idx++ ) {%>
+                                <span class="fa fa-star"></span>
+                            <% }%>
+                        </div>
+                        <div>
+                            <label style="font-size: 30px; font-weight: 300; margin-right: 10px;">Review: </label>
+                            <span style="font-size: 20px;"><%= review %></span>
+                        </div>
+
+                    <% }%>
+                <% }%>
+              
+            </div>
+        </div>
     </div>
 
-
-    <script>
-        $("#toggleDetails").on("click", function () {
-            $("#detailsContainer").slideToggle(500);
-        });
-    </script>
 </body>
 
 </html>
