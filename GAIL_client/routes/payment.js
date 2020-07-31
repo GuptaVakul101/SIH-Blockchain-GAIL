@@ -61,6 +61,7 @@ router.get("/payment", function(req,res){
 });
 router.post("/payment/result", function (req, res) {
     console.log(req.body);
-    res.redirect("/activeprojects");
+    res.send(req.body);
+    // res.redirect("payment/showTransation", {details: req.body});
 });
 module.exports = router;

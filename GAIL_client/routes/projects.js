@@ -440,6 +440,7 @@ router.post("/newproject", function (req, res) {
     var description = req.body.description.toString();
     var deadlineDate = req.body.date.toString();
     var todayDate = getTodayDate().toString();
+    var type = req.body.type.toString();
     var file = null;
     if (req.files) {
         file = req.files.filename;
@@ -466,7 +467,8 @@ router.post("/newproject", function (req, res) {
         "description": description,
         "currentTime": todayDate,
         "deadlineTime": deadlineDate,
-        "brochurePath": getTimeStampString
+        "brochurePath": getTimeStampString,
+        "type": type
     });
 
     var options = getOptions('/gail/project/createProject', requestData);

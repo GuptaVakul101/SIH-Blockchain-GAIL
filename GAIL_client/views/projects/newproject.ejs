@@ -12,6 +12,13 @@
                 <textarea class="form-control" type="textarea" rows="4" name="description" resize="vertical" placeholder="Description" required="true"></textarea>
             </div>
 
+            <div class="form-group">
+                <select class="form-control" name="type">
+                    <option value="Product">Product</option>
+                    <option value="Service">Service</option>
+                </select>
+            </div>
+
             <div class="form-group mt-3">
                 <label>Upload your Brochure:</label>
               <input type="file" name="filename" accept="application/pdf" /> 
@@ -25,6 +32,8 @@
                 <input class="form-control" id="date" name="date" placeholder="Deadline EOD- MM/DD/YYYY" type="text" required="true"/>
                 </div>
             </div>
+
+            
 
             <div class="form-group">
                 <button class="btn btn-lg btn-primary btn-block">Submit</button>
