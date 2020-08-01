@@ -425,7 +425,7 @@ router.get('/completed/details', function(req,res){
     var options = {
         host: 'localhost',
         port: '3000',
-        path: '/gail/project/getProject',
+        path: '/contractors/users/getCompletedProjects',
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
