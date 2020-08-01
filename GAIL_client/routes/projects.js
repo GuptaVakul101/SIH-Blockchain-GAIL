@@ -737,7 +737,7 @@ router.get("/bidreview", function (req, res) {
         return;
     }
     var bid_id = req.query.bid_id.toString();
-
+    console.log(bid_id);
     res.render("projects/bidreview", {
         currentUser: req.cookies.username,
         bid_id: bid_id
@@ -750,9 +750,12 @@ router.post("/bidreview", function (req, res) {
         res.redirect("/login");
         return;
     }
+    var username = req.cookies.username.toString();
+    var password = req.cookies.password.toString();
     var bid_id = req.body.bid_id.toString();
     var rating = req.body.rating.toString();
     var review = req.body.review.toString();
+    console.log(bid_id);
 
     const gailfield = JSON.stringify({
         rating: rating,
@@ -788,7 +791,7 @@ router.post("/bidreview", function (req, res) {
         response.on('end', function () {
             const jsonObject = JSON.parse(str);
             if (jsonObject.success == true) {
-                res.redirect('/projects/showfloatedproject');
+                res.redirect('/floatedprojects');
             }
         });
     }

@@ -221,6 +221,7 @@ router.get('/details', function(req,res){
     const requestData = JSON.stringify({
         id: id
     });
+    var contractorID = req.cookies.username.toString();
 
     var options = {
         host: 'localhost',
@@ -243,12 +244,34 @@ router.get('/details', function(req,res){
         //the whole response has been received, so we just print it out here
         response.on('end', function () {
             const jsonObject = JSON.parse(str);
-            res.render("projects/projectdetails", {
-                currentUser: req.cookies.username,
-                project: jsonObject.object,
-                projectID: id,
-                progress: jsonObject.object.progress
+            var requestData2 = JSON.stringify({
             });
+            var options2 = getOptions('/contractors/users/' + contractorID, requestData2);
+
+            var callback2 = function (response2) {
+                var str2 = '';
+                response2.on('data', function (chunk) {
+                    str2 += chunk;
+                });
+
+                response2.on('end', function () {
+                    const jsonObject2 = JSON.parse(str2); //coressponding to the bid details
+                    console.log("Contractor Details: " + str2);
+                    if (jsonObject2.success == false) {
+                        console.log("Failed");
+                        res.redirect('/projects/allocated');
+                    }else{
+                        res.render("projects/projectdetails", {
+                            currentUser: req.cookies.username,
+                            project: jsonObject.object,
+                            projectID: id,
+                            progress: jsonObject.object.progress,
+                            contractor_details:jsonObject2.object
+                        });
+                    }
+                });
+            }
+            runHttpRequest(options2, callback2, requestData2);
         });
     }
     var request = http.request(options, callback);

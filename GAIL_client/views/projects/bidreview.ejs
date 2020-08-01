@@ -1,12 +1,12 @@
 <%- include("../partials/header") %>
 
 <div class="row">
-    <h1 style="text-align: center">Float a New Tender</h1>
+    <h1 style="text-align: center">Add Inspection</h1>
     <div style="width: 30%; margin: 25px auto;">
         <form action="/bidreview" method="post">
             <input type="hidden" name="bid_id" value="<%= bid_id %>" />
             <div class="form-group">
-                <input class="form-control" type="number" min="0" max="10" name="rating" placeholder="Rating" required="true">
+                <input class="form-control" type="number" min="0" max="100" name="rating" placeholder="Rating" required="true">
             </div>
             <div class="form-group">
                 <textarea class="form-control" type="textarea" rows="4" name="review" resize="vertical" placeholder="Review" required="true"></textarea>

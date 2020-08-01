@@ -200,13 +200,27 @@
             <div class="row d-flex justify-content-between px-3 top">
                 <div class="container-fluid" style="width: 50%;">
                     <h5 style="float: left;">ORDER <span class="text-primary font-weight-bold">#Y34XDHR</span></h5>
-                    <% if(project.type == "Product" && project.status == "in-progress"){ %>
+                    <% if(contractor_details.designation == "contractor" && project.type == "Product" && project.status == "in-progress"){ %>
                     <form style="float: right;" action="/projects/details" method="post">
-                        <input type="hidden" name="status" value="in-shipment" />
+                        <input type="hidden" name="status" value="manufactured" />
                         <input type="hidden" name="id" value="<%= projectID %>" />
-                      <input class="btn btn-primary" type="submit" value="Initiate Shipping" />
+                      <input class="btn btn-primary" type="submit" value="Product Manufactured" />
                     </form>
-              <% } else if(project.status != "in-review") { %>
+              <% } else if(contractor_details.designation == "shipping-agency" && project.type == "Product") { %>
+                  <% if(project.status=="manufactured") { %>
+                      <form style="float: right;" action="/projects/details" method="post">
+                          <input type="hidden" name="status" value="in-shipment" />
+                          <input type="hidden" name="id" value="<%= projectID %>" />
+                          <input class="btn btn-primary" type="submit" value="Initiate Shipping" />
+                      </form>
+                  <% } else if(project.status=="in-shipment"){ %>
+                      <form style="float: right;" action="/projects/details" method="post">
+                          <input type="hidden" name="status" value="in-review" />
+                          <input type="hidden" name="id" value="<%= projectID %>" />
+                          <input class="btn btn-primary" type="submit" value="Submit Project" />
+                      </form>
+                  <% } %>
+              <% } else if(contractor_details.designation == "contractor" && project.type == "Service" && project.status == "in-progress") { %>
                   <form style="float: right;" action="/projects/details" method="post">
                       <input type="hidden" name="status" value="in-review" />
                       <input type="hidden" name="id" value="<%= projectID %>" />
@@ -227,12 +241,21 @@
                             <li class="active step0"></li>
                             <li class="step0"></li>
                             <li class="step0"></li>
+                            <li class="step0"></li>
+                        <% } else if (project.status == "manufactured"){ %>
+                            <li class="active step0"></li>
+                            <li class="active step0"></li>
+                            <li class="active step0"></li>
+                            <li class="step0"></li>
+                            <li class="step0"></li>
                         <% } else if (project.status == "in-shipment"){ %>
+                            <li class="active step0"></li>
                             <li class="active step0"></li>
                             <li class="active step0"></li>
                             <li class="active step0"></li>
                             <li class="step0"></li>
                         <% } else if (project.status == "in-review"){ %>
+                            <li class="active step0"></li>
                             <li class="active step0"></li>
                             <li class="active step0"></li>
                             <li class="active step0"></li>
