@@ -16,6 +16,7 @@
 	     </div>
 	  </header>
 
+	  	<% if(contractor_details.designation == "contractor") { %>
 		<div class="row text-center" style="display:flex; flex-wrap: wrap;">
 			<div class="col-md-4 col-sm-6">
 				<div class="thumbnail">
@@ -44,22 +45,39 @@
 				</div>
 			</div>
 		</div>
+		<% } else { %>
+			<div class="row text-center" style="display:flex; flex-wrap: wrap;">
+				<% if(project.status=="manufactured") { %>
+					<div class="col-md-4 col-sm-6">
+						<div class="thumbnail">
+							<div class="caption">
+								<h3 style="font-weight: bolder;"><%= project.title %></h3>
+								<% var len = Math.min(30,project.description.length) %>
+								<h6><%= project.description.substring(0,len) + " ...."%></h6>
+							</div>
+		
+							<p>
+								<span style="color: red; font-weight: bold;">Deadline: <%= project.deadline %></span>
+								<br>
+								<% if(project.brochurePath != "null") { %>
+									<a href= "/download/<%= project.brochurePath%>" >Download Brochure</a>
+									<i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+								<% } %>
+							</p>
+		
+							<p>
+								<form action="/projects/details" method="get">
+									<input type="hidden" name="id" value="<%= project.id %>" />
+									<input class="btn btn-primary" type="submit" value="More info" />
+								</form>
+							</p>
+		
+						</div>
+					</div>
+				<% } %>
+			</div>
+		<% } %>
 	</div>
-
-	<!-- <div class="w3-container">
-		<p> </p>
-		<ul class="w3-ul w3-card" style="width:90%">
-			<li>
-				<%= project.title.toUpperCase() %>
-			</li>
-			<p><%= project.description %></p>
-			<form action="/projects/details" method="get">
-				<input type="hidden" name="id" value="<%= project.id %>" />
-				<input type="submit" value="Open" />
-			</form>
-	  	</ul>
-	  <br>
-	</div> -->
 
 <% } %>
 

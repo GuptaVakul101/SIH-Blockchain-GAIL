@@ -230,7 +230,7 @@ router.post('/', async function (req, res, next) {
                             /*Extra added*/
                             const gailReview=getBidDetailsJson.gailfield;
                             const gailReviewJson=JSON.parse(gailReview.toString());
-                            const gailReviewRating=parseFloat(gailReviewJson.gailReviewRating);
+                            const gailReviewRating=parseFloat(gailReviewJson.rating);
                             /*Extra fields added end  */
 
                             const price = parseFloat(getBidDetailsJson.price);

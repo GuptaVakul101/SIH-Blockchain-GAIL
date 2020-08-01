@@ -1,10 +1,10 @@
 var express = require("express");
-var router = express.Router({mergeParams: true});
+var router = express.Router({ mergeParams: true });
 var http = require('http');
 var cookieParser = require('cookie-parser');
 
 
-router.get('/floated', function(req,res){
+router.get('/floated', function (req, res) {
     if (req.cookies.username == null || req.cookies.username.toString() == "") {
         res.redirect("/login");
         return;
@@ -48,11 +48,11 @@ router.get('/floated', function(req,res){
     request.end();
 });
 
-router.get('/apply', function(req,res){
-    if(req.cookies.username == null || req.cookies.username.toString() == "")  {
-		res.redirect("/");
-		return;
-	}
+router.get('/apply', function (req, res) {
+    if (req.cookies.username == null || req.cookies.username.toString() == "") {
+        res.redirect("/");
+        return;
+    }
 
     var projectID = req.query.id.toString();
 
@@ -93,7 +93,7 @@ router.get('/apply', function(req,res){
     request.end();
 });
 
-router.post('/apply', function(req,res){
+router.post('/apply', function (req, res) {
     if (req.cookies.username == null || req.cookies.username.toString() == "") {
         res.redirect("/login");
         return;
@@ -107,11 +107,11 @@ router.post('/apply', function(req,res){
     var time_period = req.body.time_period.toString();
 
     var isoArr = [];
-    for(var i = 1; ; i++){
-        if(req.body['iso'+i.toString()] != null){
-            isoArr.push(req.body['iso'+i.toString()]);
+    for (var i = 1; ; i++) {
+        if (req.body['iso' + i.toString()] != null) {
+            isoArr.push(req.body['iso' + i.toString()]);
         }
-        else{
+        else {
             break;
         }
     }
@@ -158,11 +158,11 @@ router.post('/apply', function(req,res){
     request.end();
 });
 
-router.get('/allocated', function(req,res){
-    if(req.cookies.username == null || req.cookies.username.toString() == "")  {
-  		  res.redirect("/");
-  		  return;
-  	}
+router.get('/allocated', function (req, res) {
+    if (req.cookies.username == null || req.cookies.username.toString() == "") {
+        res.redirect("/");
+        return;
+    }
 
     var username = req.cookies.username.toString();
     var password = req.cookies.password.toString();
@@ -183,6 +183,8 @@ router.get('/allocated', function(req,res){
         }
     }
 
+    var contractorID = req.cookies.username.toString();
+
     callback = function (response) {
         var str = '';
         //another chunk of data has been received, so append it to `str`
@@ -193,46 +195,59 @@ router.get('/allocated', function(req,res){
         //the whole response has been received, so we just print it out here
         response.on('end', function () {
             const jsonObject = JSON.parse(str);
-            if(jsonObject.success == false){
+            if (jsonObject.success == false) {
                 res.render("projects/allocated", {
                     project: null,
                     currentUser: req.cookies.username
                 });
             }
-            else{
-                res.render("projects/allocated", {
-                    project: jsonObject,
-                    currentUser: req.cookies.username
+            else {
+                var requestData2 = JSON.stringify({
                 });
+                var options2 = getOptions('/contractors/users/' + contractorID, requestData2);
+                var callback2 = function (response2) {
+                    var str2 = '';
+                    response2.on('data', function (chunk) {
+                        str2 += chunk;
+                    });
+
+                    response2.on('end', function () {
+                        const jsonObject2 = JSON.parse(str2); //coressponding to the contractor details
+                        console.log("Contractor Details: " + str2);
+                        if (jsonObject2.success == false) {
+                            console.log("Failed");
+                            res.redirect('/projects/allocated');
+                        } else {
+                            res.render("projects/allocated", {
+                                project: jsonObject,
+                                currentUser: req.cookies.username,
+                                contractor_details: jsonObject2.object
+                            });
+                        }
+                    });
+                }
+
+                runHttpRequest(options2, callback2, requestData2);
             }
         });
     }
-    var request = http.request(options, callback);
-    request.write(requestData);
-    request.end();
+
+    runHttpRequest(options, callback, requestData);
 });
 
-router.get('/details', function(req,res){
-    if(req.cookies.username == null || req.cookies.username.toString() == "")  {
-		res.redirect("/");
-  	}
+router.get('/details', function (req, res) {
+    if (req.cookies.username == null || req.cookies.username.toString() == "") {
+        res.redirect("/");
+    }
 
     var id = req.query.id.toString();
     const requestData = JSON.stringify({
         id: id
     });
-    var contractorID = req.cookies.username.toString();
 
-    var options = {
-        host: 'localhost',
-        port: '3000',
-        path: '/gail/project/getProject',
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Content-Length': requestData.length
-        }
-    }
+    var contractorID = req.cookies.username.toString();
+    var options = getOptions('/gail/project/getProject', requestData);
+
 
     callback = function (response) {
         var str = '';
@@ -260,13 +275,13 @@ router.get('/details', function(req,res){
                     if (jsonObject2.success == false) {
                         console.log("Failed");
                         res.redirect('/projects/allocated');
-                    }else{
+                    } else {
                         res.render("projects/projectdetails", {
                             currentUser: req.cookies.username,
                             project: jsonObject.object,
                             projectID: id,
                             progress: jsonObject.object.progress,
-                            contractor_details:jsonObject2.object
+                            contractor_details: jsonObject2.object
                         });
                     }
                 });
@@ -274,16 +289,15 @@ router.get('/details', function(req,res){
             runHttpRequest(options2, callback2, requestData2);
         });
     }
-    var request = http.request(options, callback);
-    request.write(requestData);
-    request.end();
+
+    runHttpRequest(options, callback, requestData);
 });
 
-router.post('/details', function(req,res){
-    if(req.cookies.username == null || req.cookies.username.toString() == "")  {
-    		res.redirect("/");
-    		return;
-  	}
+router.post('/details', function (req, res) {
+    if (req.cookies.username == null || req.cookies.username.toString() == "") {
+        res.redirect("/");
+        return;
+    }
 
     var username = req.cookies.username.toString();
     var password = req.cookies.password.toString();
@@ -319,7 +333,7 @@ router.post('/details', function(req,res){
         response.on('end', function () {
             const jsonObject = JSON.parse(str);
             if (jsonObject.success == true) {
-                res.redirect('/projects/details?id='+id);
+                res.redirect('/projects/details?id=' + id);
             }
         });
     }
@@ -328,8 +342,8 @@ router.post('/details', function(req,res){
     request.end();
 });
 
-router.get('/progress', function(req, res){
-    if(req.cookies.username == null || req.cookies.username.toString() == "")  {
+router.get('/progress', function (req, res) {
+    if (req.cookies.username == null || req.cookies.username.toString() == "") {
         res.redirect("/");
     }
 
@@ -342,7 +356,7 @@ router.get('/progress', function(req, res){
     });
 });
 
-router.post('/progress', function(req,res){
+router.post('/progress', function (req, res) {
     if (req.cookies.username == null || req.cookies.username.toString() == "") {
         res.redirect("/");
         return;
@@ -381,7 +395,7 @@ router.post('/progress', function(req,res){
         response.on('end', function () {
             const jsonObject = JSON.parse(str);
             if (jsonObject.success == true) {
-                res.redirect('/projects/details?id='+id);
+                res.redirect('/projects/details?id=' + id);
             }
         });
     }
@@ -390,7 +404,7 @@ router.post('/progress', function(req,res){
     request.end();
 });
 
-router.get('/completed', function(req,res){
+router.get('/completed', function (req, res) {
     if (req.cookies.username == null || req.cookies.username.toString() == "") {
         res.redirect("/login");
     }
@@ -435,10 +449,10 @@ router.get('/completed', function(req,res){
     request.end();
 });
 
-router.get('/completed/details', function(req,res){
-    if(req.cookies.username == null || req.cookies.username.toString() == "")  {
-		res.redirect("/");
-  	}
+router.get('/completed/details', function (req, res) {
+    if (req.cookies.username == null || req.cookies.username.toString() == "") {
+        res.redirect("/");
+    }
 
     var id = req.query.id.toString();
     const requestData = JSON.stringify({
@@ -479,6 +493,27 @@ router.get('/completed/details', function(req,res){
     request.write(requestData);
     request.end();
 });
+
+function getOptions(pathTemp, requestDataTemp) {
+    return {
+        host: 'localhost',
+        port: '3000',
+        path: pathTemp,
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': requestDataTemp.length
+        }
+    };
+}
+
+function runHttpRequest(options, callback, requestData) {
+    var request = http.request(options, callback);
+    request.write(requestData);
+    request.end();
+}
+
+
 
 
 module.exports = router;

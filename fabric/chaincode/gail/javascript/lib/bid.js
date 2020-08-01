@@ -13,29 +13,28 @@ class Bid extends Contract {
 
     }
 
-    async applyForProject(ctx,username,projectID,bidDetails,tempBidID) {
+    async applyForProject(ctx, username, projectID, bidDetails, tempBidID) {
+        
         const bid = {
             username: username,
             docType: 'BID',
             projectID: projectID,
-            bidDetails:bidDetails,
+            bidDetails: bidDetails,
         };
-        const bidID=tempBidID.toString();
-        await ctx.stub.putState('BID_'+bidID, Buffer.from(JSON.stringify(bid)));
 
-        var applied = await ctx.stub.getState('APPLIED_'+projectID);
+        const bidID = tempBidID.toString();
+        await ctx.stub.putState('BID_' + bidID, Buffer.from(JSON.stringify(bid)));
+
+        var applied = await ctx.stub.getState('APPLIED_' + projectID);
         var obj = JSON.parse(applied.toString());
         obj.bids.push(bidID);
-        await ctx.stub.putState('APPLIED_'+projectID, Buffer.from(JSON.stringify(obj)));
+        await ctx.stub.putState('APPLIED_' + projectID, Buffer.from(JSON.stringify(obj)));
 
         return bidID;
-
-
-
     }
-    async getBid(ctx,bidID)
-    {
-        const bidAsBytes = await ctx.stub.getState('BID_'+bidID);
+
+    async getBid(ctx, bidID) {
+        const bidAsBytes = await ctx.stub.getState('BID_' + bidID);
         if (!bidAsBytes || bidAsBytes.length === 0) {
             return {
                 success: 'false',
@@ -46,8 +45,8 @@ class Bid extends Contract {
         return bidAsBytes.toString();
 
     }
-    async getProjectBids(ctx,projectID){
-        const projectBidsAsBytes = await ctx.stub.getState('APPLIED_'+projectID);
+    async getProjectBids(ctx, projectID) {
+        const projectBidsAsBytes = await ctx.stub.getState('APPLIED_' + projectID);
         if (!projectBidsAsBytes || projectBidsAsBytes.length === 0) {
             return {
                 success: 'false',
@@ -56,20 +55,19 @@ class Bid extends Contract {
         }
         return projectBidsAsBytes.toString();
     }
-    async updateBid(ctx,bidID,gailfield)
-    {
-        const bidAsBytes = await ctx.stub.getState('BID_'+bidID);
+    async updateBid(ctx, bidID, gailfield) {
+        const bidAsBytes = await ctx.stub.getState('BID_' + bidID);
         if (!bidAsBytes || bidAsBytes.length === 0) {
             return {
                 success: 'false',
                 message: 'Invalid Bid ID'
             };
         }
-        var bid=JSON.parse(bidAsBytes.toString());
-        var bidDetails=JSON.parse(bid.bidDetails);
-        bidDetails["gailfield"]=gailfield;
-        bid.bidDetails=JSON.stringify(bidDetails);
-        await ctx.stub.putState('BID_'+bidID, Buffer.from(JSON.stringify(bid)));
+        var bid = JSON.parse(bidAsBytes.toString());
+        var bidDetails = JSON.parse(bid.bidDetails);
+        bidDetails["gailfield"] = gailfield;
+        bid.bidDetails = JSON.stringify(bidDetails);
+        await ctx.stub.putState('BID_' + bidID, Buffer.from(JSON.stringify(bid)));
 
         return bidAsBytes.toString();
 
