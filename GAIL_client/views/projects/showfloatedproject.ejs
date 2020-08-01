@@ -80,6 +80,10 @@
                                 <span style="font-weight: bold;">Bid Price: </span> <%= JSON.parse(singleBid.object.bidDetails).price %> <br>
                                 <span style="font-weight: bold;">Estimated Days for Completion: </span> <%= JSON.parse(singleBid.object.bidDetails).time_period %> days <br>
                                 <span style="font-weight: bold;">Standard Certifications: </span> <%= JSON.parse(singleBid.object.bidDetails).standards %>
+                                <form action="/bidreview" method="get">
+                        				   <input type="hidden" name="bid_id" value="<%= singleBid.id %>" />
+                        					 <input class="btn btn-primary" type="submit" value="Review the Bid" />
+                        				</form>
                             </p>
                         </div>
                     </div>

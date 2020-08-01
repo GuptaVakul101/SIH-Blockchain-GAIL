@@ -731,6 +731,73 @@ router.post("/getAllBids/:id", function (req, res) {
 
 });
 
+router.get("/bidreview", function (req, res) {
+    if (req.cookies.username == null || req.cookies.username.toString() == "") {
+        res.redirect("/login");
+        return;
+    }
+    var bid_id = req.query.bid_id.toString();
+
+    res.render("projects/bidreview", {
+        currentUser: req.cookies.username,
+        bid_id: bid_id
+    });
+
+});
+
+router.post("/bidreview", function (req, res) {
+    if (req.cookies.username == null || req.cookies.username.toString() == "") {
+        res.redirect("/login");
+        return;
+    }
+    var bid_id = req.body.bid_id.toString();
+    var rating = req.body.rating.toString();
+    var review = req.body.review.toString();
+
+    const gailfield = JSON.stringify({
+        rating: rating,
+        review: review
+    });
+
+    const requestData = JSON.stringify({
+        username: username,
+        password: password,
+        bid_id: bid_id,
+        gailfield: gailfield
+    });
+
+    var options = {
+        host: 'localhost',
+        port: '3000',
+        path: '/gail/bideval/updateBid',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': requestData.length
+        }
+    }
+
+    callback = function (response) {
+        var str = '';
+        //another chunk of data has been received, so append it to `str`
+        response.on('data', function (chunk) {
+            str += chunk;
+        });
+
+        //the whole response has been received, so we just print it out here
+        response.on('end', function () {
+            const jsonObject = JSON.parse(str);
+            if (jsonObject.success == true) {
+                res.redirect('/projects/showfloatedproject');
+            }
+        });
+    }
+    var request = http.request(options, callback);
+    request.write(requestData);
+    request.end();
+
+});
+
 function getOptions(pathTemp, requestDataTemp) {
     return {
         host: 'localhost',
