@@ -16,6 +16,7 @@ router.get("/submitAllBids/:id", function (req, res) {
         return;
     }
 
+
     var username = req.cookies.username.toString();
     var password = req.cookies.password.toString();
     var id = req.params.id.toString();
@@ -466,7 +467,7 @@ router.post("/submit/:id", function (req, res) {
         });
 
         response.on('end', function () {
-            res.redirect('/activeprojects', { designation: req.cookies.designation });
+            res.redirect('/activeprojects');
         });
     }
 
@@ -505,7 +506,7 @@ router.post("/acceptproject/:id", function (req, res) {
             const jsonObject = JSON.parse(str);
             if (jsonObject.success == false) {
                 console.log("Failed");
-                res.redirect('/activeprojects', { designation: req.cookies.designation });
+                res.redirect('/activeprojects');
             } else {
                 const requestData2 = JSON.stringify({
                     "username": username,
@@ -526,7 +527,7 @@ router.post("/acceptproject/:id", function (req, res) {
                         const jsonObject2 = JSON.parse(str2);
                         if (jsonObject2.success == false) {
                             console.log("Failed");
-                            res.redirect('/activeprojects', { designation: req.cookies.designation });
+                            res.redirect('/activeprojects');
                         } else {
                             var contractorID = jsonObject2.object.contractor_id.toString();
                             console.log(contractorID);
@@ -547,7 +548,7 @@ router.post("/acceptproject/:id", function (req, res) {
                                     console.log("Bid Details: " + JSON.stringify(jsonObject3.object));
                                     if (jsonObject3.success == false) {
                                         console.log("Failed");
-                                        res.redirect('/activeprojects', { designation: req.cookies.designation });
+                                        res.redirect('/activeprojects');
                                     } else {
                                         var requestData4 = JSON.stringify({
                                         });

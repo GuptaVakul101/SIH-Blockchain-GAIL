@@ -195,40 +195,72 @@ router.get('/allocated', function (req, res) {
         //the whole response has been received, so we just print it out here
         response.on('end', function () {
             const jsonObject = JSON.parse(str);
-            if (jsonObject.success == false) {
-                res.render("projects/allocated", {
-                    project: null,
-                    currentUser: req.cookies.username
+            var requestData2 = JSON.stringify({
+            });
+            var options2 = getOptions('/contractors/users/' + contractorID, requestData2);
+            var callback2 = function (response2) {
+                var str2 = '';
+                response2.on('data', function (chunk) {
+                    str2 += chunk;
                 });
-            }
-            else {
-                var requestData2 = JSON.stringify({
-                });
-                var options2 = getOptions('/contractors/users/' + contractorID, requestData2);
-                var callback2 = function (response2) {
-                    var str2 = '';
-                    response2.on('data', function (chunk) {
-                        str2 += chunk;
-                    });
 
-                    response2.on('end', function () {
-                        const jsonObject2 = JSON.parse(str2); //coressponding to the contractor details
-                        console.log("Contractor Details: " + str2);
-                        if (jsonObject2.success == false) {
-                            console.log("Failed");
-                            res.redirect('/projects/allocated');
+                response2.on('end', function () {
+                    const jsonObject2 = JSON.parse(str2); //coressponding to the contractor details
+                    console.log("Contractor Details: " + str2);
+
+                    if (jsonObject2.success == false) {
+                        console.log("Failed");
+                        res.redirect('/projects/allocated');
+                    } else {
+                        if (jsonObject2.object.designation == "contractor") {
+                            if (jsonObject.success == false) {
+                                console.log("HSJV");
+                                res.render("projects/allocated", {
+                                    project: null,
+                                    currentUser: req.cookies.username
+                                });
+                            } else {
+                                res.render("projects/allocated", {
+                                    project: jsonObject,
+                                    currentUser: req.cookies.username,
+                                    contractor_details: jsonObject2.object
+                                });
+                            }
+
                         } else {
-                            res.render("projects/allocated", {
-                                project: jsonObject,
-                                currentUser: req.cookies.username,
-                                contractor_details: jsonObject2.object
+                            const requestData3 = JSON.stringify({
                             });
-                        }
-                    });
-                }
 
-                runHttpRequest(options2, callback2, requestData2);
+                            var options3 = getOptions('/gail/project/getAllProjects', requestData3);
+
+                            callback3 = function (response3) {
+                                var str3 = '';
+                                response3.on('data', function (chunk) {
+                                    str3 += chunk;
+                                });
+
+                                response3.on('end', function () {
+                                    var jsonObject3 = JSON.parse(str3);
+                                    console.log("CHIRAG");
+                                    console.log(str3);
+                                    if (jsonObject3.success == true) {
+                                        res.render("projects/allocated", {
+                                            project: jsonObject,
+                                            currentUser: req.cookies.username,
+                                            contractor_details: jsonObject2.object,
+                                            allProjects: jsonObject3.allProjects
+                                        });
+                                    }
+                                });
+                            }
+                            runHttpRequest(options3, callback3, requestData3);
+                        }
+
+                    }
+                });
             }
+
+            runHttpRequest(options2, callback2, requestData2);
         });
     }
 
@@ -308,13 +340,14 @@ router.post('/details', function (req, res) {
     const requestData = JSON.stringify({
         username: username,
         password: password,
-        status: status
+        status: status,
+        id: id
     });
 
     var options = {
         host: 'localhost',
         port: '3000',
-        path: '/contractors/project/updateProjectStatus',
+        path: '/contractors/project/updateProjectStatusByID',
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -332,9 +365,7 @@ router.post('/details', function (req, res) {
         //the whole response has been received, so we just print it out here
         response.on('end', function () {
             const jsonObject = JSON.parse(str);
-            if (jsonObject.success == true) {
-                res.redirect('/projects/details?id=' + id);
-            }
+            res.redirect('/projects/details?id=' + id);
         });
     }
     var request = http.request(options, callback);
@@ -370,13 +401,14 @@ router.post('/progress', function (req, res) {
     const requestData = JSON.stringify({
         "username": username,
         "password": password,
-        "description": description
+        "description": description,
+        "id": id
     });
 
     var options = {
         host: 'localhost',
         port: '3000',
-        path: '/contractors/project/updateProjectProgress',
+        path: '/contractors/project/updateProjectProgressByID',
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -393,10 +425,7 @@ router.post('/progress', function (req, res) {
 
         //the whole response has been received, so we just print it out here
         response.on('end', function () {
-            const jsonObject = JSON.parse(str);
-            if (jsonObject.success == true) {
-                res.redirect('/projects/details?id=' + id);
-            }
+            res.redirect('/projects/details?id=' + id);
         });
     }
     var request = http.request(options, callback);

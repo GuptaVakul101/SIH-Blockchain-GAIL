@@ -11,7 +11,7 @@ router.use(bodyParser.json());
 
 router.options('*', cors.corsWithOptions, (req, res) => { res.sendStatus(200); });
 
-const callbackUrl="http://localhost:8000/payment/result";
+const callbackUrl="http://localhost:3200/payment/result";
 const custId="gail";
 
 router.post('/initiateTransaction', async function(req, res, next) {

@@ -398,18 +398,19 @@
             <% if(project.status == "in-review") { %>
             <div class="col-md-6 col-sm-6">
                 <h3 style="font-weight: bold;">Accept/Reject for Payment</h3>
+                <% var temp = JSON.parse(project.evaluation_review); %>
                 <form encType="multipart/form-data">
                     <div class="form-group">
                         <input class="form-control" type="number" name="rating"
-                            value="<%= project.evaluation_review.rating %>" readonly>
+                            value="<%= temp.rating %>" readonly>
                     </div>
                     <div class="form-group">
-                        <input class="form-control" type="number" name="rating"
-                            value="<%= project.evaluation_review.quality %>" readonly>
+                        <input class="form-control" type="number" name="quality"
+                            value="<%= temp.quality %>" readonly>
                     </div>
                     <div class="form-group">
                         <input class="form-control" type="text" name="review"
-                            value="<%= project.evaluation_review.review %>" readonly>
+                            value="<%= temp.review %>" readonly>
                     </div>
                     <div class="form-group text-center">
                         <button type="submit" formmethod="post" formaction="/acceptproject/<%= project.id %>"
@@ -421,7 +422,7 @@
                     </div>
                 </form>
             </div>
-            <% } else if(designation == "evaluation-agency" && project.status == "in-pre-review") {% >
+            <% } else if(designation == "evaluation-agency" && project.status == "in-pre-review") { %>
                 <h3 style="font-weight: bold;">Send Review to GAIL</h3>
                 <form encType="multipart/form-data">
                     <div class="form-group">
