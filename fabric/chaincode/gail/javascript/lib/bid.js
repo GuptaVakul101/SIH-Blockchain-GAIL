@@ -56,6 +56,22 @@ class Bid extends Contract {
         }
         return projectBidsAsBytes.toString();
     }
+    async updateBid(ctx,bidID,gailfield)
+    {
+        const bidAsBytes = await ctx.stub.getState('BID_'+bidID);
+        if (!bidAsBytes || bidAsBytes.length === 0) {
+            return {
+                success: 'false',
+                message: 'Invalid Bid ID'
+            };
+        }
+        var bid=JSON.parse(bidAsBytes.toString());
+        bid.gailfield=gailfield;
+        await ctx.stub.putState('BID_'+bidID, Buffer.from(JSON.stringify(bid)));
+
+        return bidAsBytes.toString();
+
+    }
 }
 
 module.exports = Bid;

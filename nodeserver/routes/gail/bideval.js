@@ -14,6 +14,45 @@ router.use(bodyParser.json());
 
 router.options('*', cors.corsWithOptions, (req, res) => { res.sendStatus(200); });
 
+router.post('/updateBid', async function (req, res, next) {
+    const ccpPath = path.resolve(__dirname, '..', '..', '..', 'fabric', 'test-network', 'organizations',
+        'peerOrganizations', 'gail.example.com', 'connection-gail.json');
+    const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
+
+    // Create a new file system based wallet for managing identities.
+    const walletPath = path.join(__dirname, 'wallet');
+    const wallet = await Wallets.newFileSystemWallet(walletPath);
+
+    // Check to see if we've already enrolled the user.
+    const identity = await wallet.get('admin');
+    // const identity = await wallet.get(req.body.username);
+    if (!identity) {
+        res.statusCode = 404;
+        res.setHeader('Content-Type', 'application/json');
+        res.json({
+            success: false,
+            message: 'GAIL Admin should be registered first'
+        });
+    }
+    else {
+        // Create a new gateway for connecting to our peer node.
+        const gateway = new Gateway();
+        await gateway.connect(ccp, {
+            wallet, identity: 'admin',
+            discovery: { enabled: true, asLocalhost: true }
+        });
+
+        const network = await gateway.getNetwork('channelgg');
+        const contract = network.getContract('gail', 'Bid');
+        console.log(req.body.bid_id.toString());
+        await contract.submitTransaction('updateBid', req.body.bid_id.toString(),JSON.stringify(req.body.gailfield));
+        res.json({
+            success: true
+        });
+        
+    }
+});
+
 router.post('/', async function (req, res, next) {
     const ccpPath = path.resolve(__dirname, '..', '..', '..', 'fabric', 'test-network', 'organizations',
         'peerOrganizations', 'gail.example.com', 'connection-gail.json');
