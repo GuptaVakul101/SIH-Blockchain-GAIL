@@ -66,7 +66,9 @@ class Bid extends Contract {
             };
         }
         var bid=JSON.parse(bidAsBytes.toString());
-        bid.gailfield=gailfield;
+        var bidDetails=JSON.parse(bid.bidDetails);
+        bidDetails["gailfield"]=gailfield;
+        bid.bidDetails=JSON.stringify(bidDetails);
         await ctx.stub.putState('BID_'+bidID, Buffer.from(JSON.stringify(bid)));
 
         return bidAsBytes.toString();
