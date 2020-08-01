@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Contractors</title>
+        <% if(1){ %>
+        <title>Shipment</title>
+        <% } else { %>
+        <title>Contractor</title>
+        <% } %>
+        
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="../../public/css/list_style.css">
@@ -17,10 +22,15 @@
         <nav class="nav navbar-inverse navbar-fixed-top">
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="/" class="btn btn-lg">Contractors</a>
-                    <a class="navbar-brand" href="/projects/floated" class="btn btn-lg">Floated Projects</a>
-                    <a class="navbar-brand" href="/projects/allocated" class="btn btn-lg">Allocated Projects</a>
-                    <a class="navbar-brand" href="/projects/completed" class="btn btn-lg">Completed Projects</a>
+                  <% if(1){ %>
+                  <a class="navbar-brand" href="/" class="btn btn-lg">Shipment</a>
+                  <a class="navbar-brand" href="/projects/allocated" class="btn btn-lg">Allocated Projects</a>
+                  <% } else{ %>
+                  <a class="navbar-brand" href="/" class="btn btn-lg">Contractors</a>
+                  <a class="navbar-brand" href="/projects/floated" class="btn btn-lg">Floated Projects</a>
+                  <a class="navbar-brand" href="/projects/allocated" class="btn btn-lg">Allocated Projects</a>
+                  <a class="navbar-brand" href="/projects/completed" class="btn btn-lg">Completed Projects</a>
+                  <% } %>
                 </div>
 
                 <div class="collapse navbar-collapse">

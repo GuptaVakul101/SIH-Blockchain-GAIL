@@ -2,7 +2,12 @@
 <html>
 
 <head>
+  <% if(1){ %>
+  <title>Evaluation Agency</title>
+  <% } else { %>
   <title>GAIL Corporation</title>
+  <% } %>
+
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -120,11 +125,16 @@
 <body style="padding-top: 70px;">
 
   <nav class="navbar navbar-expand-md fixed-top" style="background-color: #222222; color: #9d9d9d;">
-    <a class="navbar-brand" href="/" class="btn btn-md">GAIL</a>
-    <a class="navbar-brand" href="/activeprojects" class="btn btn-md">Active Projects</a>
-    <a class="navbar-brand" href="/floatedprojects" class="btn btn-md">Floated Projects</a>
-    <a class="navbar-brand" href="/finishedprojects" class="btn btn-md">Finished Projects</a>
-    <a class="navbar-brand" href="/newproject" class="btn btn-md">Float a new Project</a>
+    <% if(1){ %>
+    <a class="navbar-brand" href="/" class="btn btn-lg">Evaluation Agency</a>
+    <a class="navbar-brand" href="/activeprojects" class="btn btn-lg">Active Projects</a>
+    <% }else{ %>
+    <a class="navbar-brand" href="/" class="btn btn-lg">GAIL</a>
+    <a class="navbar-brand" href="/activeprojects" class="btn btn-lg">Active Projects</a>
+    <a class="navbar-brand" href="/floatedprojects" class="btn btn-lg">Floated Projects</a>
+    <a class="navbar-brand" href="/finishedprojects" class="btn btn-lg">Finished Projects</a>
+    <a class="navbar-brand" href="/newproject" class="btn btn-lg">Float a new Project</a>
+    <% } %>
 
 
     <button class="navbar-toggler" data-toggle="collapse" data-target="#navbarMenu">
@@ -147,6 +157,21 @@
   </nav>
   <div class="slideshow-container">
 
+    <% if(1){ %>
+    <div class="mySlides fade">
+      <img src="../static/FifthSlide.jpg" style="width:100%">
+    </div>
+    <div class="mySlides fade">
+      <img src="../static/SixthSlide.jpg" style="width:100%">
+    </div>
+    <div class="mySlides fade">
+      <img src="../static/Seventh.jpg" style="width:100%">
+    </div>
+    <div class="mySlides fade">
+      <img src="../static/Eighth.jpg" style="width:100%">
+    </div>
+
+    <% }else{ %>
     <div class="mySlides fade">
       <img src="../static/FirstSlide.jpg" style="width:100%">
     </div>
@@ -162,28 +187,12 @@
     <div class="mySlides fade">
       <img src="../static/FourthSlide.jpg" style="width:100%">
     </div>
-
-    <div class="mySlides fade">
-      <img src="../static/FifthSlide.jpg" style="width:100%">
-    </div>
-    <div class="mySlides fade">
-      <img src="../static/SixthSlide.jpg" style="width:100%">
-    </div>
-    <div class="mySlides fade">
-      <img src="../static/Seventh.jpg" style="width:100%">
-    </div>
-    <div class="mySlides fade">
-      <img src="../static/Eighth.jpg" style="width:100%">
-    </div>
+    <% } %>
 
   </div>
   <br>
 
   <div style="text-align:center">
-    <span class="dot"></span>
-    <span class="dot"></span>
-    <span class="dot"></span>
-    <span class="dot"></span>
     <span class="dot"></span>
     <span class="dot"></span>
     <span class="dot"></span>

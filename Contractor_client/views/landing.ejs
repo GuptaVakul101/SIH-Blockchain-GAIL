@@ -2,7 +2,12 @@
 <html>
 
 <head>
+  <% if(1){ %>
+  <title>Shipment</title>
+  <% } else { %>
   <title>Contractor</title>
+  <% } %>
+
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -120,11 +125,15 @@
 <body style="padding-top: 70px;">
 
   <nav class="navbar navbar-expand-md fixed-top" style="background-color: #222222; color: #9d9d9d;">
+    <% if(1){ %>
+    <a class="navbar-brand" href="/" class="btn btn-lg">Shipment</a>
+    <a class="navbar-brand" href="/projects/allocated" class="btn btn-lg">Allocated Projects</a>
+    <% } else{ %>
     <a class="navbar-brand" href="/" class="btn btn-lg">Contractors</a>
     <a class="navbar-brand" href="/projects/floated" class="btn btn-lg">Floated Projects</a>
     <a class="navbar-brand" href="/projects/allocated" class="btn btn-lg">Allocated Projects</a>
     <a class="navbar-brand" href="/projects/completed" class="btn btn-lg">Completed Projects</a>
-
+    <% } %>
 
     <button class="navbar-toggler" data-toggle="collapse" data-target="#navbarMenu">
       <span class="navbar-toggler-icon"></span>
@@ -146,43 +155,43 @@
   </nav>
   <div class="slideshow-container">
 
-    <div class="mySlides fade">
-      <img src="../static/FirstSlide.jpg" style="width:100%">
-    </div>
+    <% if(1){ %>
+      <div class="mySlides fade">
+        <img src="../static/FifthSlide.jpg" style="width:100%">
+      </div>
+      <div class="mySlides fade">
+        <img src="../static/SixthSlide.jpg" style="width:100%">
+      </div>
+      <div class="mySlides fade">
+        <img src="../static/Seventh.jpg" style="width:100%">
+      </div>
+      <div class="mySlides fade">
+        <img src="../static/Eighth.jpg" style="width:100%">
+      </div>
 
-    <div class="mySlides fade">
-      <img src="../static/SecondSlide.jpg" style="width:100%">
-    </div>
+    <% } else{ %>
+      <div class="mySlides fade">
+        <img src="../static/FirstSlide.jpg" style="width:100%">
+      </div>
 
-    <div class="mySlides fade">
-      <img src="../static/ThirdSlide.jpg" style="width:100%">
-    </div>
+      <div class="mySlides fade">
+        <img src="../static/SecondSlide.jpg" style="width:100%">
+      </div>
 
-    <div class="mySlides fade">
-      <img src="../static/FourthSlide.jpg" style="width:100%">
-    </div>
+      <div class="mySlides fade">
+        <img src="../static/ThirdSlide.jpg" style="width:100%">
+      </div>
 
-    <div class="mySlides fade">
-      <img src="../static/FifthSlide.jpg" style="width:100%">
-    </div>
-    <div class="mySlides fade">
-      <img src="../static/SixthSlide.jpg" style="width:100%">
-    </div>
-    <div class="mySlides fade">
-      <img src="../static/Seventh.jpg" style="width:100%">
-    </div>
-    <div class="mySlides fade">
-      <img src="../static/Eighth.jpg" style="width:100%">
-    </div>
+      <div class="mySlides fade">
+        <img src="../static/FourthSlide.jpg" style="width:100%">
+      </div>
+
+    <% } %>
 
   </div>
   <br>
 
   <div style="text-align:center">
-    <span class="dot"></span>
-    <span class="dot"></span>
-    <span class="dot"></span>
-    <span class="dot"></span>
     <span class="dot"></span>
     <span class="dot"></span>
     <span class="dot"></span>
