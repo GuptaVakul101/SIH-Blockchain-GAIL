@@ -187,6 +187,13 @@ router.post('/', async function (req, res, next) {
                             const ratingString = await contractChannel.evaluateTransaction('getOverallRating', contractorUsername);
                             const getBidDetails = getBidJson.bidDetails;
                             const getBidDetailsJson = JSON.parse(getBidDetails.toString());
+
+                            /*Extra added*/
+                            const gailReview=getBidDetailsJson.gailfield;
+                            const gailReviewJson=JSON.parse(gailReview.toString());
+                            const gailReviewRating=parseFloat(gailReviewJson.gailReviewRating);
+                            /*Extra fields added end  */
+
                             const price = parseFloat(getBidDetailsJson.price);
                             const quality = parseFloat(qualityString.toString());
                             const rating = parseFloat(ratingString.toString());
@@ -195,8 +202,9 @@ router.post('/', async function (req, res, next) {
                             //const quality = 1.3;
                             //const rating = 2.4;
                             console.log(ratingString.toString());
-                            var bidVal = (maxPrice/price) * 350 + (maxTime/time) * 350 + (numStandards/maxNumStandards) * 100
-                                        + (quality/100) * 100 + (rating/10) * 100;
+                            var bidVal = (maxPrice/price) * 300 + (maxTime/time) * 300 + (numStandards/maxNumStandards) * 100
+                                        + (quality/100) * 100 + (rating/10) * 100 +
+                                        (gailReviewRating/100) * 100;  //gail reviewRating added
                             if (winningBidValue === 0) {
                                 winnerBidID = bidID;
                                 winningBidValue = bidVal;
