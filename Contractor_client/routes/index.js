@@ -167,6 +167,14 @@ router.post("/login", function(req,res){
 	request.end();
 })
 
+router.get("/download/:path", function (req, res) {
+	var filePath = "../nodeserver/brochureUpload/" + req.params.path.toString();
+    var getTimeStampString = new Date().getTime().toString();
+	var fileName = getTimeStampString + ".pdf"; // The default name the browser will use
+	res.setHeader("Content-Type", "application/pdf");
+	res.download(filePath, fileName);
+});
+
 router.get("/logout",function(req,res){
     res.cookie("username", "");
     res.cookie("password", "");

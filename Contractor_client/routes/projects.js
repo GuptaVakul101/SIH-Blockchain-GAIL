@@ -116,6 +116,29 @@ router.post('/apply', function (req, res) {
         }
     }
 
+    var file = null;
+    if (req.files) {
+        file = req.files.brochure;
+    }
+    else{
+        redirect('/projects/floated');
+        return;
+    }
+
+    var getTimeStampString = null;
+    if (file != null) {
+        getTimeStampString = new Date().getTime().toString();
+        var saveFilePath = "../nodeserver/BidBrochure/" + getTimeStampString;
+        file.mv(saveFilePath, function (err) {
+            if (err) {
+                res.redirect("/register");
+                return;
+            } else {
+                console.log("File uploaded successfully");
+            }
+        });
+    }
+
     const requestData = JSON.stringify({
         "username": username,
         "password": password,
@@ -123,7 +146,8 @@ router.post('/apply', function (req, res) {
         "bidDetails": {
             "price": price,
             "time_period": time_period,
-            "standards": isoArr
+            "standards": isoArr,
+            "brochurePath": getTimeStampString
         }
     });
 
