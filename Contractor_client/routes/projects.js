@@ -29,6 +29,22 @@ router.get('/floated', function (req, res) {
         }
     }
 
+    const requestData2 = JSON.stringify({
+        "username": username,
+        "password": password
+    });
+
+    var options2 = {
+        host: 'localhost',
+        port: '3000',
+        path: '/contractors/users/login',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': requestData2.length
+        }
+    }
+
     callback = function (response) {
         var str = '';
         //another chunk of data has been received, so append it to `str`
@@ -41,26 +57,46 @@ router.get('/floated', function (req, res) {
             const jsonObject = JSON.parse(str);
             console.log("All Projects");
             if (jsonObject.success == true) {
-                const requestData2 = JSON.stringify({
-                    "id": username,
-                });
-                var options2 = getOptions('/gail/project/getAllContractorsForProjects', requestData2);
-                callback2 = function (response2) {
-                    var str2 = '';
-                    //another chunk of data has been received, so append it to `str`
-                    response2.on('data', function (chunk) {
-                        str2 += chunk;
-                    });
-            
-                    //the whole response has been received, so we just print it out here
-                    response2.on('end', function () {
-                        const jsonObject2 = JSON.parse(str2);
-                        console.log(jsonObject2.relation);
-                        res.render("projects/floatedprojects", { projects: jsonObject.allProjects, currentUser: req.cookies.username, designation: designation, relation: jsonObject2.relation });
-                    });
-                }            
+                callback2 = function(response){
 
-                runHttpRequest(options2, callback2, requestData2);
+                    var str = '';
+                    //another chunk of data has been received, so append it to `str`
+                    response.on('data', function (chunk) {
+                        str += chunk;
+                    });
+
+                    response.on('end', function () {
+                        const jsonObject2 = JSON.parse(str);
+                        if(jsonObject2.activeProjectID != null){
+                            res.redirect("/");
+                        }
+                        else{
+                            const requestData3 = JSON.stringify({
+                                "id": username,
+                            });
+                            var options3 = getOptions('/gail/project/getAllContractorsForProjects', requestData3);
+                            callback3 = function (response3) {
+                                var str3 = '';
+                                //another chunk of data has been received, so append it to `str`
+                                response3.on('data', function (chunk) {
+                                    str3 += chunk;
+                                });
+                        
+                                //the whole response has been received, so we just print it out here
+                                response3.on('end', function () {
+                                    const jsonObject3 = JSON.parse(str3);
+                                    console.log(jsonObject3.relation);
+                                    res.render("projects/floatedprojects", { projects: jsonObject.allProjects, currentUser: req.cookies.username, designation: designation, relation: jsonObject3.relation });
+                                });
+                            }            
+            
+                            runHttpRequest(options3, callback3, requestData3);
+                        }
+                    });
+                }
+                var request = http.request(options2, callback2);
+                request.write(requestData2);
+                request.end();
             }
         });
     }
@@ -124,13 +160,32 @@ router.post('/apply', function (req, res) {
     var password = req.cookies.password.toString();
 
     var id = req.body.id.toString();
-    var price = req.body.price.toString();
     var time_period = req.body.time_period.toString();
 
     var isoArr = [];
     for (var i = 1; ; i++) {
         if (req.body['iso' + i.toString()] != null) {
             isoArr.push(req.body['iso' + i.toString()]);
+        }
+        else {
+            break;
+        }
+    }
+
+    var itemArr = [];
+    var totalPrice = 0;
+    for (var i = 1; ; i++) {
+        if (req.body['price' + i.toString()] != null) {
+            var price = req.body['price'+i.toString()];
+            var tax = req.body['tax'+i.toString()];
+            var quantity = req.body['quantity'+i.toString()];
+            itemArr.push({
+                'item': req.body['item'+i.toString()].toString(),
+                'quantity': quantity.toString(),
+                'price': price.toString(),
+                'tax': tax.toString()
+            });
+            totalPrice += quantity*(price*1+tax*1);
         }
         else {
             break;
@@ -165,10 +220,11 @@ router.post('/apply', function (req, res) {
         "password": password,
         "projectID": id,
         "bidDetails": {
-            "price": price,
+            "price": totalPrice,
             "time_period": time_period,
             "standards": isoArr,
-            "brochurePath": getTimeStampString
+            "brochurePath": getTimeStampString,
+            "itemArr": itemArr
         }
     });
 
@@ -536,9 +592,13 @@ router.get('/completed/details', function (req, res) {
         res.redirect("/");
     }
 
+    var username = req.cookies.username;
+    var password = req.cookies.password;
     var id = req.query.id.toString();
+
     const requestData = JSON.stringify({
-        id: id
+        username: username,
+        password: password
     });
 
     var options = {
@@ -562,12 +622,13 @@ router.get('/completed/details', function (req, res) {
         //the whole response has been received, so we just print it out here
         response.on('end', function () {
             const jsonObject = JSON.parse(str);
-            console.log(jsonObject);
+            var projectDetails = JSON.parse(jsonObject.allProjects[id]);
             res.render("projects/completedetails", {
                 currentUser: req.cookies.username,
-                project: jsonObject.object,
+                project: projectDetails,
                 projectID: id,
-                progress: jsonObject.object.progress
+                progress: projectDetails.progress,
+                evaluation_review: JSON.parse(projectDetails.evaluation_review)
             });
         });
     }
