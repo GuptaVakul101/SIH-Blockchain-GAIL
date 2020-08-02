@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <% if(1){ %>
+  <% if(designation == "evaluation-agency"){ %>
   <title>Evaluation Agency</title>
   <% } else { %>
   <title>GAIL Corporation</title>
@@ -125,9 +125,10 @@
 <body style="padding-top: 70px;">
 
   <nav class="navbar navbar-expand-md fixed-top" style="background-color: #222222; color: #9d9d9d;">
-    <% if(1){ %>
+    <% if(designation == "evaluation-agency"){ %>
     <a class="navbar-brand" href="/" class="btn btn-lg">Evaluation Agency</a>
     <a class="navbar-brand" href="/activeprojects" class="btn btn-lg">Active Projects</a>
+    <a class="navbar-brand" href="/floatedprojects" class="btn btn-lg">Floated Projects</a>
     <% }else{ %>
     <a class="navbar-brand" href="/" class="btn btn-lg">GAIL</a>
     <a class="navbar-brand" href="/activeprojects" class="btn btn-lg">Active Projects</a>
@@ -157,7 +158,7 @@
   </nav>
   <div class="slideshow-container">
 
-    <% if(1){ %>
+    <% if(designation == "evaluation-agency"){ %>
     <div class="mySlides fade">
       <img src="../static/FifthSlide.jpg" style="width:100%">
     </div>

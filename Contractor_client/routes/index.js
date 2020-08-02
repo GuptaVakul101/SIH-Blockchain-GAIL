@@ -6,7 +6,8 @@ var cookieParser = require('cookie-parser');
 
 
 router.get("/", function(req,res){
-	res.render("landing", { currentUser: req.cookies.username} );
+	var designation = req.cookies.designation;
+	res.render("landing", { currentUser: req.cookies.username, designation: designation} );
 });
 
 //SHOW REGISTER FORM

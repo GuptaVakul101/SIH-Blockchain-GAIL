@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <% if(1){ %>
+        <% if(designation == "evaluation-agency"){ %>
         <title>Evaluation Agency</title>
         <% } else { %>
         <title>GAIL Corporation</title>
@@ -23,9 +23,10 @@
         <nav class="nav navbar-inverse navbar-fixed-top mt-3">
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <% if(1){ %>
+                    <% if(designation == "evaluation-agency"){ %>
                     <a class="navbar-brand" href="/" class="btn btn-lg">Evaluation Agency</a>
                     <a class="navbar-brand" href="/activeprojects" class="btn btn-lg">Active Projects</a>
+                    <a class="navbar-brand" href="/floatedprojects" class="btn btn-lg">Floated Projects</a>
                     <% }else{ %>
                     <a class="navbar-brand" href="/" class="btn btn-lg">GAIL</a>
                     <a class="navbar-brand" href="/activeprojects" class="btn btn-lg">Active Projects</a>
