@@ -33,6 +33,7 @@ router.post("/register",function(req,res){
 	var aboutus = req.body.aboutus;
 	var mid = req.body.mid;
 	var mkey = req.body.mkey;
+	var designation = req.body.designation;
 	var file = null;
     if (req.files) {
         file = req.files.profilepic;
@@ -61,7 +62,8 @@ router.post("/register",function(req,res){
 		"aboutUs": aboutus.toString(),
 		"mid": mid.toString(),
 		"mkey": mkey.toString(),
-		"profilepic": getTimeStampString
+		"profilepic": getTimeStampString,
+		"designation": designation
 	});
 
 	console.log(requestData);

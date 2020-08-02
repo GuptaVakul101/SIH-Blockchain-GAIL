@@ -513,9 +513,9 @@ CA_IMAGETAG="latest"
 DATABASE="leveldb"
 
 # number of GAIL peer nodes
-GAIL_NODES=3
+GAIL_NODES=2
 # number of Contractor peer nodes
-CONTRACTOR_NODES=2
+CONTRACTOR_NODES=3
 
 ORG1="gail"
 ORG2="contractors"

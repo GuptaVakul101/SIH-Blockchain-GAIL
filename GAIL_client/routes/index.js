@@ -23,6 +23,7 @@ router.post("/register", function (req, res) {
 	var password = req.body.password;
 	var email = req.body.email;
 	var name = req.body.name;
+	var designation = req.body.designation;
 
 	if (req.cookies.username != null && req.cookies.username.toString() != "") {
 		res.redirect("/");
@@ -38,7 +39,7 @@ router.post("/register", function (req, res) {
 		teamname: "",
 		profilePic: "",
 		address: "",
-		designation: ""
+		designation: designation.toString()
 	});
 
 	var options = {
@@ -70,6 +71,7 @@ router.post("/register", function (req, res) {
 			} else {
 				res.cookie("username", username.toString());
 				res.cookie("password", password.toString());
+				res.cookie("designation", designation.toString());
 				res.redirect("/");
 			}
 		});
@@ -119,6 +121,7 @@ router.post("/login", function (req, res) {
 			} else {
 				res.cookie("username", username.toString());
 				res.cookie("password", password.toString());
+				res.cookie("designation", jsonObject.designation.toString());
 				res.redirect("/");
 			}
 		});
@@ -130,6 +133,7 @@ router.post("/login", function (req, res) {
 router.get("/logout", function (req, res) {
 	res.cookie("username", "");
 	res.cookie("password", "");
+	res.cookie("designation", "");
 	res.redirect("/");
 });
 

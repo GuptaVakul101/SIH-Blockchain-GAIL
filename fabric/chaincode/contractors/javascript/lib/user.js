@@ -11,7 +11,6 @@ const { Contract } = require('fabric-contract-api');
 class User extends Contract {
 
     async initLedger(ctx) {
-
     }
 
     async getUser(ctx, username, password) {
@@ -48,7 +47,7 @@ class User extends Contract {
 
     }
 
-    async createUser(ctx, username, password, email, contact, address, aboutUs, profilepic, merchantID, merchantKey) {
+    async createUser(ctx, username, password, email, contact, address, aboutUs, profilepic, merchantID, merchantKey, designation) {
         const user = {
             docType: 'CONTRACTOR',
             username: username,
@@ -64,7 +63,8 @@ class User extends Contract {
             aboutUs: aboutUs,
             profilePicPath: profilepic,
             merchantID: merchantID,
-            merchantKey: merchantKey
+            merchantKey: merchantKey, 
+            designation: designation
         };
 
         await ctx.stub.putState('CONTRACTOR_' + username, Buffer.from(JSON.stringify(user)));
@@ -208,6 +208,29 @@ class User extends Contract {
         await ctx.stub.putState('CONTRACTOR_' + username, Buffer.from(JSON.stringify(user)));
 
     }
+
+    async updateUserDesignation(ctx, username, password, designation) {
+        const userAsBytes = await ctx.stub.getState('CONTRACTOR_' + username);
+        if (!userAsBytes || userAsBytes.length === 0) {
+            return {
+                success: 'false',
+                message: 'Contractor with username: \'' + username + '\' does not exist.'
+            };
+        }
+
+        var user = JSON.parse(userAsBytes.toString());
+        if (user.password !== password) {
+            return {
+                success: 'false',
+                message: 'Contractor authentication failed. Please retry with correct password.'
+            };
+        }
+
+        user.designation = designation;
+        await ctx.stub.putState('CONTRACTOR_' + username, Buffer.from(JSON.stringify(user)));
+
+    }
+
     async updateUserAddress(ctx, username, password, address) {
         const userAsBytes = await ctx.stub.getState('CONTRACTOR_' + username);
         if (!userAsBytes || userAsBytes.length === 0) {
