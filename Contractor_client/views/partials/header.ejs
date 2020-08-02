@@ -1,11 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-      <% if(designation == "contractor"){ %>
-      <title>Contractor</title>
-      <% } else { %>
-      <title>Shipment</title>
-      <% } %>
+      <title>Home</title>
 
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -17,20 +13,20 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
         <link rel="stylesheet" type="text/css" href="/stylesheets/main.css">
     </head>
-    <body style="padding-top: 60px;">
+    <body>
 
-        <nav class="nav navbar-inverse navbar-fixed-top">
+        <nav class="nav navbar-inverse">
             <div class="container-fluid">
                 <div class="navbar-header">
-                  <% if(designation == "Contractor"){ %>
-                  <a class="navbar-brand" href="/" class="btn btn-lg">Contractors</a>
-                  <a class="navbar-brand" href="/projects/floated" class="btn btn-lg">Floated Projects</a>
-                  <a class="navbar-brand" href="/projects/allocated" class="btn btn-lg">Allocated Projects</a>
-                  <a class="navbar-brand" href="/projects/completed" class="btn btn-lg">Completed Projects</a>
-                  <% } else if (designation == "Shipping Agency"){ %>
-                  <a class="navbar-brand" href="/" class="btn btn-lg">Shipment</a>
-                  <a class="navbar-brand" href="/projects/allocated" class="btn btn-lg">Allocated Projects</a>
-                  <% }%>
+                    <% if(designation == "contractor"){ %>
+    				<a class="navbar-brand" href="/" class="btn btn-lg">Contractors</a>
+    				<a class="navbar-brand" href="/projects/floated" class="btn btn-lg">Floated Projects</a>
+    				<a class="navbar-brand" href="/projects/allocated" class="btn btn-lg">Allocated Projects</a>
+    				<a class="navbar-brand" href="/projects/completed" class="btn btn-lg">Completed Projects</a>
+    				<% } else if (designation == "shipping-agency"){ %>
+    				<a class="navbar-brand" href="/" class="btn btn-lg">Shipment</a>
+    				<a class="navbar-brand" href="/projects/allocated" class="btn btn-lg">Allocated Projects</a>
+    				<% }%>
                 </div>
 
                 <div class="collapse navbar-collapse">

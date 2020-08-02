@@ -6,11 +6,11 @@ var cookieParser = require('cookie-parser');
 
 
 router.get("/", function(req,res){
-	if(req.cookies.username == null || req.cookies.username.toString() != "")  {
+	if(req.cookies.username == null || req.cookies.username.toString() == "")  {
 		res.render("landing", { currentUser: req.cookies.username, designation: ""} );
 	}
 	else{
-		var designtion = req.cookies.designation;
+		var designation = req.cookies.designation.toString();
 		res.render("landing", { currentUser: req.cookies.username, designation: designation} );
 	}
 });
@@ -21,7 +21,7 @@ router.get("/register",function(req,res){
 		res.redirect("/");
 		return;
 	}
-    res.render("register", { currentUser: req.cookies.username} );
+    res.render("register", { currentUser: req.cookies.username, designation: ""} );
 });
 
 //HANDLE SIGN UP
@@ -120,7 +120,8 @@ router.get("/login", function(req,res){
 		res.redirect("/");
 		return;
 	}
-    res.render("login", { currentUser: req.cookies.username});
+	var designation = "";
+    res.render("login", { currentUser: req.cookies.username, designation: designation});
 })
 
 //HANDLE LOGIN
@@ -158,7 +159,7 @@ router.post("/login", function(req,res){
 	  	//the whole response has been received, so we just print it out here
 	  	response.on('end', function () {
 	    	console.log(str);
-	    	const jsonObject = JSON.parse(str);
+			const jsonObject = JSON.parse(str);
 	    	if(jsonObject.success == false) {
 	    		res.redirect('/login');
 	    	} else {

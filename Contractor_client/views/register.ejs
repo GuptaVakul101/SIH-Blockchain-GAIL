@@ -125,10 +125,15 @@
 	<nav class="nav navbar-inverse">
 		<div class="container-fluid">
 			<div class="navbar-header">
-				<a class="navbar-brand" href="/" class="btn btn-lg">Contractors</a>
-				<a class="navbar-brand" href="/projects/floated" class="btn btn-lg">Floated Projects</a>
-				<a class="navbar-brand" href="/projects/allocated" class="btn btn-lg">Allocated Projects</a>
-				<a class="navbar-brand" href="/projects/completed" class="btn btn-lg">Completed Projects</a>
+				<% if(designation == "contractor"){ %>
+					<a class="navbar-brand" href="/" class="btn btn-lg">Contractors</a>
+					<a class="navbar-brand" href="/projects/floated" class="btn btn-lg">Floated Projects</a>
+					<a class="navbar-brand" href="/projects/allocated" class="btn btn-lg">Allocated Projects</a>
+					<a class="navbar-brand" href="/projects/completed" class="btn btn-lg">Completed Projects</a>
+					<% } else if (designation == "shipping-agency"){ %>
+					<a class="navbar-brand" href="/" class="btn btn-lg">Shipment</a>
+					<a class="navbar-brand" href="/projects/allocated" class="btn btn-lg">Allocated Projects</a>
+					<% }%>
 			</div>
 
 			<div class="collapse navbar-collapse">

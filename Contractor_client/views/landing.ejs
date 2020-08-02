@@ -2,13 +2,8 @@
 <html>
 
 <head>
-  <% if(designation == "Contractor"){ %>
-  <title>Contractor</title>
-  <% } else if(designation == "Shipping Agency"){ %>
-  <title>Shipment</title>
-  <% } else { %>
+
   <title>Home</title>
-  <% } %>
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta charset="utf-8">
@@ -127,12 +122,14 @@
 <body style="padding-top: 70px;">
 
   <nav class="navbar navbar-expand-md fixed-top" style="background-color: #222222; color: #9d9d9d;">
-    <% if(designation == "Contractor"){ %>
+    <% if(!locals.designation){ %>
+      <a class="navbar-brand" href="/" class="btn btn-lg">Guest</a>
+    <% } else if(designation == "contractor"){ %>
     <a class="navbar-brand" href="/" class="btn btn-lg">Contractors</a>
     <a class="navbar-brand" href="/projects/floated" class="btn btn-lg">Floated Projects</a>
     <a class="navbar-brand" href="/projects/allocated" class="btn btn-lg">Allocated Projects</a>
     <a class="navbar-brand" href="/projects/completed" class="btn btn-lg">Completed Projects</a>
-    <% } else if (designation == "Shipping Agency"){ %>
+    <% } else if (designation == "shipping-agency"){ %>
     <a class="navbar-brand" href="/" class="btn btn-lg">Shipment</a>
     <a class="navbar-brand" href="/projects/allocated" class="btn btn-lg">Allocated Projects</a>
     <% }%>
@@ -149,7 +146,6 @@
         <% } else{ %>
         <li><a class="navbar-brand btn btn-md" href="/profile" style="color: #9d9d9d;">Signed In As
             <%= currentUser.toUpperCase() %> </a></li>
-        <li><a href="/edit_profile" class="navbar-brand btn btn-md" style="color: #9d9d9d;">Edit Profile</a></li>
         <li><a href="/logout" class="navbar-brand btn btn-md" style="color: #9d9d9d;">Logout</a></li>
         <% } %>
       </ul>
@@ -157,7 +153,7 @@
   </nav>
   <div class="slideshow-container">
 
-    <% if(designation == "contractor"){ %>
+    <% if(!locals.designation || designation == "contractor"){ %>
       <div class="mySlides fade">
         <img src="../static/FirstSlide.jpg" style="width:100%">
       </div>
