@@ -124,6 +124,11 @@
                                         <input type="hidden" name="bid_id" value="<%= singleBid.id %>" />
                                         <input class="btn btn-primary" type="submit" value="Review the Bid" />
                                     </form>
+                                <%} else {%>
+                                    <form action="/bidreview" method="get">
+                                        <input type="hidden" name="bid_id" value="<%= singleBid.id %>" />
+                                        <input class="btn btn-primary" type="submit" value="View Financial Bid" />
+                                    </form>
                                 <% } %>
                                 </p>
                             </div>
