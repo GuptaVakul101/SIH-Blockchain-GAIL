@@ -197,9 +197,9 @@ router.get("/floatedprojects/:id", function (req, res) {
                     response2.on('end', function () {
                         const jsonObject2 = JSON.parse(str2);
                         if (jsonObject2.success == true) {
-                            res.render("projects/showfloatedproject", { data: jsonObject.object, currentUser: req.cookies.username, allBidDetails: jsonObject2.allBids });
+                            res.render("projects/showfloatedproject", { data: jsonObject.object, currentUser: req.cookies.username, allBidDetails: jsonObject2.allBids, designation: req.cookies.designation });
                         } else {
-                            res.render("projects/showfloatedproject", { data: jsonObject.object, currentUser: req.cookies.username, allBidDetails: [] });
+                            res.render("projects/showfloatedproject", { data: jsonObject.object, currentUser: req.cookies.username, allBidDetails: [], designation: req.cookies.designation });
                         }
 
                         // res.send(jsonObject2.allBids);
@@ -719,16 +719,34 @@ router.get("/bidreview", function (req, res) {
         res.redirect("/login");
         return;
     }
-    var bid_id = req.query.bid_id.toString();
-    console.log(bid_id);
-    res.render("projects/bidreview", {
-        currentUser: req.cookies.username,
-        bid_id: bid_id
+    var bidID = req.query.bid_id.toString();
+    var requestData = JSON.stringify({
+        "bid_id": bidID.toString()
     });
+    var options = getOptions('/gail/bideval/getSingleBid', requestData);
 
+    var callback = function (response2) {
+        var str2 = '';
+        response2.on('data', function (chunk) {
+            str2 += chunk;
+        });
+
+        response2.on('end', function () {
+            const jsonObject2 = JSON.parse(str2); //coressponding to the bid details
+            console.log("Bid Details: " + JSON.stringify(jsonObject2.object));
+            res.render("projects/bidreview", {
+                currentUser: req.cookies.username,
+                bid_id: bidID,
+                bidDetails: jsonObject2.object
+            });
+        });
+
+    }
+    runHttpRequest(options, callback, requestData);
+    
 });
 
-router.post("/bidreview", function (req, res) {
+router.post("/bidreviewAccept", function (req, res) {
     if (req.cookies.username == null || req.cookies.username.toString() == "") {
         res.redirect("/login");
         return;
@@ -742,7 +760,65 @@ router.post("/bidreview", function (req, res) {
 
     const gailfield = JSON.stringify({
         rating: rating,
-        review: review
+        review: review,
+        accept: "true"
+    });
+
+    const requestData = JSON.stringify({
+        username: username,
+        password: password,
+        bid_id: bid_id,
+        gailfield: gailfield
+    });
+
+    var options = {
+        host: 'localhost',
+        port: '3000',
+        path: '/gail/bideval/updateBid',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': requestData.length
+        }
+    }
+
+    callback = function (response) {
+        var str = '';
+        //another chunk of data has been received, so append it to `str`
+        response.on('data', function (chunk) {
+            str += chunk;
+        });
+
+        //the whole response has been received, so we just print it out here
+        response.on('end', function () {
+            const jsonObject = JSON.parse(str);
+            if (jsonObject.success == true) {
+                res.redirect('/floatedprojects');
+            }
+        });
+    }
+    var request = http.request(options, callback);
+    request.write(requestData);
+    request.end();
+
+});
+
+router.post("/bidreviewReject", function (req, res) {
+    if (req.cookies.username == null || req.cookies.username.toString() == "") {
+        res.redirect("/login");
+        return;
+    }
+    var username = req.cookies.username.toString();
+    var password = req.cookies.password.toString();
+    var bid_id = req.body.bid_id.toString();
+    var rating = req.body.rating.toString();
+    var review = req.body.review.toString();
+    console.log(bid_id);
+
+    const gailfield = JSON.stringify({
+        rating: rating,
+        review: review,
+        accept: "false"
     });
 
     const requestData = JSON.stringify({

@@ -57,43 +57,76 @@
             <h6>Created Date: <%= data.createTimeStamp %></h6>
             <p>
                 <% if(data.brochurePath != "null") { %>
-                    <a href= "/download/<%= data.brochurePath%>" style="color: blue;">Download Brochure</a>
-                    <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                <a href="/download/<%= data.brochurePath%>" style="color: blue;">Download Brochure</a>
+                <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
                 <% } %>
             </p>
         </div>
     </div>
 
+
+    <% var allReviewed = true; %>
     <% if(allBidDetails.length === 0) {%>
-        <h1 style="text-align: center; color: cornflowerblue; margin-top: 50px;">No Bids Applied Yet</h1>
+    <h1 style="text-align: center; color: cornflowerblue; margin-top: 50px;">No Bids Applied Yet</h1>
     <% } else { %>
-        <div class="container" style="margin-top: 30px;">
-            <div class="row card-deck" style="display:flex; flex-wrap: wrap;">
-                <% for(var idx in allBidDetails) { %>
+    <div class="container" style="margin-top: 30px;">
+        <div class="row card-deck" style="display:flex; flex-wrap: wrap;">
+            <% for(var idx in allBidDetails) { %>
                 <% const singleBid = allBidDetails[idx]%>
-                <div class="col-md-4 col-sm-6">
-                    <div class="card border-primary">
-                        <div class="card-body" style="text-align: center; min-width: 10em;">
-                            <h4 class="card-title" style="font-weight: bolder; color: saddlebrown;">Bid by: <%= singleBid.object.username.toUpperCase() %></h4>
-                            <p class="card-text">
-                                <span style="font-weight: bold;">Bid ID: </span><%= singleBid.id %> <br>
-                                <span style="font-weight: bold;">Bid Price: </span> <%= JSON.parse(singleBid.object.bidDetails).price %> <br>
-                                <span style="font-weight: bold;">Estimated Days for Completion: </span> <%= JSON.parse(singleBid.object.bidDetails).time_period %> days <br>
-                                <span style="font-weight: bold;">Standard Certifications: </span> <%= JSON.parse(singleBid.object.bidDetails).standards %>
-                                <form action="/bidreview" method="get">
-                        				   <input type="hidden" name="bid_id" value="<%= singleBid.id %>" />
-                        					 <input class="btn btn-primary" type="submit" value="Review the Bid" />
-                        				</form>
-                            </p>
-                        </div>
-                    </div>
-                    <br>
-                </div>
+                <% if(!JSON.parse(singleBid.object.bidDetails).hasOwnProperty("gailfield")) {%>
+                    <% allReviewed = false; %>
                 <% } %>
-            </div>
+                <% if((designation != "evaluation-agency" && JSON.parse(singleBid.object.bidDetails).hasOwnProperty("gailfield")) || designation == "evaluation-agency"){%>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="card border-primary">
+                            <div class="card-body" style="text-align: center; min-width: 10em;">
+                                <h4 class="card-title" style="font-weight: bolder; color: saddlebrown;">Bid by:
+                                    <%= singleBid.object.username.toUpperCase() %></h4>
+                                <p class="card-text">
+                                    <span style="font-weight: bold;">Bid ID: </span><%= singleBid.id %> <br>
+                                    <span style="font-weight: bold;">Bid Price: </span>
+                                    <%= JSON.parse(singleBid.object.bidDetails).price %> <br>
+                                    <span style="font-weight: bold;">Estimated Days for Completion: </span>
+                                    <%= JSON.parse(singleBid.object.bidDetails).time_period %> days <br>
+                                    <span style="font-weight: bold;">Standard Certifications: </span>
+                                    <%= JSON.parse(singleBid.object.bidDetails).standards %>
+
+                                    <% if(JSON.parse(singleBid.object.bidDetails).hasOwnProperty("gailfield")) {%>
+                                        <span style="font-weight: bold;">Bid Evaluation Rating: </span>
+                                        <%= JSON.parse(JSON.parse(singleBid.object.bidDetails).gailfield) %> <br>
+                                    <% }%>
+                                
+                                <% if(designation == "evaluation-agency" && !JSON.parse(singleBid.object.bidDetails).hasOwnProperty("gailfield")){ %>
+                                    <form action="/bidreview" method="get">
+                                        <input type="hidden" name="bid_id" value="<%= singleBid.id %>" />
+                                        <input class="btn btn-primary" type="submit" value="Review the Bid" />
+                                    </form>
+                                <% } %>
+                                </p>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                <% } %>
+            <% } %>
         </div>
+
+        <% if(designation != "evaluation-agency"){ %>
+            <% if(allReviewed == true){ %>
+                <div class="text-center">
+                    <a href="/submitAllBids/<%= data.id%>" class="btn btn-lg btn-outline-success">Submit All Bids</a>
+                </div>
+            <% } else {%>
+                <div class="text-center">
+                    <a href="#" class="btn btn-lg btn-outline-danger">Evaluation Pending by Agency</a>
+                </div>
+            <% } %>
+        <% } %>
+    </div>
     <% }%>
 
-    <a href= "/submitAllBids/<%= data.id%>" style="color: blue;">Submit Bid</a>
+    
+
 </body>
+
 </html>

@@ -49,7 +49,6 @@ router.post('/updateBid', async function (req, res, next) {
         res.json({
             success: true
         });
-        
     }
 });
 
@@ -131,17 +130,9 @@ router.post('/', async function (req, res, next) {
                 const allAppliedBidsJson = JSON.parse(allAppliedBids.toString());
                 if ("message" in allAppliedBidsJson || allAppliedBidsJson.bids.length === 0) {
 
-                    // const gateway = new Gateway();
-                    // await gateway.connect(ccp, {
-                    //     wallet, identity: 'admin',
-                    //     discovery: { enabled: true, asLocalhost: true }
-                    // });
 
                     const network = await gateway.getNetwork('channelgg');
                     const contract = network.getContract('gail', 'Project');
-                    // console.log(req.body.bid_id.toString());
-                    // const getBid = await contract.evaluateTransaction('getBid', req.body.bid_id.toString());
-                    // const getBidJson = JSON.parse(getBid.toString());
                     await contract.submitTransaction('updateProjectStatus', req.body.id.toString(), 'discarded');
 
                     res.statusCode = 400;
