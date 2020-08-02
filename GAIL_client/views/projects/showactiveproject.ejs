@@ -42,6 +42,7 @@
 
         .card {
             z-index: 0;
+            background-color: #ECEFF1;
             border-radius: 10px
         }
 
@@ -60,7 +61,7 @@
         #progressbar li {
             list-style-type: none;
             font-size: 13px;
-            width: 25%;
+            width: 16%;
             float: left;
             position: relative;
             font-weight: 400
@@ -103,7 +104,9 @@
         }
 
         #progressbar li:nth-child(2):after,
-        #progressbar li:nth-child(3):after {
+        #progressbar li:nth-child(3):after,
+        #progressbar li:nth-child(4):after,
+        #progressbar li:nth-child(5):after {
             left: -50%
         }
 
@@ -135,9 +138,9 @@
         }
 
         .icon {
-            width: 60px;
-            height: 60px;
-            margin-right: 15px
+            width: 50px;
+            height: 50px;
+            margin-right: 5px
         }
 
         @media screen and (max-width: 992px) {
