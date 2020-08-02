@@ -11,7 +11,6 @@ volumes:
     peer0.contractors.example.com:
     peer1.gail.example.com:
     peer1.contractors.example.com:
-    peer2.contractors.example.com:
 
 networks:
     test:
@@ -208,45 +207,5 @@ services:
         command: peer node start
         ports:
             - 9055:9055
-        networks:
-            - test
-
-    peer2.contractors.example.com:
-        container_name: peer2.contractors.example.com
-        image: hyperledger/fabric-peer:$IMAGE_TAG
-        environment:
-            #Generic peer variables
-            - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-            # the following setting starts chaincode containers on the same
-            # bridge network as the peers
-            # https://docs.docker.com/compose/networking/
-            - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=${COMPOSE_PROJECT_NAME}_test
-            - FABRIC_LOGGING_SPEC=INFO
-            #- FABRIC_LOGGING_SPEC=DEBUG
-            - CORE_PEER_TLS_ENABLED=true
-            - CORE_PEER_GOSSIP_USELEADERELECTION=true
-            - CORE_PEER_GOSSIP_ORGLEADER=false
-            - CORE_PEER_PROFILE_ENABLED=true
-            - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
-            - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
-            - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
-            # Peer specific variabes
-            - CORE_PEER_ID=peer2.contractors.example.com
-            - CORE_PEER_ADDRESS=peer2.contractors.example.com:9057
-            - CORE_PEER_LISTENADDRESS=0.0.0.0:9057
-            - CORE_PEER_CHAINCODEADDRESS=peer2.contractors.example.com:9058
-            - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:9058
-            - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer2.contractors.example.com:9057
-            - CORE_PEER_GOSSIP_BOOTSTRAP=peer2.contractors.example.com:9057
-            - CORE_PEER_LOCALMSPID=ContractorsMSP
-        volumes:
-            - /var/run/:/host/var/run/
-            - ../organizations/peerOrganizations/contractors.example.com/peers/peer2.contractors.example.com/msp:/etc/hyperledger/fabric/msp
-            - ../organizations/peerOrganizations/contractors.example.com/peers/peer2.contractors.example.com/tls:/etc/hyperledger/fabric/tls
-            - peer2.contractors.example.com:/var/hyperledger/production
-        working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
-        command: peer node start
-        ports:
-            - 9057:9057
         networks:
             - test

@@ -105,13 +105,32 @@ router.post('/apply', function (req, res) {
     var password = req.cookies.password.toString();
 
     var id = req.body.id.toString();
-    var price = req.body.price.toString();
     var time_period = req.body.time_period.toString();
 
     var isoArr = [];
     for (var i = 1; ; i++) {
         if (req.body['iso' + i.toString()] != null) {
             isoArr.push(req.body['iso' + i.toString()]);
+        }
+        else {
+            break;
+        }
+    }
+
+    var itemArr = [];
+    var totalPrice = 0;
+    for (var i = 1; ; i++) {
+        if (req.body['price' + i.toString()] != null) {
+            var price = req.body['price'+i.toString()];
+            var tax = req.body['tax'+i.toString()];
+            var quantity = req.body['quantity'+i.toString()];
+            itemArr.push({
+                'item': req.body['item'+i.toString()].toString(),
+                'quantity': quantity.toString(),
+                'price': price.toString(),
+                'tax': tax.toString()
+            });
+            totalPrice += quantity*(price*1+tax*1);
         }
         else {
             break;
@@ -146,10 +165,11 @@ router.post('/apply', function (req, res) {
         "password": password,
         "projectID": id,
         "bidDetails": {
-            "price": price,
+            "price": totalPrice,
             "time_period": time_period,
             "standards": isoArr,
-            "brochurePath": getTimeStampString
+            "brochurePath": getTimeStampString,
+            "itemArr": itemArr
         }
     });
 

@@ -515,7 +515,7 @@ DATABASE="leveldb"
 # number of GAIL peer nodes
 GAIL_NODES=2
 # number of Contractor peer nodes
-CONTRACTOR_NODES=3
+CONTRACTOR_NODES=2
 
 ORG1="gail"
 ORG2="contractors"
