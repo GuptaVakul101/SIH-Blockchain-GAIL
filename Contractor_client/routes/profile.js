@@ -13,6 +13,8 @@ router.get("/", function(req,res){
 
     var username = req.cookies.username.toString();
     var password = req.cookies.password.toString();
+    var designation = req.cookies.designation.toString();
+
     const requestData = JSON.stringify({
         "username": username,
         "password": password,
@@ -40,7 +42,8 @@ router.get("/", function(req,res){
         response.on('end', function () {
             const jsonObject = JSON.parse(str);
             if (jsonObject.success == true) {
-                res.render("profile", { contractor: jsonObject.object, currentUser: req.cookies.username });
+                res.render("profile", { contractor: jsonObject.object, currentUser: req.cookies.username,
+                    designation: designation });
             }
         });
     }
@@ -57,6 +60,7 @@ router.get("/edit", function(req,res){
 
     var username = req.cookies.username.toString();
     var password = req.cookies.password.toString();
+    var designation = req.cookies.designation.toString();
     const requestData = JSON.stringify({
         "username": username,
         "password": password,
@@ -84,7 +88,7 @@ router.get("/edit", function(req,res){
         response.on('end', function () {
             const jsonObject = JSON.parse(str);
             if (jsonObject.success == true) {
-                res.render("edit_profile", { contractor: jsonObject.object, currentUser: req.cookies.username });
+                res.render("edit_profile", { contractor: jsonObject.object, currentUser: req.cookies.username, designation: designation });
             }
         });
     }
