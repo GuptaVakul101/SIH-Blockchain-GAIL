@@ -170,7 +170,8 @@ router.post('/signup', async function (req, res, next) {
                 const contract = network.getContract('gail', 'User');
                 const numContractorsAsBytes = await contract.evaluateTransaction('getNumContractors');
                 var numContractors = JSON.parse(numContractorsAsBytes.toString());
-                var curChannelNum = numContractors.numContractors + 1;
+                // var curChannelNum = numContractors.numContractors + 1;
+                var curChannelNum = 1;
 
                 console.log(curChannelNum);
                 console.log(numGailNodes);

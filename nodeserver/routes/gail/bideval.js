@@ -45,7 +45,7 @@ router.post('/updateBid', async function (req, res, next) {
         const network = await gateway.getNetwork('channelgg');
         const contract = network.getContract('gail', 'Bid');
         console.log(req.body.bid_id.toString());
-        await contract.submitTransaction('updateBid', req.body.bid_id.toString(),JSON.stringify(req.body.gailfield));
+        await contract.submitTransaction('updateBid', req.body.bid_id.toString(), req.body.gailfield);
         res.json({
             success: true
         });

@@ -66,6 +66,7 @@
 
 
     <% var allReviewed = true; %>
+    <% var atleastOneTrue = false; %>
     <% if(allBidDetails.length === 0) {%>
     <h1 style="text-align: center; color: cornflowerblue; margin-top: 50px;">No Bids Applied Yet</h1>
     <% } else { %>
@@ -73,9 +74,13 @@
         <div class="row card-deck" style="display:flex; flex-wrap: wrap;">
             <% for(var idx in allBidDetails) { %>
                 <% const singleBid = allBidDetails[idx]%>
+
                 <% if(!JSON.parse(singleBid.object.bidDetails).hasOwnProperty("gailfield")) {%>
                     <% allReviewed = false; %>
+                <% } else {%>
+                    <% atleastOneTrue = true; %>
                 <% } %>
+
                 <% if((designation != "evaluation-agency" && JSON.parse(singleBid.object.bidDetails).hasOwnProperty("gailfield")) || designation == "evaluation-agency"){%>
                     <div class="col-md-4 col-sm-6">
                         <div class="card border-primary">
@@ -92,7 +97,8 @@
                                     <%= JSON.parse(singleBid.object.bidDetails).standards %>
 
                                     <% if(JSON.parse(singleBid.object.bidDetails).hasOwnProperty("gailfield")) {%>
-                                        <span style="font-weight: bold;">Bid Evaluation Rating: </span>
+                                        <span style="font-weight: bold;">Bid Evaluation Comments: </span>
+                                        <% var strGail = JSON.stringify( (JSON.parse(singleBid.object.bidDetails).gailfield) ) %> <br>
                                         <%= JSON.parse(JSON.parse(singleBid.object.bidDetails).gailfield) %> <br>
                                     <% }%>
                                 
