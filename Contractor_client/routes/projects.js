@@ -29,6 +29,22 @@ router.get('/floated', function (req, res) {
         }
     }
 
+    const requestData2 = JSON.stringify({
+        "username": username,
+        "password": password
+    });
+
+    var options2 = {
+        host: 'localhost',
+        port: '3000',
+        path: '/contractors/users/login',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': requestData2.length
+        }
+    }
+
     callback = function (response) {
         var str = '';
         //another chunk of data has been received, so append it to `str`
@@ -40,8 +56,29 @@ router.get('/floated', function (req, res) {
         response.on('end', function () {
             const jsonObject = JSON.parse(str);
             if (jsonObject.success == true) {
-                res.render("projects/floatedprojects", { projects: jsonObject.allProjects, currentUser: req.cookies.username,
-                designation: designation });
+                callback2 = function(response){
+
+                    var str = '';
+                    //another chunk of data has been received, so append it to `str`
+                    response.on('data', function (chunk) {
+                        str += chunk;
+                    });
+
+                    response.on('end', function () {
+                        const jsonObject2 = JSON.parse(str);
+                        if(jsonObject2.activeProjectID != null){
+                            res.render("projects/floatedprojects", { projects: {}, currentUser: req.cookies.username,
+                            designation: designation });
+                        }
+                        else{
+                            res.render("projects/floatedprojects", { projects: jsonObject.allProjects, currentUser: req.cookies.username,
+                            designation: designation });
+                        }
+                    });
+                }
+                var request = http.request(options2, callback2);
+                request.write(requestData2);
+                request.end();
             }
         });
     }
