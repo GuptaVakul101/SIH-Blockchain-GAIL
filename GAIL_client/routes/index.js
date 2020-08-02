@@ -176,7 +176,7 @@ router.get("/editprofile", function(req,res){
             if (jsonObject.success == false) {
                 res.redirect('/');
             } else {
-				res.render("editProfile", { currentUser: req.cookies.username, user: jsonObject.object });
+				res.render("editProfile", { currentUser: req.cookies.username, user: jsonObject.object, designation: req.cookies.designation });
             }
         });
     }

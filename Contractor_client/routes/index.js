@@ -37,8 +37,8 @@ router.post("/register",function(req,res){
 	var contact = req.body.contact;
 	var address = req.body.address;
 	var aboutus = req.body.aboutus;
-	var mid = req.body.mid;
-	var mkey = req.body.mkey;
+	var mid = "";
+	var mkey = "";
 	var designation = req.body.designation;
 	var file = null;
     if (req.files) {

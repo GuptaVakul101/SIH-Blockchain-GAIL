@@ -222,6 +222,9 @@ router.post('/', async function (req, res, next) {
                             const gailReview=getBidDetailsJson.gailfield;
                             const gailReviewJson=JSON.parse(gailReview.toString());
                             const gailReviewRating=parseFloat(gailReviewJson.rating);
+                            if(gailReviewJson.accept == "false") {
+                                continue;
+                            }
                             /*Extra fields added end  */
 
                             const price = parseFloat(getBidDetailsJson.price);
@@ -231,6 +234,7 @@ router.post('/', async function (req, res, next) {
                             const numStandards = getBidDetailsJson.standards.length;
                             //const quality = 1.3;
                             //const rating = 2.4;
+                            console.log("BIDID: " + bidID.toString());
                             console.log(ratingString.toString());
                             var bidVal = (maxPrice/price) * 300 + (maxTime/time) * 300 + (numStandards/maxNumStandards) * 100
                                         + (quality/100) * 100 + (rating/10) * 100 +

@@ -125,15 +125,7 @@
 	<nav class="nav navbar-inverse">
 		<div class="container-fluid">
 			<div class="navbar-header">
-				<% if(designation == "contractor"){ %>
-					<a class="navbar-brand" href="/" class="btn btn-lg">Contractors</a>
-					<a class="navbar-brand" href="/projects/floated" class="btn btn-lg">Floated Projects</a>
-					<a class="navbar-brand" href="/projects/allocated" class="btn btn-lg">Allocated Projects</a>
-					<a class="navbar-brand" href="/projects/completed" class="btn btn-lg">Completed Projects</a>
-					<% } else if (designation == "shipping-agency"){ %>
-					<a class="navbar-brand" href="/" class="btn btn-lg">Shipment</a>
-					<a class="navbar-brand" href="/projects/allocated" class="btn btn-lg">Allocated Projects</a>
-					<% }%>
+					<a class="navbar-brand" href="/" class="btn btn-lg">Guest</a>
 			</div>
 
 			<div class="collapse navbar-collapse">
@@ -171,25 +163,18 @@
 				<input type="text" class="form-control" name="address" placeholder="Address" required="required">
 			</div>
 			<div class="form-group">
-				<textarea class="form-control" rows="3" name="aboutus" placeholder="About Us"></textarea>
+				<textarea class="form-control" rows="3" name="aboutus" placeholder="About Us" required="true"></textarea>
 			</div>
 
 			<div class="form-group">
-                <select class="form-control" name="designation">
+                <select class="form-control" name="designation" required="true">
                     <option value="contractor">Contractor</option>
                     <option value="shipping-agency">Shipping Agency</option>
                 </select>
             </div>
-
-			<div class="form-group">
-				<input class="form-control" type="text" name="mid" placeholder="Merchant ID"></textarea>
-			</div>
-			<div class="form-group">
-				<input class="form-control" type="text" name="mkey" placeholder="Merchant Key"></textarea>
-			</div>
 			<div class="form-group">
 				<label>Upload company profile picture:</label>
-				<input type="file" class="form-control" name="profilepic">
+				<input type="file" class="form-control" name="profilepic" required="true" accept="image/*">
 			</div>
 			<div class="form-group">
 				<button type="submit" class="btn btn-primary btn-lg">Sign Up</button>

@@ -102,7 +102,7 @@ router.get("/floatedprojects", function (req, res) {
             const jsonObject = JSON.parse(str);
             if (jsonObject.success == true) {
                 // res.render("projects/finishedprojects", { currentUser: req.cookies.username });
-                res.render("projects/floatedprojects", { projects: jsonObject.allProjects, currentUser: req.cookies.username });
+                res.render("projects/floatedprojects", { projects: jsonObject.allProjects, currentUser: req.cookies.username, designation: req.cookies.designation });
             }
         });
     }
@@ -135,7 +135,7 @@ router.get("/finishedprojects", function (req, res) {
             const jsonObject = JSON.parse(str);
             if (jsonObject.success == true) {
                 // res.render("projects/finishedprojects", { currentUser: req.cookies.username });
-                res.render("projects/finishedprojects", { projects: jsonObject.allProjects, currentUser: req.cookies.username });
+                res.render("projects/finishedprojects", { projects: jsonObject.allProjects, currentUser: req.cookies.username, designation: req.cookies.designation });
             }
         });
     }
@@ -147,7 +147,7 @@ router.get("/newproject", function (req, res) {
         res.redirect("/login");
         return;
     }
-    res.render("projects/newproject", { currentUser: req.cookies.username });
+    res.render("projects/newproject", { currentUser: req.cookies.username, designation: req.cookies.designation });
 })
 
 router.get("/floatedprojects/:id", function (req, res) {
@@ -358,7 +358,7 @@ router.get("/finishedprojects/:id", function (req, res) {
                                 const jsonObject3 = JSON.parse(str3); //coressponding to the bid details
                                 console.log("Contractor Details: " + str3);
                                 // res.send(jsonObject);
-                                res.render("projects/showfinishedproject", { project: jsonObject.object, bid: jsonObject2.object, contractor: jsonObject3.object, currentUser: req.cookies.username });
+                                res.render("projects/showfinishedproject", { project: jsonObject.object, bid: jsonObject2.object, contractor: jsonObject3.object, currentUser: req.cookies.username, designation: req.cookies.designation });
                             });
                         }
 
@@ -737,7 +737,8 @@ router.get("/bidreview", function (req, res) {
             res.render("projects/bidreview", {
                 currentUser: req.cookies.username,
                 bid_id: bidID,
-                bidDetails: jsonObject2.object
+                bidDetails: jsonObject2.object,
+                designation: req.cookies.designation
             });
         });
 
