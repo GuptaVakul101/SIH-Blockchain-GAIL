@@ -4,8 +4,10 @@ var http = require("http");
 var cookieParser = require("cookie-parser");
 var download = require('download');
 
+
 router.get("/", function (req, res) {
-	res.render("landing", { currentUser: req.cookies.username });
+	var designation = req.cookies.designation;
+	res.render("landing", { currentUser: req.cookies.username, designation: designation });
 });
 
 //SHOW REGISTER FORM
@@ -161,7 +163,7 @@ router.get("/editprofile", function(req,res){
         "username": username,
         "password": password,
 	});
-	
+
 	var options = getOptions('/gail/users/getUserDetails', requestData);
 
 	callback = function (response) {
@@ -178,7 +180,7 @@ router.get("/editprofile", function(req,res){
             }
         });
     }
-	
+
     runHttpRequest(options, callback, requestData);
 });
 
