@@ -237,8 +237,8 @@
           <h6><%= project.description.substring(0,len) + " ...."%></h6>
           <span class="toolTiptext"><%= project.description %></span>
       </div>
-      <h6>Rating: <%= project.rating %></h6>
-      <h6>Quality: <%= project.quality %></h6>
+      <h6>Rating: <%= evaluation_review.rating %></h6>
+      <h6>Quality: <%= evaluation_review.quality %></h6>
       <p>
           Order Type: <%= project.type %> <br>
           <% if(project.brochurePath != "null") { %>

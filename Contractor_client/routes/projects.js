@@ -535,9 +535,13 @@ router.get('/completed/details', function (req, res) {
         res.redirect("/");
     }
 
+    var username = req.cookies.username;
+    var password = req.cookies.password;
     var id = req.query.id.toString();
+
     const requestData = JSON.stringify({
-        id: id
+        username: username,
+        password: password
     });
 
     var options = {
@@ -561,12 +565,13 @@ router.get('/completed/details', function (req, res) {
         //the whole response has been received, so we just print it out here
         response.on('end', function () {
             const jsonObject = JSON.parse(str);
-            console.log(jsonObject);
+            var projectDetails = JSON.parse(jsonObject.allProjects[id]);
             res.render("projects/completedetails", {
                 currentUser: req.cookies.username,
-                project: jsonObject.object,
+                project: projectDetails,
                 projectID: id,
-                progress: jsonObject.object.progress
+                progress: projectDetails.progress,
+                evaluation_review: JSON.parse(projectDetails.evaluation_review)
             });
         });
     }
