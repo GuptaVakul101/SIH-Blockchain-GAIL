@@ -160,7 +160,7 @@ router.post("/login", function(req,res){
 	  	response.on('end', function () {
 	    	console.log(str);
 			const jsonObject = JSON.parse(str);
-	    	if(jsonObject.success == false) {
+	    	if(jsonObject.success == "false" || jsonObject.success == false) {
 	    		res.redirect('/login');
 	    	} else {
 	    		res.cookie("username", username.toString());

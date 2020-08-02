@@ -29,6 +29,22 @@ router.get('/floated', function (req, res) {
         }
     }
 
+    const requestData2 = JSON.stringify({
+        "username": username,
+        "password": password
+    });
+
+    var options2 = {
+        host: 'localhost',
+        port: '3000',
+        path: '/contractors/users/login',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': requestData2.length
+        }
+    }
+
     callback = function (response) {
         var str = '';
         //another chunk of data has been received, so append it to `str`
@@ -39,9 +55,48 @@ router.get('/floated', function (req, res) {
         //the whole response has been received, so we just print it out here
         response.on('end', function () {
             const jsonObject = JSON.parse(str);
+            console.log("All Projects");
             if (jsonObject.success == true) {
-                res.render("projects/floatedprojects", { projects: jsonObject.allProjects, currentUser: req.cookies.username,
-                designation: designation });
+                callback2 = function(response){
+
+                    var str = '';
+                    //another chunk of data has been received, so append it to `str`
+                    response.on('data', function (chunk) {
+                        str += chunk;
+                    });
+
+                    response.on('end', function () {
+                        const jsonObject2 = JSON.parse(str);
+                        if(jsonObject2.activeProjectID != null){
+                            res.redirect("/");
+                        }
+                        else{
+                            const requestData3 = JSON.stringify({
+                                "id": username,
+                            });
+                            var options3 = getOptions('/gail/project/getAllContractorsForProjects', requestData3);
+                            callback3 = function (response3) {
+                                var str3 = '';
+                                //another chunk of data has been received, so append it to `str`
+                                response3.on('data', function (chunk) {
+                                    str3 += chunk;
+                                });
+                        
+                                //the whole response has been received, so we just print it out here
+                                response3.on('end', function () {
+                                    const jsonObject3 = JSON.parse(str3);
+                                    console.log(jsonObject3.relation);
+                                    res.render("projects/floatedprojects", { projects: jsonObject.allProjects, currentUser: req.cookies.username, designation: designation, relation: jsonObject3.relation });
+                                });
+                            }            
+            
+                            runHttpRequest(options3, callback3, requestData3);
+                        }
+                    });
+                }
+                var request = http.request(options2, callback2);
+                request.write(requestData2);
+                request.end();
             }
         });
     }
@@ -141,7 +196,7 @@ router.post('/apply', function (req, res) {
     if (req.files) {
         file = req.files.brochure;
     }
-    else{
+    else {
         redirect('/projects/floated');
         return;
     }
@@ -520,8 +575,10 @@ router.get('/completed', function (req, res) {
             const jsonObject = JSON.parse(str);
             console.log(jsonObject);
             if (jsonObject.success == true) {
-                res.render("projects/completed", { projects: jsonObject.allProjects, currentUser: req.cookies.username,
-                designation: designation });
+                res.render("projects/completed", {
+                    projects: jsonObject.allProjects, currentUser: req.cookies.username,
+                    designation: designation
+                });
             }
         });
     }
@@ -535,9 +592,13 @@ router.get('/completed/details', function (req, res) {
         res.redirect("/");
     }
 
+    var username = req.cookies.username;
+    var password = req.cookies.password;
     var id = req.query.id.toString();
+
     const requestData = JSON.stringify({
-        id: id
+        username: username,
+        password: password
     });
 
     var options = {
@@ -561,12 +622,13 @@ router.get('/completed/details', function (req, res) {
         //the whole response has been received, so we just print it out here
         response.on('end', function () {
             const jsonObject = JSON.parse(str);
-            console.log(jsonObject);
+            var projectDetails = JSON.parse(jsonObject.allProjects[id]);
             res.render("projects/completedetails", {
                 currentUser: req.cookies.username,
-                project: jsonObject.object,
+                project: projectDetails,
                 projectID: id,
-                progress: jsonObject.object.progress
+                progress: projectDetails.progress,
+                evaluation_review: JSON.parse(projectDetails.evaluation_review)
             });
         });
     }

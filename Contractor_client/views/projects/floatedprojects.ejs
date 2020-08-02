@@ -12,9 +12,10 @@
 		<% const temp = JSON.parse(projects[idx]); %>
 		<% if(temp.status == "floated") { %>
 		<div class="col-md-4 col-sm-6">
-			<div class="thumbnail">
+			<div class="thumbnail" style="height:230px">
 				<div class="caption">
-					<h3 style="font-weight: bolder;"><%= temp.title %></h3>
+					<% var len1 = Math.min(30,temp.title.length) %>
+					<h3 style="font-weight: bolder;"><%= temp.title.substring(0,len1) + "....." %></h3>
 					<% var len = Math.min(30,temp.description.length) %>
 					<h6><%= temp.description.substring(0,len) + " ...."%></h6>
 				</div>
@@ -27,10 +28,16 @@
 					<% } %>
 				</p>
 				<p>
-				<form action="/projects/apply" method="get">
-					<input type="hidden" name="id" value="<%= temp.id %>" />
-					<input class="btn btn-primary" type="submit" value="More info" />
-				</form>
+				<% if(!relation[temp.id.toString()]) { %>
+					<form action="/projects/apply" method="get">
+						<input type="hidden" name="id" value="<%= temp.id %>" />
+						<input class="btn btn-primary" style="font-weight: bold;" type="submit" value="Apply Bid" />
+					</form>
+				<% } else { %>
+					<div class="text-center">
+						<button id="toggleDetails" class="btn btn-success" style="font-weight: bold;">Bid Already Applied</button>
+					</div>
+				<% } %>
 				</p>
 			</div>
 		</div>
