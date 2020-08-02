@@ -12,6 +12,7 @@ router.get('/floated', function (req, res) {
 
     var username = req.cookies.username.toString();
     var password = req.cookies.password.toString();
+    var designation = req.cookies.designation.toString();
     const requestData = JSON.stringify({
         "username": username,
         "password": password,
@@ -39,7 +40,8 @@ router.get('/floated', function (req, res) {
         response.on('end', function () {
             const jsonObject = JSON.parse(str);
             if (jsonObject.success == true) {
-                res.render("projects/floatedprojects", { projects: jsonObject.allProjects, currentUser: req.cookies.username });
+                res.render("projects/floatedprojects", { projects: jsonObject.allProjects, currentUser: req.cookies.username,
+                designation: designation });
             }
         });
     }
@@ -190,6 +192,7 @@ router.get('/allocated', function (req, res) {
 
     var username = req.cookies.username.toString();
     var password = req.cookies.password.toString();
+    var designation = req.cookies.designation.toString();
 
     const requestData = JSON.stringify({
         username: username,
@@ -241,13 +244,15 @@ router.get('/allocated', function (req, res) {
                                 console.log("HSJV");
                                 res.render("projects/allocated", {
                                     project: null,
-                                    currentUser: req.cookies.username
+                                    currentUser: req.cookies.username,
+                                    designation: designation
                                 });
                             } else {
                                 res.render("projects/allocated", {
                                     project: jsonObject,
                                     currentUser: req.cookies.username,
-                                    contractor_details: jsonObject2.object
+                                    contractor_details: jsonObject2.object,
+                                    designation: designation
                                 });
                             }
 
@@ -272,7 +277,8 @@ router.get('/allocated', function (req, res) {
                                             project: jsonObject,
                                             currentUser: req.cookies.username,
                                             contractor_details: jsonObject2.object,
-                                            allProjects: jsonObject3.allProjects
+                                            allProjects: jsonObject3.allProjects,
+                                            designation: designation
                                         });
                                     }
                                 });
@@ -464,6 +470,7 @@ router.get('/completed', function (req, res) {
 
     var username = req.cookies.username.toString();
     var password = req.cookies.password.toString();
+    var designation = req.cookies.designation.toString();
 
     const requestData = JSON.stringify({
         "username": username,
@@ -493,7 +500,8 @@ router.get('/completed', function (req, res) {
             const jsonObject = JSON.parse(str);
             console.log(jsonObject);
             if (jsonObject.success == true) {
-                res.render("projects/completed", { projects: jsonObject.allProjects, currentUser: req.cookies.username });
+                res.render("projects/completed", { projects: jsonObject.allProjects, currentUser: req.cookies.username,
+                designation: designation });
             }
         });
     }

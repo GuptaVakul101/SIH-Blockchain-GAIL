@@ -6,7 +6,13 @@ var cookieParser = require('cookie-parser');
 
 
 router.get("/", function(req,res){
-	res.render("landing", { currentUser: req.cookies.username} );
+	if(req.cookies.username == null || req.cookies.username.toString() != "")  {
+		res.render("landing", { currentUser: req.cookies.username, designation: ""} );
+	}
+	else{
+		var designtion = req.cookies.designation;
+		res.render("landing", { currentUser: req.cookies.username, designation: designation} );
+	}
 });
 
 //SHOW REGISTER FORM
@@ -96,7 +102,8 @@ router.post("/register",function(req,res){
 	    		res.redirect('/register');
 	    	} else {
 	    		res.cookie("username", username.toString());
-	    		res.cookie("password", password.toString());
+				res.cookie("password", password.toString());
+				res.cookie("designation", designation.toString());
 	    		res.redirect('/');
 	    	}
 	  	});
@@ -156,7 +163,8 @@ router.post("/login", function(req,res){
 	    		res.redirect('/login');
 	    	} else {
 	    		res.cookie("username", username.toString());
-	    		res.cookie("password", password.toString());
+				res.cookie("password", password.toString());
+				res.cookie("designation", jsonObject.designation.toString());
 	    		res.redirect('/');
 	    	}
 	  	});
