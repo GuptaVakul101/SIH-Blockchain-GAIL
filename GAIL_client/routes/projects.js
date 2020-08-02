@@ -197,9 +197,19 @@ router.get("/floatedprojects/:id", function (req, res) {
                     response2.on('end', function () {
                         const jsonObject2 = JSON.parse(str2);
                         if (jsonObject2.success == true) {
-                            res.render("projects/showfloatedproject", { data: jsonObject.object, currentUser: req.cookies.username, allBidDetails: jsonObject2.allBids, designation: req.cookies.designation });
+                            var currentTime = getTodayDate().toString();
+                            var deadlineTime = jsonObject.object.deadline.toString();
+                            console.log("Deadline");
+                            console.log(deadlineTime);
+                            var ans = currentTime.localeCompare(deadlineTime);
+                            var showAll = false;
+                            if(ans >= 1) {
+                                showAll = true;
+                            }
+                            console.log(showAll);
+                            res.render("projects/showfloatedproject", { data: jsonObject.object, currentUser: req.cookies.username, allBidDetails: jsonObject2.allBids, designation: req.cookies.designation, showAll: showAll });
                         } else {
-                            res.render("projects/showfloatedproject", { data: jsonObject.object, currentUser: req.cookies.username, allBidDetails: [], designation: req.cookies.designation });
+                            res.render("projects/showfloatedproject", { data: jsonObject.object, currentUser: req.cookies.username, allBidDetails: [], designation: req.cookies.designation, showAll: showAll });
                         }
 
                         // res.send(jsonObject2.allBids);
@@ -419,6 +429,7 @@ router.post("/newproject", function (req, res) {
         "type": type
     });
 
+    console.log(requestData);
     var options = getOptions('/gail/project/createProject', requestData);
 
     callback = function (response) {

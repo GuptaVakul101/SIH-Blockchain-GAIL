@@ -151,6 +151,14 @@ router.get("/download/:path", function (req, res) {
 	res.download(filePath, fileName);
 });
 
+router.get("/download2/:path", function (req, res) {
+	var filePath = "../nodeserver/BidBrochure/" + req.params.path.toString();
+    var getTimeStampString = new Date().getTime().toString();
+	var fileName = getTimeStampString + ".pdf"; // The default name the browser will use
+	res.setHeader("Content-Type", "application/pdf");
+	res.download(filePath, fileName);
+});
+
 router.get("/editprofile", function(req,res){
 	if (req.cookies.username == null || req.cookies.username.toString() == "") {
 		res.redirect("/login");

@@ -39,9 +39,28 @@ router.get('/floated', function (req, res) {
         //the whole response has been received, so we just print it out here
         response.on('end', function () {
             const jsonObject = JSON.parse(str);
+            console.log("All Projects");
             if (jsonObject.success == true) {
-                res.render("projects/floatedprojects", { projects: jsonObject.allProjects, currentUser: req.cookies.username,
-                designation: designation });
+                const requestData2 = JSON.stringify({
+                    "id": username,
+                });
+                var options2 = getOptions('/gail/project/getAllContractorsForProjects', requestData2);
+                callback2 = function (response2) {
+                    var str2 = '';
+                    //another chunk of data has been received, so append it to `str`
+                    response2.on('data', function (chunk) {
+                        str2 += chunk;
+                    });
+            
+                    //the whole response has been received, so we just print it out here
+                    response2.on('end', function () {
+                        const jsonObject2 = JSON.parse(str2);
+                        console.log(jsonObject2.relation);
+                        res.render("projects/floatedprojects", { projects: jsonObject.allProjects, currentUser: req.cookies.username, designation: designation, relation: jsonObject2.relation });
+                    });
+                }            
+
+                runHttpRequest(options2, callback2, requestData2);
             }
         });
     }
@@ -122,7 +141,7 @@ router.post('/apply', function (req, res) {
     if (req.files) {
         file = req.files.brochure;
     }
-    else{
+    else {
         redirect('/projects/floated');
         return;
     }
@@ -500,8 +519,10 @@ router.get('/completed', function (req, res) {
             const jsonObject = JSON.parse(str);
             console.log(jsonObject);
             if (jsonObject.success == true) {
-                res.render("projects/completed", { projects: jsonObject.allProjects, currentUser: req.cookies.username,
-                designation: designation });
+                res.render("projects/completed", {
+                    projects: jsonObject.allProjects, currentUser: req.cookies.username,
+                    designation: designation
+                });
             }
         });
     }
