@@ -11,7 +11,7 @@
 		<div class="row text-center" style="display:flex; flex-wrap: wrap;">
 			<% for(var idx in projects) { %>
 				<% const temp = JSON.parse(projects[idx]); %>
-				<% if(temp.status == "in-progress" || temp.status == "in-shipment" || temp.status == "in-review" || temp.status == "in-pre-review") { %>
+				<% if(temp.status == "in-progress" || temp.status == "in-shipment" || temp.status == "in-review" || temp.status == "in-pre-review" || temp.status == "manufactured") { %>
 					<div class="col-md-4 col-sm-6">
 						<div class="thumbnail">
 							<div class="caption">

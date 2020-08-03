@@ -244,18 +244,16 @@
 
     <nav class="navbar navbar-expand-md fixed-top" style="background-color: #222222; color: #9d9d9d;">
         <% if(designation == "evaluation-agency"){ %>
-            <a class="navbar-brand" href="/" class="btn btn-lg">Evaluation Agency</a>
-            <a class="navbar-brand" href="/activeprojects" class="btn btn-lg">Active Projects</a>
-            <a class="navbar-brand" href="/floatedprojects" class="btn btn-lg">Floated Projects</a>
+        <a class="navbar-brand" href="/" class="btn btn-lg">Evaluation Agency</a>
+        <a class="navbar-brand" href="/activeprojects" class="btn btn-lg">Active Projects</a>
+        <a class="navbar-brand" href="/floatedprojects" class="btn btn-lg">Floated Projects</a>
         <% }else{ %>
-            <a class="navbar-brand" href="/" class="btn btn-lg">GAIL</a>
-            <a class="navbar-brand" href="/activeprojects" class="btn btn-lg">Active Projects</a>
-            <a class="navbar-brand" href="/floatedprojects" class="btn btn-lg">Floated Projects</a>
-            <a class="navbar-brand" href="/finishedprojects" class="btn btn-lg">Finished Projects</a>
-            <a class="navbar-brand" href="/newproject" class="btn btn-lg">Float a new Project</a>
+        <a class="navbar-brand" href="/" class="btn btn-lg">GAIL (India) Limited</a>
+        <a class="navbar-brand" href="/activeprojects" class="btn btn-lg">Active Projects</a>
+        <a class="navbar-brand" href="/floatedprojects" class="btn btn-lg">Floated Projects</a>
+        <a class="navbar-brand" href="/finishedprojects" class="btn btn-lg">Finished Projects</a>
+        <a class="navbar-brand" href="/newproject" class="btn btn-lg">Float a new Project</a>
         <% } %>
-        <a class="navbar-brand" href="/newproject" class="btn btn-md">Float a new Project</a>
-
 
         <button class="navbar-toggler" data-toggle="collapse" data-target="#navbarMenu">
             <span class="navbar-toggler-icon"></span>
@@ -317,7 +315,7 @@
                         <li class="active step0"></li>
                         <li class="active step0"></li>
                         <li class="active step0"></li>
-                    <% } %>
+                        <% } %>
                     </ul>
                 </div>
             </div>
@@ -441,16 +439,16 @@
                 <% var temp = JSON.parse(project.evaluation_review); %>
                 <form encType="multipart/form-data">
                     <div class="form-group">
-                        <input class="form-control" type="number" name="rating"
-                            value="<%= temp.rating %>" readonly>
+                        <input class="form-control" type="number" name="rating" value="<%= temp.rating %>" readonly>
                     </div>
                     <div class="form-group">
-                        <input class="form-control" type="number" name="quality"
-                            value="<%= temp.quality %>" readonly>
+                        <input class="form-control" type="number" name="quality" value="<%= temp.quality %>" readonly>
                     </div>
                     <div class="form-group">
-                        <input class="form-control" type="text" name="review"
-                            value="<%= temp.review %>" readonly>
+                        <input class="form-control" type="text" name="review" value="<%= temp.review %>" readonly>
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" type="hidden" name="price" value="<%= bid.price %>" readonly>
                     </div>
                     <div class="form-group text-center">
                         <button type="submit" formmethod="post" formaction="/acceptproject/<%= project.id %>"
@@ -463,7 +461,7 @@
                 </form>
             </div>
             <% } else if(designation == "evaluation-agency" && project.status == "in-pre-review") { %>
-                <h3 style="font-weight: bold;">Send Review to GAIL</h3>
+            <label style="font-weight: bold; font-size: 30px;">Send Review to GAIL</h3>
                 <form encType="multipart/form-data">
                     <div class="form-group">
                         <input class="form-control" type="number" name="rating" placeholder="Rating*" min="1" max="10"
@@ -481,7 +479,7 @@
                             class="btn btn-lg btn-success btn-block" style="width: 50%;">Submit</button>
                     </div>
                 </form>
-            <% } %>
+                <% } %>
         </div>
 
     </div>

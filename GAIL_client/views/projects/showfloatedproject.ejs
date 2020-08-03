@@ -54,7 +54,7 @@
         <a class="navbar-brand" href="/activeprojects" class="btn btn-lg">Active Projects</a>
         <a class="navbar-brand" href="/floatedprojects" class="btn btn-lg">Floated Projects</a>
         <% }else{ %>
-        <a class="navbar-brand" href="/" class="btn btn-lg">GAIL</a>
+        <a class="navbar-brand" href="/" class="btn btn-lg">GAIL (India) Limited</a>
         <a class="navbar-brand" href="/activeprojects" class="btn btn-lg">Active Projects</a>
         <a class="navbar-brand" href="/floatedprojects" class="btn btn-lg">Floated Projects</a>
         <a class="navbar-brand" href="/finishedprojects" class="btn btn-lg">Finished Projects</a>
@@ -133,8 +133,6 @@
                             <%= singleBid.object.username.toUpperCase() %></h4>
                         <p class="card-text">
                             <span style="font-weight: bold;">Bid ID: </span><%= singleBid.id %> <br>
-                            <span style="font-weight: bold;">Bid Price: </span>
-                            <%= JSON.parse(singleBid.object.bidDetails).price %> <br>
                             <span style="font-weight: bold;">Estimated Days for Completion: </span>
                             <%= JSON.parse(singleBid.object.bidDetails).time_period %> days <br>
                             <span style="font-weight: bold;">Standard Certifications: </span>
@@ -152,18 +150,22 @@
                             <%} else {%>
                             <span style="font-weight: bold; color: red;">TECHNICAL BID REJECTED </span>
                             <% }%>
-                            <form action="/bidreview" method="get">
-                                <input type="hidden" name="bid_id" value="<%= singleBid.id %>" />
-                                <input class="btn btn-primary" type="submit" value="Update the Bid Review" />
-                            </form>
+                            
                             <% }%>
+
+                            <% if(designation == "evaluation-agency" && JSON.parse(singleBid.object.bidDetails).hasOwnProperty("gailfield")){ %>
+                                <form action="/bidreview" method="get">
+                                    <input type="hidden" name="bid_id" value="<%= singleBid.id %>" />
+                                    <input class="btn btn-primary" type="submit" value="Update the Bid Review" />
+                                </form>
+                            <% } %>
 
                             <% if(designation == "evaluation-agency" && !JSON.parse(singleBid.object.bidDetails).hasOwnProperty("gailfield")){ %>
                                 <form action="/bidreview" method="get">
                                     <input type="hidden" name="bid_id" value="<%= singleBid.id %>" />
                                     <input class="btn btn-primary" type="submit" value="Review the Bid" />
                                 </form>
-                            <%} else {%>
+                            <%} else if(designation != "evaluation-agency"){%>
                                 <form action="/bidreview" method="get">
                                     <input type="hidden" name="bid_id" value="<%= singleBid.id %>" />
                                     <input class="btn btn-primary" type="submit" value="View Financial Bid" />

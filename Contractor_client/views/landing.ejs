@@ -123,15 +123,15 @@
 
   <nav class="navbar navbar-expand-md fixed-top" style="background-color: #222222; color: #9d9d9d;">
     <% if(!locals.designation){ %>
-      <a class="navbar-brand" href="/" class="btn btn-lg">Guest</a>
+      <a class="navbar-brand" href="/" class="btn btn-lg" style="color: #9d9d9d;">Guest</a>
     <% } else if(designation == "contractor"){ %>
-    <a class="navbar-brand" href="/" class="btn btn-lg">Contractors</a>
-    <a class="navbar-brand" href="/projects/floated" class="btn btn-lg">Floated Projects</a>
-    <a class="navbar-brand" href="/projects/allocated" class="btn btn-lg">Allocated Projects</a>
-    <a class="navbar-brand" href="/projects/completed" class="btn btn-lg">Completed Projects</a>
+    <a class="navbar-brand" href="/" class="btn btn-lg" style="color: #9d9d9d;">Contractors</a>
+    <a class="navbar-brand" href="/projects/floated" class="btn btn-lg" style="color: #9d9d9d;">Floated Projects</a>
+    <a class="navbar-brand" href="/projects/allocated" class="btn btn-lg" style="color: #9d9d9d;">Allocated Projects</a>
+    <a class="navbar-brand" href="/projects/completed" class="btn btn-lg" style="color: #9d9d9d;">Completed Projects</a>
     <% } else if (designation == "shipping-agency"){ %>
-    <a class="navbar-brand" href="/" class="btn btn-lg">Shipment</a>
-    <a class="navbar-brand" href="/projects/allocated" class="btn btn-lg">Allocated Projects</a>
+    <a class="navbar-brand" href="/" class="btn btn-lg" style="color: #9d9d9d;">Shipment</a>
+    <a class="navbar-brand" href="/projects/allocated" class="btn btn-lg" style="color: #9d9d9d;">Allocated Projects</a>
     <% }%>
 
     <button class="navbar-toggler" data-toggle="collapse" data-target="#navbarMenu">

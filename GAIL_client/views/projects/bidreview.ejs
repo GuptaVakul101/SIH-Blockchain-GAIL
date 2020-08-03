@@ -77,6 +77,7 @@
                         <th > Quantity </th>
                         <th > Price per Unit </th>
                         <th > Tax per Unit </th>
+                        <th > Sub Total </th>
                     </tr>
                     <% for ( var itemIdx in bidDetails.itemArr) {%>
                         <% const temp =  bidDetails.itemArr[itemIdx]; %>
@@ -85,6 +86,7 @@
                         <td > <%= temp.quantity %></td>
                         <td > <%= temp.price %></td>
                         <td > <%= temp.tax %></td>
+                        <td > <%= (parseInt(temp.tax) + parseInt(temp.price))*(parseInt(temp.quantity))  %></td>
                       </tr>
                     <% } %>
                 </table> 
