@@ -418,7 +418,8 @@ router.get('/details', function (req, res) {
                             project: jsonObject.object,
                             projectID: id,
                             progress: jsonObject.object.progress,
-                            contractor_details: jsonObject2.object
+                            contractor_details: jsonObject2.object,
+                            designation: req.cookies.designation
                         });
                     }
                 });
@@ -470,7 +471,11 @@ router.post('/details', function (req, res) {
         //the whole response has been received, so we just print it out here
         response.on('end', function () {
             const jsonObject = JSON.parse(str);
-            res.redirect('/projects/details?id=' + id);
+            if(status == "in-pre-review") {
+                res.redirect('/projects/allocated');
+            } else {
+                res.redirect('/projects/details?id=' + id);
+            }
         });
     }
     var request = http.request(options, callback);

@@ -183,7 +183,6 @@ router.get("/floatedprojects/:id", function (req, res) {
                 console.log("Failed");
                 res.redirect('/floatedprojects');
             } else {
-
                 const requestData2 = JSON.stringify({
                     "id": id
                 });
@@ -496,6 +495,7 @@ router.post("/acceptproject/:id", function (req, res) {
     var id = req.params.id.toString();
     var username = req.cookies.username.toString();
     var password = req.cookies.password.toString();
+    var price = req.body.price.toString();
     const requestData = JSON.stringify({
         "username": username,
         "password": password,
@@ -519,83 +519,10 @@ router.post("/acceptproject/:id", function (req, res) {
                 console.log("Failed");
                 res.redirect('/activeprojects');
             } else {
-                const requestData2 = JSON.stringify({
-                    "username": username,
-                    "password": password,
-                    "id": id.toString()
-                });
-                var options2 = getOptions('/gail/project/getProject', requestData2);
-                callback2 = function (response2) {
-                    var str2 = '';
-                    //another chunk of data has been received, so append it to `str`
-                    response2.on('data', function (chunk) {
-                        str2 += chunk;
-                    });
-
-                    //the whole response has been received, so we just print it out here
-                    response2.on('end', function () {
-                        console.log(str2);
-                        const jsonObject2 = JSON.parse(str2);
-                        if (jsonObject2.success == false) {
-                            console.log("Failed");
-                            res.redirect('/activeprojects');
-                        } else {
-                            var contractorID = jsonObject2.object.contractor_id.toString();
-                            console.log(contractorID);
-                            var bidID = jsonObject2.object.bid_id;
-
-                            var requestData3 = JSON.stringify({
-                                "bid_id": bidID.toString()
-                            });
-                            var options3 = getOptions('/gail/bideval/getSingleBid', requestData3);
-                            var callback3 = function (response3) {
-                                var str3 = '';
-                                response3.on('data', function (chunk) {
-                                    str3 += chunk;
-                                });
-
-                                response3.on('end', function () {
-                                    const jsonObject3 = JSON.parse(str3); //coressponding to the bid details
-                                    console.log("Bid Details: " + JSON.stringify(jsonObject3.object));
-                                    if (jsonObject3.success == false) {
-                                        console.log("Failed");
-                                        res.redirect('/activeprojects');
-                                    } else {
-                                        var requestData4 = JSON.stringify({
-                                        });
-                                        var options4 = getOptions('/contractors/users/' + contractorID, requestData4);
-
-                                        var callback4 = function (response4) {
-                                            var str4 = '';
-                                            response4.on('data', function (chunk) {
-                                                str4 += chunk;
-                                            });
-
-                                            response4.on('end', function () {
-                                                const jsonObject4 = JSON.parse(str4); //coressponding to the bid details
-                                                console.log("Contractor Details: " + str4);
-                                                if (jsonObject4.success == false) {
-                                                    console.log("Failed");
-                                                    res.redirect('/activeprojects', { designation: req.cookies.designation });
-                                                } else {
-                                                    var price = jsonObject3.object.price.toString();
-                                                    var mid = jsonObject4.object.merchantID.toString();
-                                                    var mkey = jsonObject4.object.merchantKey.toString();
-                                                    mid = "zaIKaq44908600148140";
-                                                    mkey = "u7uTLYfplLfLriru";
-                                                    res.redirect('/payment?mid=' + mid + '&value=' + price + '&merchantKey=' + mkey);
-                                                }
-                                            });
-                                        }
-                                        runHttpRequest(options4, callback4, requestData4);
-                                    }
-                                });
-                            }
-                            runHttpRequest(options3, callback3, requestData3);
-                        }
-                    });
-                }
-                runHttpRequest(options2, callback2, requestData2);
+                var mid = "zaIKaq44908600148140";
+                var mkey = "u7uTLYfplLfLriru";
+                console.log("Payment Started");
+                res.redirect('/payment?mid=' + mid + '&value=' + price + '&merchantKey=' + mkey);
             }
         });
     }
@@ -612,6 +539,7 @@ router.post("/rejectproject/:id", function (req, res) {
     var id = req.params.id.toString();
     var username = req.cookies.username.toString();
     var password = req.cookies.password.toString();
+    var price = 0.25*parseInt(req.body.price.toString());
     const requestData = JSON.stringify({
         "username": username,
         "password": password,
@@ -633,83 +561,12 @@ router.post("/rejectproject/:id", function (req, res) {
             const jsonObject = JSON.parse(str);
             if (jsonObject.success == false) {
                 console.log("Failed");
-                res.redirect('/activeprojects', { designation: req.cookies.designation });
+                res.redirect('/activeprojects');
             } else {
-                const requestData2 = JSON.stringify({
-                    "username": username,
-                    "password": password,
-                    "id": id.toString()
-                });
-                var options2 = getOptions('/gail/project/getProject', requestData2);
-                callback2 = function (response2) {
-                    var str2 = '';
-                    //another chunk of data has been received, so append it to `str`
-                    response2.on('data', function (chunk) {
-                        str2 += chunk;
-                    });
-
-                    //the whole response has been received, so we just print it out here
-                    response2.on('end', function () {
-                        console.log(str2);
-                        const jsonObject2 = JSON.parse(str2);
-                        if (jsonObject2.success == false) {
-                            console.log("Failed");
-                            res.redirect('/activeprojects', { designation: req.cookies.designation });
-                        } else {
-                            var contractorID = jsonObject2.object.contractor_id.toString();
-                            console.log(contractorID);
-                            var bidID = jsonObject2.object.bid_id;
-
-                            var requestData3 = JSON.stringify({
-                                "bid_id": bidID.toString()
-                            });
-                            var options3 = getOptions('/gail/bideval/getSingleBid', requestData3);
-                            var callback3 = function (response3) {
-                                var str3 = '';
-                                response3.on('data', function (chunk) {
-                                    str3 += chunk;
-                                });
-
-                                response3.on('end', function () {
-                                    const jsonObject3 = JSON.parse(str3); //coressponding to the bid details
-                                    console.log("Bid Details: " + JSON.stringify(jsonObject3.object));
-                                    if (jsonObject3.success == false) {
-                                        console.log("Failed");
-                                        res.redirect('/activeprojects', { designation: req.cookies.designation });
-                                    } else {
-                                        var requestData4 = JSON.stringify({
-                                        });
-                                        var options4 = getOptions('/contractors/users/' + contractorID, requestData4);
-
-                                        var callback4 = function (response4) {
-                                            var str4 = '';
-                                            response4.on('data', function (chunk) {
-                                                str4 += chunk;
-                                            });
-
-                                            response4.on('end', function () {
-                                                const jsonObject4 = JSON.parse(str4); //coressponding to the bid details
-                                                console.log("Contractor Details: " + str4);
-                                                if (jsonObject4.success == false) {
-                                                    console.log("Failed");
-                                                    res.redirect('/activeprojects', { designation: req.cookies.designation });
-                                                } else {
-                                                    var price = jsonObject3.object.price.toString();
-                                                    var mid = jsonObject4.object.merchantID.toString();
-                                                    var mkey = jsonObject4.object.merchantKey.toString();
-                                                    res.redirect('/payment?mid=' + mid + '&value=' + price + '&merchantKey=' + mkey);
-                                                }
-                                            });
-                                        }
-                                        runHttpRequest(options4, callback4, requestData4);
-                                    }
-                                });
-                            }
-                            runHttpRequest(options3, callback3, requestData3);
-                        }
-                    });
-                }
-                runHttpRequest(options2, callback2, requestData2);
+                var mid = "zaIKaq44908600148140";
+                var mkey = "u7uTLYfplLfLriru";
+                console.log("Payment Started");
+                res.redirect('/payment?mid=' + mid + '&value=' + price.toString() + '&merchantKey=' + mkey);
             }
         });
     }

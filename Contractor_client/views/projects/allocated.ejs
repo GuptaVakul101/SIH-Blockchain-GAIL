@@ -46,9 +46,9 @@
 			</div>
 		</div>
 		<% } else { %>
-			<% for(var idx in allProjects) { %>
-				<% const singleProject = JSON.parse(allProjects[idx]); %>
 				<div class="row text-center" style="display:flex; flex-wrap: wrap;">
+					<% for(var idx in allProjects) { %>
+					<% const singleProject = JSON.parse(allProjects[idx]); %>
 					<% if(singleProject.status=="manufactured" || singleProject.status == "in-shipment") { %>
 						<div class="col-md-4 col-sm-6">
 							<div class="thumbnail">
@@ -77,8 +77,8 @@
 							</div>
 						</div>
 					<% } %>
+					<% } %>
 				</div>
-        	<% } %>
 		<% } %>
 	</div>
 

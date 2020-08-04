@@ -275,7 +275,7 @@ router.post('/acceptProject', async function (req, res, next) {
             });
         }
         else {
-            //correct username and password, proceed further to create new project
+            // correct username and password, proceed further to create new project
             const gateway = new Gateway();
             await gateway.connect(ccp, {
                 wallet, identity: req.body.username,
