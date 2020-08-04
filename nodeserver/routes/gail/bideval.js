@@ -14,6 +14,44 @@ router.use(bodyParser.json());
 
 router.options('*', cors.corsWithOptions, (req, res) => { res.sendStatus(200); });
 
+router.post('/updateBid', async function (req, res, next) {
+    const ccpPath = path.resolve(__dirname, '..', '..', '..', 'fabric', 'test-network', 'organizations',
+        'peerOrganizations', 'gail.example.com', 'connection-gail.json');
+    const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
+
+    // Create a new file system based wallet for managing identities.
+    const walletPath = path.join(__dirname, 'wallet');
+    const wallet = await Wallets.newFileSystemWallet(walletPath);
+
+    // Check to see if we've already enrolled the user.
+    const identity = await wallet.get('admin');
+    // const identity = await wallet.get(req.body.username);
+    if (!identity) {
+        res.statusCode = 404;
+        res.setHeader('Content-Type', 'application/json');
+        res.json({
+            success: false,
+            message: 'GAIL Admin should be registered first'
+        });
+    }
+    else {
+        // Create a new gateway for connecting to our peer node.
+        const gateway = new Gateway();
+        await gateway.connect(ccp, {
+            wallet, identity: 'admin',
+            discovery: { enabled: true, asLocalhost: true }
+        });
+
+        const network = await gateway.getNetwork('channelgg');
+        const contract = network.getContract('gail', 'Bid');
+        console.log(req.body.bid_id.toString());
+        await contract.submitTransaction('updateBid', req.body.bid_id.toString(), req.body.gailfield);
+        res.json({
+            success: true
+        });
+    }
+});
+
 router.post('/', async function (req, res, next) {
     const ccpPath = path.resolve(__dirname, '..', '..', '..', 'fabric', 'test-network', 'organizations',
         'peerOrganizations', 'gail.example.com', 'connection-gail.json');
@@ -92,17 +130,9 @@ router.post('/', async function (req, res, next) {
                 const allAppliedBidsJson = JSON.parse(allAppliedBids.toString());
                 if ("message" in allAppliedBidsJson || allAppliedBidsJson.bids.length === 0) {
 
-                    // const gateway = new Gateway();
-                    // await gateway.connect(ccp, {
-                    //     wallet, identity: 'admin',
-                    //     discovery: { enabled: true, asLocalhost: true }
-                    // });
 
                     const network = await gateway.getNetwork('channelgg');
                     const contract = network.getContract('gail', 'Project');
-                    // console.log(req.body.bid_id.toString());
-                    // const getBid = await contract.evaluateTransaction('getBid', req.body.bid_id.toString());
-                    // const getBidJson = JSON.parse(getBid.toString());
                     await contract.submitTransaction('updateProjectStatus', req.body.id.toString(), 'discarded');
 
                     res.statusCode = 400;
@@ -187,6 +217,16 @@ router.post('/', async function (req, res, next) {
                             const ratingString = await contractChannel.evaluateTransaction('getOverallRating', contractorUsername);
                             const getBidDetails = getBidJson.bidDetails;
                             const getBidDetailsJson = JSON.parse(getBidDetails.toString());
+
+                            /*Extra added*/
+                            const gailReview=getBidDetailsJson.gailfield;
+                            const gailReviewJson=JSON.parse(gailReview.toString());
+                            const gailReviewRating=parseFloat(gailReviewJson.rating);
+                            if(gailReviewJson.accept == "false") {
+                                continue;
+                            }
+                            /*Extra fields added end  */
+
                             const price = parseFloat(getBidDetailsJson.price);
                             const quality = parseFloat(qualityString.toString());
                             const rating = parseFloat(ratingString.toString());
@@ -194,9 +234,11 @@ router.post('/', async function (req, res, next) {
                             const numStandards = getBidDetailsJson.standards.length;
                             //const quality = 1.3;
                             //const rating = 2.4;
+                            console.log("BIDID: " + bidID.toString());
                             console.log(ratingString.toString());
-                            var bidVal = (maxPrice/price) * 350 + (maxTime/time) * 350 + (numStandards/maxNumStandards) * 100
-                                        + (quality/100) * 100 + (rating/10) * 100;
+                            var bidVal = (maxPrice/price) * 300 + (maxTime/time) * 300 + (numStandards/maxNumStandards) * 100
+                                        + (quality/100) * 100 + (rating/10) * 100 +
+                                        (gailReviewRating/100) * 100;  //gail reviewRating added
                             if (winningBidValue === 0) {
                                 winnerBidID = bidID;
                                 winningBidValue = bidVal;

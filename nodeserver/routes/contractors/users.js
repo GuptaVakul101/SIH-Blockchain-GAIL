@@ -170,16 +170,21 @@ router.post('/signup', async function (req, res, next) {
                 const contract = network.getContract('gail', 'User');
                 const numContractorsAsBytes = await contract.evaluateTransaction('getNumContractors');
                 var numContractors = JSON.parse(numContractorsAsBytes.toString());
-                var curChannelNum = numContractors.numContractors + 1;
-
+                // var curChannelNum = numContractors.numContractors + 1;
+                var curChannelNum = 1;
 
                 console.log(curChannelNum);
+                console.log(numGailNodes);
+                console.log("Chirag");
                 for (i = 1; i < numGailNodes; i++) {
                     var str = 'channelg' + i.toString() + 'c' + curChannelNum.toString();
                     const networkChannel = await gateway.getNetwork(str);
                     const contractChannel = networkChannel.getContract('contractors_' + i.toString() + '_' + curChannelNum.toString(), 'User');
+                    console.log("--------------");
                     await contractChannel.submitTransaction('createUser', req.body.username, req.body.password, req.body.email
-                        , req.body.contact, req.body.address, req.body.aboutUs, req.body.profilepic, req.body.mid, req.body.mkey);
+                        , req.body.contact, req.body.address, req.body.aboutUs, req.body.profilepic, req.body.mid, req.body.mkey, req.body.designation);
+                    console.log("+++++++++++++++++");
+
                 }
                 await contract.submitTransaction('updateNumContractors');
                 // Disconnect from the gateway.
@@ -388,6 +393,7 @@ router.post('/getCompletedProjects', async function (req, res, next) {
     }
 
 });
+
 router.post('/:username', async function (req, res, next) {
 
     var contractorUsername = req.params.username.toString();

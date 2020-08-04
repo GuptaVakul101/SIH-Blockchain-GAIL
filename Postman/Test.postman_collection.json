@@ -49,7 +49,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\":\"disha\",\n    \"password\":\"disha\",\n    \"email\":\"disha@gmail.com\",\n    \"teamname\": \"\",\n    \"profilePic\": \"\",\n    \"name\": \"Disha\",\n    \"contact\": \"123\",\n    \"address\": \"\",\n    \"designation\": \"\"\n}"
+					"raw": "{\n    \"username\":\"disha\",\n    \"password\":\"disha\",\n    \"email\":\"disha@gmail.com\",\n    \"teamname\": \"\",\n    \"profilePic\": \"\",\n    \"name\": \"Disha Gupta\",\n    \"contact\": \"123\",\n    \"address\": \"\",\n    \"designation\": \"gail team\"\n}"
 				},
 				"description": ""
 			},
@@ -89,7 +89,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\":\"chirag\",\n    \"password\":\"chirag\",\n    \"email\":\"cgupta2727@gmail.com\",\n    \"contact\": \"7696203663\",\n    \"address\": \"Panchkula\",\n    \"aboutUs\": \"Trustworthy Company\",\n    \"profilepic\": \"tempPath\"\n}\n"
+					"raw": "{\n    \"username\":\"chirag\",\n    \"password\":\"chirag\",\n    \"email\":\"cgupta2727@gmail.com\",\n    \"contact\": \"7696203663\",\n    \"address\": \"Panchkula\",\n    \"aboutUs\": \"Trustworthy Company\",\n    \"profilepic\": \"tempPath\",\n    \"mid\": \"1231\",\n    \"mkey\": \"2423\",\n    \"designation\": \"contractor\"\n}\n"
 				},
 				"description": ""
 			},
@@ -129,7 +129,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"id\":\"2\"\n}"
+					"raw": "{\n    \"id\":\"3\"\n    \n}"
 				},
 				"description": ""
 			},
@@ -149,7 +149,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\": \"chirag\",\n    \"password\": \"chirag\",\n    \"projectID\": \"3\",\n    \"bidDetails\": {\n        \"price\": \"180\",\n        \"time_period\": \"223523512335\",\n        \"standards\": [\"ISO\", \"HallMark\", \"ISO-21\"]\n    }\n}"
+					"raw": "{\n    \"username\": \"disha\",\n    \"password\": \"disha\",\n    \"projectID\": \"1\",\n    \"bidDetails\": {\n        \"price\": \"140\",\n        \"time_period\": \"13\",\n        \"standards\": [\"ISO-21\", \"HallMark\", \"ABC-21\"]\n    }\n}"
 				},
 				"description": ""
 			},
@@ -169,7 +169,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\":\"chirag\",\n    \"password\":\"chirag\",\n    \"id\":\"3\"\n}"
+					"raw": "{\n    \"username\":\"chirag\",\n    \"password\":\"chirag\",\n    \"id\":\"2\"\n}"
 				},
 				"description": ""
 			},
@@ -200,10 +200,16 @@
 			"request": {
 				"url": "localhost:3000/contractors/project/",
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\":\"utkarsh\",\n    \"password\":\"password\"\n}"
+					"raw": "{\n    \"username\":\"disha\",\n    \"password\":\"disha\"\n}"
 				},
 				"description": ""
 			},
@@ -223,7 +229,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\":\"chirag\",\n    \"password\":\"chirag\",\n    \"status\":\"in-review\"\n}"
+					"raw": "{\n    \"username\":\"chirag\",\n    \"password\":\"chirag\",\n    \"status\":\"complete-rejected\"\n}"
 				},
 				"description": ""
 			},
@@ -299,7 +305,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"bid_id\":\"1596046738499\"\n}"
+					"raw": "{\n    \"bid_id\":\"1596131843985\"\n}"
 				},
 				"description": ""
 			},
@@ -320,6 +326,46 @@
 				"body": {
 					"mode": "raw",
 					"raw": "{\n    \"username\":\"chirag\",\n    \"password\":\"chirag\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Bids for Single Project",
+			"request": {
+				"url": "http://localhost:3000/gail/project/getAllBids",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\":\"3\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "After Payment",
+			"request": {
+				"url": "http://localhost:8000/payment/result",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \n\t\"CURRENCY\": \"INR\",\n\t\"GATEWAYNAME\": \"WALLET\",\n\t\"RESPMSG\": \"Txn Success\",\n\t\"BANKNAME\": \"WALLET\",\n\t\"PAYMENTMODE\": \"PPI\",\n\t\"MID\": \"zaIKaq4490860014814\",\n\t\"RESPCODE\": \"01\",\n\t\"TXNID\": \"20200731111212800110168757601772491\",\n\t\"TXNAMOUNT\": \"150.00\",\n\t\"ORDERID\": \"1596185560820_zaIKaq44908600148140\",\n\t\"STATUS\": \"TXN_SUCCESS\",\n\t\"BANKTXNID\": \"62955190\",\n\t\"TXNDATE\": \"2020-07-31 14:22:42.0\"\n }\n"
 				},
 				"description": ""
 			},

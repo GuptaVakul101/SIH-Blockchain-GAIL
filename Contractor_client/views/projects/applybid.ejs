@@ -152,33 +152,47 @@ input::-moz-focus-inner, input::-moz-focus-outer {
 
   <div class="card2 info col">
     <div class="row">
-        <h1 style="text-align: center">Apply Bid</h1>
+        <h1 style="text-align: center">Financial Bid</h1>
         <div style="width: 80%; margin: 0px auto;">
-            <form id="applyForm" method="post">
+            <form id="applyForm" method="post" enctype="multipart/form-data">
                 <!-- <div class="form-group">
                     <input class="form-control" type="number" name="price" placeholder="Price">
                 </div> -->
-                <div class="form-group">
+                <div id="pricegroup">
+                    <div class="form-group" style="display: inline-flex; width: 100%">
+                        <input class="form-control" style="width: 20%; margin-right: 6%" type="text" name="item1" placeholder="Item" required>
+                        <input class="form-control" style="width: 20%; margin-right: 6%" type="number" name="quantity1" placeholder="Quantity" required>
+                        <input class="form-control" style="width: 20%; margin-right: 6%" type="number" name="price1" placeholder="Price per unit" required>
+                        <input class="form-control" style="width: 20%;" type="number" name="tax1" placeholder="Tax per unit" required>
+                    </div>
+                </div>
+                <input type="button" style="width: 50%; margin: 0 auto;" class="btn btn-lg btn-primary btn-block" id="addItemField" value="Add New Item"></input>
+                <!-- <div class="form-group">
                   <label>Price</label>
                   <div class="range-slider">
-                    <input name="price" class="range-slider__range" type="range" value="0" min="0" max="100000" step="50">
+                    <input name="price" class="range-slider__range" type="range" value="1" min="1" max="100000" step="50">
                     <span class="range-slider__value">0</span>
                   </div>
-                </div>
+                </div> -->
                 <!-- <div class="form-group">
                     <input class="form-control" type="number" name="time_period" placeholder="Time Period (in days)">
                 </div> -->
                 <div class="form-group">
                   <label>Time Period (in days)</label>
                   <div class="range-slider">
-                    <input name="time_period" class="range-slider__range" type="range" value="0" min="0" max="365" step="1">
+                    <input name="time_period" class="range-slider__range" type="range" value="1" min="1" max="365" step="1">
                     <span class="range-slider__value">0</span>
                   </div>
                 </div>
-                <div class="form-group" id="isostan">
-                    <input class="form-control" type="text" name="iso1" placeholder="Specify ISO Standard">
+                <h1 style="text-align: center">Technical Bid</h1>
+                <div class="form-group">
+                  <label>Upload technical brochure:</label>
+                  <input type="file" class="form-control" name="brochure" required>
                 </div>
-                <input type="button" style="width: 50%; margin: 0 auto;" class="btn btn-lg btn-primary btn-block" id="addField" value="Add Field"></input>
+                <div class="form-group" id="isostan">
+                    <input class="form-control" type="text" name="iso1" placeholder="Specify ISO Standard" required>
+                </div>
+                <input type="button" style="width: 50%; margin: 0 auto;" class="btn btn-lg btn-primary btn-block" id="addField" value="Add New Certification"></input>
                 <input type="hidden" name="id" value="<%= projectID %>" />
                 <div class="form-group" style="margin-top: 20px;" >
                     <button type="submit" formaction="/projects/apply" style="width: 50%; margin: 0 auto;" class="btn btn-lg btn-primary btn-block">Apply for project</button>
@@ -192,6 +206,53 @@ input::-moz-focus-inner, input::-moz-focus-outer {
 
 <script>
     var numFields = 1;
+    var numItemFields = 1;
+
+    function createItemField(){
+        numItemFields = numItemFields+1
+        var parentDiv = document.createElement('div');
+        parentDiv.className += 'form-group';
+        parentDiv.style = "display: inline-flex; width: 100%;";
+
+        var itemField = document.createElement('input');
+        itemField.type = 'text';
+        itemField.name = 'item'+numItemFields.toString();
+        itemField.className += 'form-control';
+        itemField.style = "width: 20%; margin-right: 6%";
+        itemField.placeholder = 'Item';
+        itemField.required = true;
+        parentDiv.appendChild(itemField);
+
+        var quantityField = document.createElement('input');
+        quantityField.type = 'number';
+        quantityField.name = 'quantity'+numItemFields.toString();
+        quantityField.className += 'form-control';
+        quantityField.style = "width: 20%; margin-right: 6%";
+        quantityField.placeholder = 'Quantity';
+        quantityField.required = true;
+        parentDiv.appendChild(quantityField);
+
+        var priceField = document.createElement('input');
+        priceField.type = 'number';
+        priceField.name = 'price'+numItemFields.toString();
+        priceField.style = "width: 20%; margin-right: 6%";
+        priceField.className += 'form-control';
+        priceField.placeholder = 'Price per unit';
+        priceField.required = true;
+        parentDiv.appendChild(priceField);
+
+        var taxField = document.createElement('input');
+        taxField.type = 'number';
+        taxField.name = 'tax'+numItemFields.toString();
+        taxField.style = "width: 20%;";
+        taxField.className += 'form-control';
+        taxField.placeholder = 'Tax per unit';
+        taxField.required = true;
+        parentDiv.appendChild(taxField);
+
+        return parentDiv;
+    }
+
     function createField() {
         numFields = numFields+1
         var input = document.createElement('input');
@@ -199,6 +260,7 @@ input::-moz-focus-inner, input::-moz-focus-outer {
         input.name = 'iso'+numFields.toString();
         input.className += 'form-control';
         input.placeholder = 'Specify ISO Standard';
+        input.required = true;
         return input;
     }
 
@@ -207,11 +269,16 @@ input::-moz-focus-inner, input::-moz-focus-outer {
         form.appendChild(createField());
     });
 
+    var secondform = document.getElementById('pricegroup');
+    document.getElementById('addItemField').addEventListener('click', function(e) {
+            secondform.appendChild(createItemField());
+    });
+
     var rangeSlider = function(){
   var slider = $('.range-slider'),
       range = $('.range-slider__range'),
       value = $('.range-slider__value');
-    
+
   slider.each(function(){
 
     value.each(function(){

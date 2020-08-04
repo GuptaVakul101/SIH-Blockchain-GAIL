@@ -42,6 +42,7 @@
 
         .card {
             z-index: 0;
+            background-color: #ECEFF1;
             border-radius: 10px
         }
 
@@ -60,7 +61,7 @@
         #progressbar li {
             list-style-type: none;
             font-size: 13px;
-            width: 25%;
+            width: 16%;
             float: left;
             position: relative;
             font-weight: 400
@@ -103,7 +104,9 @@
         }
 
         #progressbar li:nth-child(2):after,
-        #progressbar li:nth-child(3):after {
+        #progressbar li:nth-child(3):after,
+        #progressbar li:nth-child(4):after,
+        #progressbar li:nth-child(5):after {
             left: -50%
         }
 
@@ -135,9 +138,9 @@
         }
 
         .icon {
-            width: 60px;
-            height: 60px;
-            margin-right: 15px
+            width: 50px;
+            height: 50px;
+            margin-right: 5px
         }
 
         @media screen and (max-width: 992px) {
@@ -218,8 +221,7 @@
             visibility: hidden;
             width: 250px;
             background-color: turquoise;
-            font-w
-            color: #fff;
+            font color: #fff;
             text-align: center;
             border-radius: 6px;
             padding: 10px 10px;
@@ -241,12 +243,17 @@
 <body style="padding-top: 50px;">
 
     <nav class="navbar navbar-expand-md fixed-top" style="background-color: #222222; color: #9d9d9d;">
-        <a class="navbar-brand" href="/" class="btn btn-md">GAIL</a>
-        <a class="navbar-brand" href="/activeprojects" class="btn btn-md">Active Projects</a>
-        <a class="navbar-brand" href="/floatedprojects" class="btn btn-md">Floated Projects</a>
-        <a class="navbar-brand" href="/finishedprojects" class="btn btn-md">Finished Projects</a>
-        <a class="navbar-brand" href="/newproject" class="btn btn-md">Float a new Project</a>
-
+        <% if(designation == "evaluation-agency"){ %>
+        <a class="navbar-brand" href="/" class="btn btn-lg">Evaluation Agency</a>
+        <a class="navbar-brand" href="/activeprojects" class="btn btn-lg">Active Projects</a>
+        <a class="navbar-brand" href="/floatedprojects" class="btn btn-lg">Floated Projects</a>
+        <% }else{ %>
+        <a class="navbar-brand" href="/" class="btn btn-lg">GAIL (India) Limited</a>
+        <a class="navbar-brand" href="/activeprojects" class="btn btn-lg">Active Projects</a>
+        <a class="navbar-brand" href="/floatedprojects" class="btn btn-lg">Floated Projects</a>
+        <a class="navbar-brand" href="/finishedprojects" class="btn btn-lg">Finished Projects</a>
+        <a class="navbar-brand" href="/newproject" class="btn btn-lg">Float a new Project</a>
+        <% } %>
 
         <button class="navbar-toggler" data-toggle="collapse" data-target="#navbarMenu">
             <span class="navbar-toggler-icon"></span>
@@ -270,7 +277,7 @@
     <div class="container px-1 px-md-4 py-5 mx-auto">
         <div class="card project-status-card">
             <h4 style="text-align: center; font-weight: bolder;" class="mt-2 mb-6">Project's Current Status</h4>
-            <div class="row d-flex justify-content-center mt-2">
+            <div class="row d-flex justify-content-center">
                 <div class="col-12">
                     <ul id="progressbar" class="text-center">
                         <% if(project.status == "in-progress"){ %>
@@ -278,7 +285,25 @@
                         <li class="active step0"></li>
                         <li class="step0"></li>
                         <li class="step0"></li>
+                        <li class="step0"></li>
+                        <li class="step0"></li>
+                        <% } else if (project.status == "manufactured"){ %>
+                        <li class="active step0"></li>
+                        <li class="active step0"></li>
+                        <li class="active step0"></li>
+                        <li class="step0"></li>
+                        <li class="step0"></li>
+                        <li class="step0"></li>
                         <% } else if (project.status == "in-shipment"){ %>
+                        <li class="active step0"></li>
+                        <li class="active step0"></li>
+                        <li class="active step0"></li>
+                        <li class="active step0"></li>
+                        <li class="step0"></li>
+                        <li class="step0"></li>
+                        <% } else if (project.status == "in-pre-review"){ %>
+                        <li class="active step0"></li>
+                        <li class="active step0"></li>
                         <li class="active step0"></li>
                         <li class="active step0"></li>
                         <li class="active step0"></li>
@@ -288,11 +313,13 @@
                         <li class="active step0"></li>
                         <li class="active step0"></li>
                         <li class="active step0"></li>
+                        <li class="active step0"></li>
+                        <li class="active step0"></li>
                         <% } %>
                     </ul>
                 </div>
             </div>
-            <div class="row justify-content-between top">
+            <div class="row justify-content-between top" style="width: 110%; position: relative; left: -50px">
                 <div class="row d-flex icon-content"> <img class="icon" src="https://i.imgur.com/9nnc9Et.png">
                     <div class="d-flex flex-column">
                         <p class="font-weight-bold">Project<br>Allocated</p>
@@ -303,6 +330,11 @@
                         <p class="font-weight-bold">In<br>Progress</p>
                     </div>
                 </div>
+                <div class="row d-flex icon-content"> <img class="icon" src="https://i.imgur.com/u1AzR7w.png">
+                    <div class="d-flex flex-column">
+                        <p class="font-weight-bold">Manufactured</p>
+                    </div>
+                </div>
                 <div class="row d-flex icon-content"> <img class="icon" src="https://i.imgur.com/TkPm63y.png">
                     <div class="d-flex flex-column">
                         <p class="font-weight-bold">Order<br>En Route</p>
@@ -310,7 +342,12 @@
                 </div>
                 <div class="row d-flex icon-content"> <img class="icon" src="https://i.imgur.com/HdsziHP.png">
                     <div class="d-flex flex-column">
-                        <p class="font-weight-bold">Order<br>Arrived</p>
+                        <p class="font-weight-bold">In Pre<br>Review</p>
+                    </div>
+                </div>
+                <div class="row d-flex icon-content"> <img class="icon" src="https://i.imgur.com/HdsziHP.png">
+                    <div class="d-flex flex-column">
+                        <p class="font-weight-bold">In Final<br>Review</p>
                     </div>
                 </div>
             </div>
@@ -395,9 +432,36 @@
                 <% } %>
             </div>
 
+
             <% if(project.status == "in-review") { %>
             <div class="col-md-6 col-sm-6">
-                <h3 style="font-weight: bold;">Send Review</h3>
+                <h3 style="font-weight: bold;">Accept/Reject for Payment</h3>
+                <% var temp = JSON.parse(project.evaluation_review); %>
+                <form encType="multipart/form-data">
+                    <div class="form-group">
+                        <input class="form-control" type="number" name="rating" value="<%= temp.rating %>" readonly>
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" type="number" name="quality" value="<%= temp.quality %>" readonly>
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" type="text" name="review" value="<%= temp.review %>" readonly>
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" type="hidden" name="price" value="<%= bid.price %>" readonly>
+                    </div>
+                    <div class="form-group text-center">
+                        <button type="submit" formmethod="post" formaction="/acceptproject/<%= project.id %>"
+                            class="btn btn-lg btn-success btn-block" style="width: 50%;">Accept</button>
+                    </div>
+                    <div class="form-group text-center">
+                        <button type="submit" formmethod="post" formaction="/rejectproject/<%= project.id %>"
+                            class="btn btn-lg btn-danger btn-block" style="width: 50%;">Reject</button>
+                    </div>
+                </form>
+            </div>
+            <% } else if(designation == "evaluation-agency" && project.status == "in-pre-review") { %>
+            <label style="font-weight: bold; font-size: 30px;">Send Review to GAIL</h3>
                 <form encType="multipart/form-data">
                     <div class="form-group">
                         <input class="form-control" type="number" name="rating" placeholder="Rating*" min="1" max="10"
@@ -411,16 +475,11 @@
                         <input class="form-control" type="text" name="review" placeholder="Review*" required="true">
                     </div>
                     <div class="form-group text-center">
-                        <button type="submit" formmethod="post" formaction="/acceptproject/<%= project.id %>"
-                            class="btn btn-lg btn-success btn-block" style="width: 50%;">Accept</button>
-                    </div>
-                    <div class="form-group text-center">
-                        <button type="submit" formmethod="post" formaction="/rejectproject/<%= project.id %>"
-                            class="btn btn-lg btn-danger btn-block" style="width: 50%;">Reject</button>
+                        <button type="submit" formmethod="post" formaction="/submit/<%= project.id %>"
+                            class="btn btn-lg btn-success btn-block" style="width: 50%;">Submit</button>
                     </div>
                 </form>
-            </div>
-            <% } %>
+                <% } %>
         </div>
 
     </div>

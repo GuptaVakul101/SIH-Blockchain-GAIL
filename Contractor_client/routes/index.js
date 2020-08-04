@@ -6,7 +6,13 @@ var cookieParser = require('cookie-parser');
 
 
 router.get("/", function(req,res){
-	res.render("landing", { currentUser: req.cookies.username} );
+	if(req.cookies.username == null || req.cookies.username.toString() == "")  {
+		res.render("landing", { currentUser: req.cookies.username, designation: ""} );
+	}
+	else{
+		var designation = req.cookies.designation.toString();
+		res.render("landing", { currentUser: req.cookies.username, designation: designation} );
+	}
 });
 
 //SHOW REGISTER FORM
@@ -15,7 +21,7 @@ router.get("/register",function(req,res){
 		res.redirect("/");
 		return;
 	}
-    res.render("register", { currentUser: req.cookies.username} );
+    res.render("register", { currentUser: req.cookies.username, designation: ""} );
 });
 
 //HANDLE SIGN UP
@@ -31,8 +37,9 @@ router.post("/register",function(req,res){
 	var contact = req.body.contact;
 	var address = req.body.address;
 	var aboutus = req.body.aboutus;
-	var mid = req.body.mid;
-	var mkey = req.body.mkey;
+	var mid = "";
+	var mkey = "";
+	var designation = req.body.designation;
 	var file = null;
     if (req.files) {
         file = req.files.profilepic;
@@ -61,7 +68,8 @@ router.post("/register",function(req,res){
 		"aboutUs": aboutus.toString(),
 		"mid": mid.toString(),
 		"mkey": mkey.toString(),
-		"profilepic": getTimeStampString
+		"profilepic": getTimeStampString,
+		"designation": designation
 	});
 
 	console.log(requestData);
@@ -94,7 +102,8 @@ router.post("/register",function(req,res){
 	    		res.redirect('/register');
 	    	} else {
 	    		res.cookie("username", username.toString());
-	    		res.cookie("password", password.toString());
+				res.cookie("password", password.toString());
+				res.cookie("designation", designation.toString());
 	    		res.redirect('/');
 	    	}
 	  	});
@@ -111,7 +120,8 @@ router.get("/login", function(req,res){
 		res.redirect("/");
 		return;
 	}
-    res.render("login", { currentUser: req.cookies.username});
+	var designation = "";
+    res.render("login", { currentUser: req.cookies.username, designation: designation});
 })
 
 //HANDLE LOGIN
@@ -149,12 +159,13 @@ router.post("/login", function(req,res){
 	  	//the whole response has been received, so we just print it out here
 	  	response.on('end', function () {
 	    	console.log(str);
-	    	const jsonObject = JSON.parse(str);
-	    	if(jsonObject.success == false) {
+			const jsonObject = JSON.parse(str);
+	    	if(jsonObject.success == "false" || jsonObject.success == false) {
 	    		res.redirect('/login');
 	    	} else {
 	    		res.cookie("username", username.toString());
-	    		res.cookie("password", password.toString());
+				res.cookie("password", password.toString());
+				res.cookie("designation", jsonObject.designation.toString());
 	    		res.redirect('/');
 	    	}
 	  	});
@@ -164,6 +175,14 @@ router.post("/login", function(req,res){
 	request.write(requestData);
 	request.end();
 })
+
+router.get("/download/:path", function (req, res) {
+	var filePath = "../nodeserver/brochureUpload/" + req.params.path.toString();
+    var getTimeStampString = new Date().getTime().toString();
+	var fileName = getTimeStampString + ".pdf"; // The default name the browser will use
+	res.setHeader("Content-Type", "application/pdf");
+	res.download(filePath, fileName);
+});
 
 router.get("/logout",function(req,res){
     res.cookie("username", "");

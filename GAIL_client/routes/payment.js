@@ -19,6 +19,7 @@ router.get("/payment", function(req,res){
     console.log(orderId);
 
     var actionUrl="https://securegw-stage.paytm.in/theia/api/v1/showPaymentPage?mid="+queryObject.mid+"&orderId="+orderId;
+    console.log(actionUrl);
 
     const requestData = JSON.stringify({
         "mid":queryObject.mid,
@@ -49,7 +50,7 @@ router.get("/payment", function(req,res){
         response.on('end', function () {
             const jsonObject = JSON.parse(str);
             if (jsonObject.body.resultInfo.resultMsg == "Success") {
-                res.render("payment/payment", { currentUser:username,actionUrl: actionUrl ,mid:queryObject.mid ,orderId:orderId,txnToken:jsonObject.body.txnToken});
+                res.render("payment/payment", { currentUser:username,actionUrl: actionUrl ,mid:queryObject.mid ,orderId:orderId,txnToken:jsonObject.body.txnToken, designation: req.cookies.designation});
             }
         });
     }
@@ -64,4 +65,5 @@ router.post("/payment/result", function (req, res) {
     res.send(req.body);
     // res.redirect("payment/showTransation", {details: req.body});
 });
+
 module.exports = router;

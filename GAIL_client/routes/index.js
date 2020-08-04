@@ -4,8 +4,10 @@ var http = require("http");
 var cookieParser = require("cookie-parser");
 var download = require('download');
 
+
 router.get("/", function (req, res) {
-	res.render("landing", { currentUser: req.cookies.username });
+	var designation = req.cookies.designation;
+	res.render("landing", { currentUser: req.cookies.username, designation: designation });
 });
 
 //SHOW REGISTER FORM
@@ -23,6 +25,7 @@ router.post("/register", function (req, res) {
 	var password = req.body.password;
 	var email = req.body.email;
 	var name = req.body.name;
+	var designation = req.body.designation;
 
 	if (req.cookies.username != null && req.cookies.username.toString() != "") {
 		res.redirect("/");
@@ -38,7 +41,7 @@ router.post("/register", function (req, res) {
 		teamname: "",
 		profilePic: "",
 		address: "",
-		designation: ""
+		designation: designation.toString()
 	});
 
 	var options = {
@@ -70,6 +73,7 @@ router.post("/register", function (req, res) {
 			} else {
 				res.cookie("username", username.toString());
 				res.cookie("password", password.toString());
+				res.cookie("designation", designation.toString());
 				res.redirect("/");
 			}
 		});
@@ -119,6 +123,7 @@ router.post("/login", function (req, res) {
 			} else {
 				res.cookie("username", username.toString());
 				res.cookie("password", password.toString());
+				res.cookie("designation", jsonObject.designation.toString());
 				res.redirect("/");
 			}
 		});
@@ -130,6 +135,7 @@ router.post("/login", function (req, res) {
 router.get("/logout", function (req, res) {
 	res.cookie("username", "");
 	res.cookie("password", "");
+	res.cookie("designation", "");
 	res.redirect("/");
 });
 
@@ -139,6 +145,14 @@ router.get("/cookies", function (req, res) {
 
 router.get("/download/:path", function (req, res) {
 	var filePath = "../nodeserver/brochureUpload/" + req.params.path.toString();
+    var getTimeStampString = new Date().getTime().toString();
+	var fileName = getTimeStampString + ".pdf"; // The default name the browser will use
+	res.setHeader("Content-Type", "application/pdf");
+	res.download(filePath, fileName);
+});
+
+router.get("/download2/:path", function (req, res) {
+	var filePath = "../nodeserver/BidBrochure/" + req.params.path.toString();
     var getTimeStampString = new Date().getTime().toString();
 	var fileName = getTimeStampString + ".pdf"; // The default name the browser will use
 	res.setHeader("Content-Type", "application/pdf");
@@ -157,7 +171,7 @@ router.get("/editprofile", function(req,res){
         "username": username,
         "password": password,
 	});
-	
+
 	var options = getOptions('/gail/users/getUserDetails', requestData);
 
 	callback = function (response) {
@@ -170,11 +184,11 @@ router.get("/editprofile", function(req,res){
             if (jsonObject.success == false) {
                 res.redirect('/');
             } else {
-				res.render("editProfile", { currentUser: req.cookies.username, user: jsonObject.object });
+				res.render("editProfile", { currentUser: req.cookies.username, user: jsonObject.object, designation: req.cookies.designation });
             }
         });
     }
-	
+
     runHttpRequest(options, callback, requestData);
 });
 

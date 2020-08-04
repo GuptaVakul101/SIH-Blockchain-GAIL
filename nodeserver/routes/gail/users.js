@@ -49,12 +49,7 @@ router.post('/login', async function (req, res, next) {
 
         const user = await contract.evaluateTransaction('getUser', req.body.username, req.body.password);
         const jsonObject = JSON.parse(user.toString());
-
-        // Disconnect from the gateway.
         await gateway.disconnect();
-        // res.statusCode = 200;
-        // res.setHeader('Content-Type', 'application/json');
-        // res.json(JSON.parse(user.toString()));
 
         if (jsonObject.hasOwnProperty('success')) {
             console.log("Contains Success");
@@ -71,7 +66,8 @@ router.post('/login', async function (req, res, next) {
                 res.setHeader('Content-Type', 'application/json');
                 res.json({
                     success: true,
-                    message: "Successful Login"
+                    message: "Successful Login",
+                    designation: jsonObject.designation
                 });
             }
 
@@ -80,7 +76,8 @@ router.post('/login', async function (req, res, next) {
             res.setHeader('Content-Type', 'application/json');
             res.json({
                 success: true,
-                message: "Successful Login"
+                message: "Successful Login",
+                designation: jsonObject.designation
             });
         }
     }
@@ -285,53 +282,5 @@ router.post('/editUserDetails', async function (req, res, next) {
     }
 });
 
-// router.post('/updatePassword', async function(req,res,next){
-//     const ccpPath = path.resolve(__dirname, '..', '..', '..', 'fabric', 'test-network', 'organizations',
-//         'peerOrganizations', 'gail.example.com', 'connection-gail.json');
-//     const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
-
-//     const walletPath = path.join(__dirname, 'wallet');
-//     const wallet = await Wallets.newFileSystemWallet(walletPath);
-
-//     const identity = await wallet.get('admin');
-//     if (!identity) {
-//         res.statusCode = 404;
-//         res.setHeader('Content-Type', 'application/json');
-//         res.json({
-//             success: false,
-//             message: 'GAIL Admin should be registered first'
-//         });
-//     }
-//     else {
-//         const gateway = new Gateway();
-//         await gateway.connect(ccp, {
-//             wallet, identity: 'admin',
-//             discovery: { enabled: true, asLocalhost: true }
-//         });
-
-//         const network = await gateway.getNetwork('channelgg');
-//         const contract = network.getContract('gail', 'User');
-//         const getUserDetails = await contract.evaluateTransaction('updatePassword', req.body.username, req.body.password, req.body.newPassword);
-//         const userJson = JSON.parse(getUserDetails.toString());
-//         await gateway.disconnect();
-
-//         if(userJson.hasOwnProperty('success')){
-//             res.status = 400;
-//             res.setHeader('Content-Type', 'application/json');
-//             res.json({
-//                 success: false,
-//                 message: 'Unable to Update the Password'
-//             });
-//         }
-//         else {
-//             res.statusCode = 200;
-//             res.setHeader('Content-Type', 'application/json');
-//             res.json({
-//                 success: true,
-//                 message: 'Successfully Updated the password',
-//             });
-//         }
-//     }
-// });
 
 module.exports = router;

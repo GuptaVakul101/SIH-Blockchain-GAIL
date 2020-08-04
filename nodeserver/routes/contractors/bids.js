@@ -13,8 +13,6 @@ router.use(bodyParser.json());
 
 router.options('*', cors.corsWithOptions, (req, res) => { res.sendStatus(200); });
 
-
-
 router.post('/applyForProject', async function(req, res, next) {
     const authCheck=await utility.authenticate(req.body.username,req.body.password);
     if(authCheck==false)
@@ -66,7 +64,6 @@ router.post('/applyForProject', async function(req, res, next) {
                     message: 'Successfully Bid',
                     bidID:bidID.toString()
                 });
-
             }
         }
     }

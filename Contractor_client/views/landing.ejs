@@ -2,7 +2,9 @@
 <html>
 
 <head>
-  <title>Contractor</title>
+
+  <title>Home</title>
+
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -104,15 +106,15 @@
     }
 
     .footer-top {
-        float: left;
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        background: #666;
-        font-family: 'Arial', Helvetica, sans-serif;
-        font-size: 14px;
-        line-height: 23px;
-        color: #333;
+      float: left;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      background: #666;
+      font-family: 'Arial', Helvetica, sans-serif;
+      font-size: 14px;
+      line-height: 23px;
+      color: #333;
     }
   </style>
 </head>
@@ -120,11 +122,17 @@
 <body style="padding-top: 70px;">
 
   <nav class="navbar navbar-expand-md fixed-top" style="background-color: #222222; color: #9d9d9d;">
-    <a class="navbar-brand" href="/" class="btn btn-lg">Contractors</a>
-    <a class="navbar-brand" href="/projects/floated" class="btn btn-lg">Floated Projects</a>
-    <a class="navbar-brand" href="/projects/allocated" class="btn btn-lg">Allocated Projects</a>
-    <a class="navbar-brand" href="/projects/completed" class="btn btn-lg">Completed Projects</a>
-
+    <% if(!locals.designation){ %>
+      <a class="navbar-brand" href="/" class="btn btn-lg" style="color: #9d9d9d;">Guest</a>
+    <% } else if(designation == "contractor"){ %>
+    <a class="navbar-brand" href="/" class="btn btn-lg" style="color: #9d9d9d;">Contractors</a>
+    <a class="navbar-brand" href="/projects/floated" class="btn btn-lg" style="color: #9d9d9d;">Floated Projects</a>
+    <a class="navbar-brand" href="/projects/allocated" class="btn btn-lg" style="color: #9d9d9d;">Allocated Projects</a>
+    <a class="navbar-brand" href="/projects/completed" class="btn btn-lg" style="color: #9d9d9d;">Completed Projects</a>
+    <% } else if (designation == "shipping-agency"){ %>
+    <a class="navbar-brand" href="/" class="btn btn-lg" style="color: #9d9d9d;">Shipment</a>
+    <a class="navbar-brand" href="/projects/allocated" class="btn btn-lg" style="color: #9d9d9d;">Allocated Projects</a>
+    <% }%>
 
     <button class="navbar-toggler" data-toggle="collapse" data-target="#navbarMenu">
       <span class="navbar-toggler-icon"></span>
@@ -138,7 +146,6 @@
         <% } else{ %>
         <li><a class="navbar-brand btn btn-md" href="/profile" style="color: #9d9d9d;">Signed In As
             <%= currentUser.toUpperCase() %> </a></li>
-        <li><a href="/edit_profile" class="navbar-brand btn btn-md" style="color: #9d9d9d;">Edit Profile</a></li>
         <li><a href="/logout" class="navbar-brand btn btn-md" style="color: #9d9d9d;">Logout</a></li>
         <% } %>
       </ul>
@@ -146,43 +153,43 @@
   </nav>
   <div class="slideshow-container">
 
-    <div class="mySlides fade">
-      <img src="../static/FirstSlide.jpg" style="width:100%">
-    </div>
+    <% if(!locals.designation || designation == "contractor"){ %>
+      <div class="mySlides fade">
+        <img src="../static/FirstSlide.jpg" style="width:100%">
+      </div>
 
-    <div class="mySlides fade">
-      <img src="../static/SecondSlide.jpg" style="width:100%">
-    </div>
+      <div class="mySlides fade">
+        <img src="../static/SecondSlide.jpg" style="width:100%">
+      </div>
 
-    <div class="mySlides fade">
-      <img src="../static/ThirdSlide.jpg" style="width:100%">
-    </div>
+      <div class="mySlides fade">
+        <img src="../static/ThirdSlide.jpg" style="width:100%">
+      </div>
 
-    <div class="mySlides fade">
-      <img src="../static/FourthSlide.jpg" style="width:100%">
-    </div>
+      <div class="mySlides fade">
+        <img src="../static/FourthSlide.jpg" style="width:100%">
+      </div>
 
-    <div class="mySlides fade">
-      <img src="../static/FifthSlide.jpg" style="width:100%">
-    </div>
-    <div class="mySlides fade">
-      <img src="../static/SixthSlide.jpg" style="width:100%">
-    </div>
-    <div class="mySlides fade">
-      <img src="../static/Seventh.jpg" style="width:100%">
-    </div>
-    <div class="mySlides fade">
-      <img src="../static/Eighth.jpg" style="width:100%">
-    </div>
+    <% } else{ %>
+      <div class="mySlides fade">
+        <img src="../static/FifthSlide.jpg" style="width:100%">
+      </div>
+      <div class="mySlides fade">
+        <img src="../static/SixthSlide.jpg" style="width:100%">
+      </div>
+      <div class="mySlides fade">
+        <img src="../static/Seventh.jpg" style="width:100%">
+      </div>
+      <div class="mySlides fade">
+        <img src="../static/Eighth.jpg" style="width:100%">
+      </div>
+
+    <% } %>
 
   </div>
   <br>
 
   <div style="text-align:center">
-    <span class="dot"></span>
-    <span class="dot"></span>
-    <span class="dot"></span>
-    <span class="dot"></span>
     <span class="dot"></span>
     <span class="dot"></span>
     <span class="dot"></span>
@@ -226,8 +233,8 @@
                 None-core areas that can become successful ventures and contribute to the creation of a Start-ups
                 Nation.
               </p>
-              <a href="https://gailebank.gail.co.in/GSUICBG/frmStartUpGAIL.aspx"
-                class="btn btn-primary stretched-link" target="_blank">Read More...</a>
+              <a href="https://gailebank.gail.co.in/GSUICBG/frmStartUpGAIL.aspx" class="btn btn-primary stretched-link"
+                target="_blank">Read More...</a>
             </div>
           </div>
         </div>
@@ -243,7 +250,8 @@
               <h4 class="card-title">E-business</h4>
               <p class="card-text">GAIL has been a pioneer in introducing e-business systems to bring in transparency
                 and accountability in its business processes and systems for the benefit of various stakeholders.</p>
-              <a href="https://gailonline.com/StakeHolders.html" class="btn btn-primary stretched-link" target="_blank">Read
+              <a href="https://gailonline.com/StakeHolders.html" class="btn btn-primary stretched-link"
+                target="_blank">Read
                 More..</a>
             </div>
           </div>
@@ -260,7 +268,8 @@
               <h4 class="card-title">Research & Development</h4>
               <p class="card-text">At GAIL we believe that Innovation and R&D are the distinguishing
                 factors that can help improve the efficiency of our systems & processes.</p>
-              <a href="https://gailonline.com/R&D.html" class="btn btn-primary stretched-link" target="_blank">Read More..</a>
+              <a href="https://gailonline.com/R&D.html" class="btn btn-primary stretched-link" target="_blank">Read
+                More..</a>
             </div>
           </div>
         </div>
@@ -276,7 +285,8 @@
               <p class="card-text">Nicknamed as "Hazira Meter Prover" is Asia's largest and India's only Test Facility
                 for
                 Flow calibration of Ultrasonic and Turbine ...</p>
-              <a href="https://gailonline.com/Hazira.html" class="btn btn-primary stretched-link" target="_blank">Read More..</a>
+              <a href="https://gailonline.com/Hazira.html" class="btn btn-primary stretched-link" target="_blank">Read
+                More..</a>
             </div>
           </div>
         </div>
@@ -290,7 +300,8 @@
             <div class="card-body">
               <h4 class="card-title">Career at GAIL</h4>
               <p class="card-text">When you choose GAIL, you join the best there is in the Natural Gas business.</p>
-              <a href="https://gailonline.com/CR-JoinGail.html" class="btn btn-primary stretched-link" target="_blank">Read More..</a>
+              <a href="https://gailonline.com/CR-JoinGail.html" class="btn btn-primary stretched-link"
+                target="_blank">Read More..</a>
             </div>
           </div>
         </div>
@@ -305,7 +316,8 @@
               <h4 class="card-title">GAIL Hriday</h4>
               <p class="card-text">At GAIL, we remain committed to the principles of Corporate Social Responsibility
                 (CSR).</p>
-              <a href="https://gailonline.com/CSR_Index.html" class="btn btn-primary stretched-link" target="_blank">Read More..</a>
+              <a href="https://gailonline.com/CSR_Index.html" class="btn btn-primary stretched-link"
+                target="_blank">Read More..</a>
             </div>
           </div>
         </div>
@@ -317,95 +329,119 @@
 
 <section class="footer-top">
   <div class="container mt-30 mb-30">
-    <div class="row"><div class="col-md-3 col-sm-3">
-      <aside class="widget-archive mb-15">
-        <h4>About Website</h4>
-        <div class="yellow-titleline"></div>
-        <ul class="widget-archive-list">
-          <li>
-            <a href="Sitemap.html" title="SITE MAP"><i class="fa fa-angle-right" aria-hidden="true"></i> SITE MAP </a>
-            <a href="https://gailebank.gail.co.in/gems/frmupload.aspx" target="_blank">-</a>
-          </li>
-          <li>
-            <a href="contacts.html" title="CONTACT US"><i class="fa fa-angle-right" aria-hidden="true"></i> CONTACT US</a>
-          </li>
-          <li>
-            <a href="Feedback-form.html" title="YOUR FEEDBACK"><i class="fa fa-angle-right" aria-hidden="true"></i> YOUR FEEDBACK</a>
-          </li>
-          <li>
-            <a href="usefuleLink.html" title="USEFUL LINKS"><i class="fa fa-angle-right" aria-hidden="true"></i> USEFUL LINKS</a>
-            <a href="https://gailebank.gail.co.in/gems/frmentry.aspx" target="_blank">-</a>
-          </li>
-          <li>
-            <a href="disclaimer.html" title="DISCLAIMER"><i class="fa fa-angle-right" aria-hidden="true"></i> DISCLAIMER</a>
-          </li>
-        </ul>
-      </aside>
-    </div>
+    <div class="row">
+      <div class="col-md-3 col-sm-3">
+        <aside class="widget-archive mb-15">
+          <h4>About Website</h4>
+          <div class="yellow-titleline"></div>
+          <ul class="widget-archive-list">
+            <li>
+              <a href="Sitemap.html" title="SITE MAP"><i class="fa fa-angle-right" aria-hidden="true"></i> SITE MAP </a>
+              <a href="https://gailebank.gail.co.in/gems/frmupload.aspx" target="_blank">-</a>
+            </li>
+            <li>
+              <a href="contacts.html" title="CONTACT US"><i class="fa fa-angle-right" aria-hidden="true"></i> CONTACT
+                US</a>
+            </li>
+            <li>
+              <a href="Feedback-form.html" title="YOUR FEEDBACK"><i class="fa fa-angle-right" aria-hidden="true"></i>
+                YOUR FEEDBACK</a>
+            </li>
+            <li>
+              <a href="usefuleLink.html" title="USEFUL LINKS"><i class="fa fa-angle-right" aria-hidden="true"></i>
+                USEFUL LINKS</a>
+              <a href="https://gailebank.gail.co.in/gems/frmentry.aspx" target="_blank">-</a>
+            </li>
+            <li>
+              <a href="disclaimer.html" title="DISCLAIMER"><i class="fa fa-angle-right" aria-hidden="true"></i>
+                DISCLAIMER</a>
+            </li>
+          </ul>
+        </aside>
+      </div>
 
-    <div class="col-md-3 col-sm-3">
-      <aside class="widget-archive mb-15">
-        <h4>Important Links</h4>
-        <div class="yellow-titleline"></div>
-        <ul class="widget-archive-list">
-          <li>
-            <a href="https://gailebank.gail.co.in/psadashboard/ministryportal/login.aspx" target="_blank" title="PROJECT DASHBOARD"> <i class="fa fa-angle-right" aria-hidden="true"></i> PROJECT DASHBOARD</a>
-          </li>
-          <li>
-            <a href="CRZ-clearance.html" title="ENVIRONMENT AND CRZ CLEARANCE"><i class="fa fa-angle-right" aria-hidden="true"></i> ENV. CLEARANCE</a>
-          </li>
-          <li>
-            <a href="http://gailonline.com/Hazira.html" target="_blank" title="HAZIRA FLOW METER CALIBRATION FACILITY"><i class="fa fa-angle-right" aria-hidden="true"></i>METER CALIBRATION</a>
-          </li>
-          <li>
-            <a href="RR-Requirements.html" title="REGULATORY REQUIREMENTS"><i class="fa fa-angle-right" aria-hidden="true"></i> REGULATORY NEED</a>
-          </li>
-          <li>
-            <a href="onlineComplants.html" title="ONLINE COMPLAINTS"><i class="fa fa-angle-right" aria-hidden="true"></i> ONLINE COMPLAINTS</a>
-          </li>
-        </ul>
-      </aside>
-    </div>
+      <div class="col-md-3 col-sm-3">
+        <aside class="widget-archive mb-15">
+          <h4>Important Links</h4>
+          <div class="yellow-titleline"></div>
+          <ul class="widget-archive-list">
+            <li>
+              <a href="https://gailebank.gail.co.in/psadashboard/ministryportal/login.aspx" target="_blank"
+                title="PROJECT DASHBOARD"> <i class="fa fa-angle-right" aria-hidden="true"></i> PROJECT DASHBOARD</a>
+            </li>
+            <li>
+              <a href="CRZ-clearance.html" title="ENVIRONMENT AND CRZ CLEARANCE"><i class="fa fa-angle-right"
+                  aria-hidden="true"></i> ENV. CLEARANCE</a>
+            </li>
+            <li>
+              <a href="http://gailonline.com/Hazira.html" target="_blank"
+                title="HAZIRA FLOW METER CALIBRATION FACILITY"><i class="fa fa-angle-right" aria-hidden="true"></i>METER
+                CALIBRATION</a>
+            </li>
+            <li>
+              <a href="RR-Requirements.html" title="REGULATORY REQUIREMENTS"><i class="fa fa-angle-right"
+                  aria-hidden="true"></i> REGULATORY NEED</a>
+            </li>
+            <li>
+              <a href="onlineComplants.html" title="ONLINE COMPLAINTS"><i class="fa fa-angle-right"
+                  aria-hidden="true"></i> ONLINE COMPLAINTS</a>
+            </li>
+          </ul>
+        </aside>
+      </div>
 
-    <div class="col-md-3 col-sm-3">
-      <aside class="widget-archive mb-15">
-        <h4>Other Links</h4><div class="yellow-titleline"></div>
-        <ul class="widget-archive-list">
-          <li>
-            <a href="Integrity.html" title="INTEGRITY PACTS &amp; IEMS"><i class="fa fa-angle-right" aria-hidden="true"></i> INTEGRITY PACTS</a>
-          </li>
-          <li>
-            <a href="https://gailebank.gail.co.in/bws_for_pmc/pmc/pmc_home.asp" target="_blank" title="BILL WATCH SYSTEM FOR PMC (CGD)"><i class="fa fa-angle-right" aria-hidden="true"></i> BILL WATCH SYSTEM)</a>
-          </li>
-          <li>
-            <a href="https://gailebank.gail.co.in/GOGA_AUDIT/frmUserLogin.aspx" target="_blank" title="ORDER/CONTRACT TRANSMITTAL SYSTEM"><i class="fa fa-angle-right" aria-hidden="true"></i>TRANSMITTAL SYSTEM</a>
-          </li>
-          <li>
-            <a href="https://gailebank.gail.co.in/grievance/welcome.aspx" target="_blank" title="VENDOR GRIEVANCE PORTAL- “SAMADHAN”"><i class="fa fa-angle-right" aria-hidden="true"></i> VENDOR GRIEVANCE</a>
-          </li>
-          <li>
-            <a href="https://gailebank.gail.co.in/vendorfeedback/Login.aspx" target="_blank" title="VENDOR FEEDBACK PORTAL"><i class="fa fa-angle-right" aria-hidden="true"></i> VENDOR FEEDBACK</a>
-          </li>
-        </ul>
-      </aside>
-    </div>
+      <div class="col-md-3 col-sm-3">
+        <aside class="widget-archive mb-15">
+          <h4>Other Links</h4>
+          <div class="yellow-titleline"></div>
+          <ul class="widget-archive-list">
+            <li>
+              <a href="Integrity.html" title="INTEGRITY PACTS &amp; IEMS"><i class="fa fa-angle-right"
+                  aria-hidden="true"></i> INTEGRITY PACTS</a>
+            </li>
+            <li>
+              <a href="https://gailebank.gail.co.in/bws_for_pmc/pmc/pmc_home.asp" target="_blank"
+                title="BILL WATCH SYSTEM FOR PMC (CGD)"><i class="fa fa-angle-right" aria-hidden="true"></i> BILL WATCH
+                SYSTEM)</a>
+            </li>
+            <li>
+              <a href="https://gailebank.gail.co.in/GOGA_AUDIT/frmUserLogin.aspx" target="_blank"
+                title="ORDER/CONTRACT TRANSMITTAL SYSTEM"><i class="fa fa-angle-right"
+                  aria-hidden="true"></i>TRANSMITTAL SYSTEM</a>
+            </li>
+            <li>
+              <a href="https://gailebank.gail.co.in/grievance/welcome.aspx" target="_blank"
+                title="VENDOR GRIEVANCE PORTAL- “SAMADHAN”"><i class="fa fa-angle-right" aria-hidden="true"></i> VENDOR
+                GRIEVANCE</a>
+            </li>
+            <li>
+              <a href="https://gailebank.gail.co.in/vendorfeedback/Login.aspx" target="_blank"
+                title="VENDOR FEEDBACK PORTAL"><i class="fa fa-angle-right" aria-hidden="true"></i> VENDOR FEEDBACK</a>
+            </li>
+          </ul>
+        </aside>
+      </div>
 
-    <div class="col-md-3 col-sm-3">
-      <aside class="widget-archive mb-15">
-        <h4>Employee Login</h4><div class="yellow-titleline"></div>
-        <ul class="widget-archive-list">
-          <li>
-            <a href="https://gailcorintra.gail.co.in/" target="_blank" title="INTRANET"><i class="fa fa-angle-right" aria-hidden="true"></i> INTRANET</a>
-          </li>
-          <li> <a href="https://mail.gail.co.in" target="_blank" title="WEBMAIL"><i class="fa fa-angle-right" aria-hidden="true"></i> WEBMAIL</a>
-          </li>
-          <li> <a href="https://gailebank.gail.co.in/extapps/prms-new/home.asp" target="_blank" title="GOLDEN RETIREMENT"><i class="fa fa-angle-right" aria-hidden="true"></i> GOLDEN RETIREMENT</a>
-          </li>
-        </ul>
-      </aside>
+      <div class="col-md-3 col-sm-3">
+        <aside class="widget-archive mb-15">
+          <h4>Employee Login</h4>
+          <div class="yellow-titleline"></div>
+          <ul class="widget-archive-list">
+            <li>
+              <a href="https://gailcorintra.gail.co.in/" target="_blank" title="INTRANET"><i class="fa fa-angle-right"
+                  aria-hidden="true"></i> INTRANET</a>
+            </li>
+            <li> <a href="https://mail.gail.co.in" target="_blank" title="WEBMAIL"><i class="fa fa-angle-right"
+                  aria-hidden="true"></i> WEBMAIL</a>
+            </li>
+            <li> <a href="https://gailebank.gail.co.in/extapps/prms-new/home.asp" target="_blank"
+                title="GOLDEN RETIREMENT"><i class="fa fa-angle-right" aria-hidden="true"></i> GOLDEN RETIREMENT</a>
+            </li>
+          </ul>
+        </aside>
+      </div>
     </div>
   </div>
-</div>
 </section>
 
 </html>
